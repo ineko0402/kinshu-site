@@ -6,72 +6,80 @@
   <title>金種計算</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f0f8ff;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    .header {
-      position: sticky;
-      top: 0;
-      background: #e0f7fa;
-      padding: 10px;
-      font-size: 24px;
-      font-weight: bold;
-      z-index: 10;
-    }
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-    }
-    .timestamp {
-      font-size: 14px;
-      color: #555;
-    }
-    .totalsum {
-      font-size: 14px;
-      color: #333;
-    }
-    button {
-      font-size: 14px;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      margin: 5px;
-      cursor: pointer;
-    }
-    #clearBtn {
-      background: #ffcdd2;
-      font-size: 12px;
-      padding: 4px 6px;
-    }
-    #shotBtn {
-      background: #c8e6c9;
-      font-size: 12px;
-      padding: 4px 6px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-      padding: 4px;
-    }
-    .cell {
-      background: #e3f2fd;
-      padding: 4px;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-    input[type="number"] {
-      width: 48px;
-      font-size: 14px;
-      text-align: right;
-      padding: 2px;
-      font-family: monospace;
-    }
+  font-family: sans-serif;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background: #f8f9fa;
+  padding: 12px;
+  font-size: 26px;
+  font-weight: bold;
+  z-index: 10;
+  border-bottom: 1px solid #ccc;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.timestamp, .totalsum {
+  font-size: 14px;
+  color: #333;
+}
+
+button {
+  font-size: 12px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 4px;
+  margin: 0;
+  cursor: pointer;
+}
+
+#clearBtn {
+  background: #ffcdd2;
+}
+
+#shotBtn {
+  background: #c8e6c9;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 6px;
+}
+
+.cell {
+  background: #f1f8ff;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+}
+
+input[type="number"] {
+  width: 46px;
+  font-size: 14px;
+  text-align: right;
+  padding: 2px;
+  font-family: monospace;
+}
+
   </style>
 </head>
 <body>
