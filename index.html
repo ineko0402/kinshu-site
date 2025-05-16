@@ -61,6 +61,7 @@
       font-size: 16px;
       text-align: right;
       padding: 2px;
+      font-family: monospace;
     }
   </style>
 </head>
@@ -122,8 +123,8 @@
       document.getElementById("now").textContent = txt;
     }
 
-    // 常に更新する場合は以下を有効にする（今回は calc() 時のみ更新）
-    // setInterval(updateNow, 1000);
+    // リアルタイム時計
+    setInterval(updateNow, 1000);
 
     updateNow();
     calc();
