@@ -7,100 +7,158 @@
     <style>
         body {
             font-family: sans-serif;
-            text-align: center;
             margin: 0;
-            background-color: #f2f2f2;
+            padding: 0;
+            background: #f0f4f8;
         }
 
-        h1 {
-            margin: 0;
-            padding: 20px;
-            background-color: #e0f7fa;
-            font-size: 2em;
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .total {
+            position: sticky;
+            top: 0;
+            background: #e6f6f2;
+            text-align: right;
+            font-size: 2.5rem;
+            font-weight: bold;
+            padding: 1rem;
+            border: 2px solid #ccc;
+            margin-bottom: 1rem;
+            border-radius: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+            .controls button {
+                flex: 1;
+                font-size: 1.2rem;
+                margin: 0 0.5rem;
+                padding: 1rem;
+                border-radius: 1rem;
+                border: none;
+                color: #fff;
+            }
+
+        .clear-btn {
+            background-color: #f66;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 10px;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
 
-        .btn {
-            font-size: 1.5em;
-            padding: 10px;
-            margin: 10px 5px;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .btn-clear {
-            background-color: #f8bdbd;
-        }
-
-            .btn-clear:hover {
-                background-color: #f49d9d;
+            .grid label {
+                display: block;
+                background: #e1efff;
+                border-radius: 1rem;
+                padding: 1rem;
+                font-size: 1.5rem;
+                text-align: center;
             }
 
-        .cell {
-            background-color: #e0f0ff;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 1.2em;
-        }
-
-        input[type="number"] {
-            font-size: 1.5em;
-            width: 80px;
-            margin-top: 5px;
-        }
+            .grid input {
+                margin-top: 0.5rem;
+                font-size: 1.5rem;
+                width: 100%;
+                text-align: center;
+                border: none;
+                padding: 0.5rem;
+                border-radius: 0.5rem;
+            }
     </style>
 </head>
 <body>
-
-    <h1 id="total">合計: 0 円</h1>
-
-    <button class="btn btn-clear" onclick="clearAll()">クリア</button>
-
-    <div class="grid">
-        <div class="cell">一万円<input type="number" id="yen10000" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">五千円<input type="number" id="yen5000" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">二千円<input type="number" id="yen2000" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">千円<input type="number" id="yen1000" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">五百円<input type="number" id="yen500" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">百円<input type="number" id="yen100" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">五十円<input type="number" id="yen50" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">十円<input type="number" id="yen10" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">五円<input type="number" id="yen5" value="0" min="0" onchange="calc()"></div>
-        <div class="cell">一円<input type="number" id="yen1" value="0" min="0" onchange="calc()"></div>
+    <div class="container">
+        <div class="total" id="total">0</div>
+        <div class="controls">
+            <button class="clear-btn" onclick="clearInputs()">クリア</button>
+        </div>
+        <div class="grid">
+            <label>
+                一万円札
+                <input type="number" id="yen10000" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                五千円札
+                <input type="number" id="yen5000" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                二千円札
+                <input type="number" id="yen2000" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                千円札
+                <input type="number" id="yen1000" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                五百円玉
+                <input type="number" id="yen500" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                百円玉
+                <input type="number" id="yen100" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                五十円玉
+                <input type="number" id="yen50" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                十円玉
+                <input type="number" id="yen10" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                五円玉
+                <input type="number" id="yen5" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+            <label>
+                一円玉
+                <input type="number" id="yen1" value="0" min="0" inputmode="numeric" pattern="[0-9]*" onfocus="this.select()" onchange="calc()">
+            </label>
+        </div>
     </div>
 
     <script>
+        const unit = {
+            yen10000: 10000,
+            yen5000: 5000,
+            yen2000: 2000,
+            yen1000: 1000,
+            yen500: 500,
+            yen100: 100,
+            yen50: 50,
+            yen10: 10,
+            yen5: 5,
+            yen1: 1
+        };
+
         function calc() {
-            try {
-                const map = {
-                    yen10000: 10000, yen5000: 5000, yen2000: 2000, yen1000: 1000,
-                    yen500: 500, yen100: 100, yen50: 50, yen10: 10, yen5: 5, yen1: 1
-                };
-                let sum = 0;
-                for (let id in map) {
-                    const val = parseInt(document.getElementById(id).value) || 0;
-                    sum += val * map[id];
-                }
-                document.getElementById("total").textContent = `合計: ${sum.toLocaleString()} 円`;
-            } catch (e) {
-                console.error(e);
+            let total = 0;
+            for (const id in unit) {
+                const val = parseInt(document.getElementById(id).value || "0", 10);
+                total += val * unit[id];
             }
+            const t = document.getElementById("total");
+            t.textContent = total.toLocaleString();
+            t.style.backgroundColor = "#d0f0c0";
+            setTimeout(() => t.style.backgroundColor = "#e6f6f2", 200);
         }
 
-        function clearAll() {
-            const ids = ["yen10000", "yen5000", "yen2000", "yen1000", "yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
-            ids.forEach(id => document.getElementById(id).value = 0);
+        function clearInputs() {
+            for (const id in unit) {
+                document.getElementById(id).value = "0";
+            }
             calc();
         }
-
-        window.onload = calc;
     </script>
-
 </body>
 </html>
