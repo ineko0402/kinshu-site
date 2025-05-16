@@ -1,95 +1,106 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>金種在高計算</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金種計算</title>
     <style>
         body {
             font-family: sans-serif;
-            padding: 20px;
-            max-width: 600px;
-            margin: auto;
-            background: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            background-color: #f2f2f2;
         }
 
         h1 {
-            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f7fa;
+            font-size: 2em;
         }
 
-        .row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-            .row label {
-                flex: 1;
-            }
-
-            .row input {
-                flex: 1;
-                font-size: 1.1em;
-                padding: 4px;
-            }
-
-        #result {
-            text-align: center;
-            font-size: 1.5em;
-            margin-top: 20px;
-        }
-
-        button {
-            width: 100%;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             padding: 10px;
-            font-size: 1.2em;
-            background: #007acc;
-            color: white;
+        }
+
+        .btn {
+            font-size: 1.5em;
+            padding: 10px;
+            margin: 10px 5px;
             border: none;
             border-radius: 5px;
         }
 
-            button:active {
-                background: #005a99;
+        .btn-clear {
+            background-color: #f8bdbd;
+        }
+
+            .btn-clear:hover {
+                background-color: #f49d9d;
             }
+
+        .cell {
+            background-color: #e0f0ff;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1.2em;
+        }
+
+        input[type="number"] {
+            font-size: 1.5em;
+            width: 80px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
-    <h1>金種在高計算</h1>
-    <div class="row"><label>10,000円</label><input type="number" id="yen10000" value="0" min="0" /></div>
-    <div class="row"><label>5,000円</label><input type="number" id="yen5000" value="0" min="0" /></div>
-    <div class="row"><label>2,000円</label><input type="number" id="yen2000" value="0" min="0" /></div>
-    <div class="row"><label>1,000円</label><input type="number" id="yen1000" value="0" min="0" /></div>
-    <div class="row"><label>500円</label><input type="number" id="yen500" value="0" min="0" /></div>
-    <div class="row"><label>100円</label><input type="number" id="yen100" value="0" min="0" /></div>
-    <div class="row"><label>50円</label><input type="number" id="yen50" value="0" min="0" /></div>
-    <div class="row"><label>10円</label><input type="number" id="yen10" value="0" min="0" /></div>
-    <div class="row"><label>5円</label><input type="number" id="yen5" value="0" min="0" /></div>
-    <div class="row"><label>1円</label><input type="number" id="yen1" value="0" min="0" /></div>
-    <button onclick="calc()">合計を計算</button>
-    <div id="result">合計: ¥0</div>
+
+    <h1 id="total">合計: 0 円</h1>
+
+    <button class="btn btn-clear" onclick="clearAll()">クリア</button>
+
+    <div class="grid">
+        <div class="cell">一万円<input type="number" id="yen10000" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">五千円<input type="number" id="yen5000" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">二千円<input type="number" id="yen2000" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">千円<input type="number" id="yen1000" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">五百円<input type="number" id="yen500" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">百円<input type="number" id="yen100" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">五十円<input type="number" id="yen50" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">十円<input type="number" id="yen10" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">五円<input type="number" id="yen5" value="0" min="0" onchange="calc()"></div>
+        <div class="cell">一円<input type="number" id="yen1" value="0" min="0" onchange="calc()"></div>
+    </div>
 
     <script>
         function calc() {
-            const rate = {
-                yen10000: 10000,
-                yen5000: 5000,
-                yen2000: 2000,
-                yen1000: 1000,
-                yen500: 500,
-                yen100: 100,
-                yen50: 50,
-                yen10: 10,
-                yen5: 5,
-                yen1: 1
-            };
-            let total = 0;
-            for (const id in rate) {
-                const qty = parseInt(document.getElementById(id).value || "0", 10);
-                total += qty * rate[id];
+            try {
+                const map = {
+                    yen10000: 10000, yen5000: 5000, yen2000: 2000, yen1000: 1000,
+                    yen500: 500, yen100: 100, yen50: 50, yen10: 10, yen5: 5, yen1: 1
+                };
+                let sum = 0;
+                for (let id in map) {
+                    const val = parseInt(document.getElementById(id).value) || 0;
+                    sum += val * map[id];
+                }
+                document.getElementById("total").textContent = `合計: ${sum.toLocaleString()} 円`;
+            } catch (e) {
+                console.error(e);
             }
-            document.getElementById("result").textContent = "合計: ¥" + total.toLocaleString();
         }
+
+        function clearAll() {
+            const ids = ["yen10000", "yen5000", "yen2000", "yen1000", "yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
+            ids.forEach(id => document.getElementById(id).value = 0);
+            calc();
+        }
+
+        window.onload = calc;
     </script>
+
 </body>
 </html>
