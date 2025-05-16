@@ -31,6 +31,10 @@
       font-size: 14px;
       color: #555;
     }
+    .totalsum {
+      font-size: 14px;
+      color: #333;
+    }
     button {
       font-size: 14px;
       padding: 5px 10px;
@@ -42,7 +46,12 @@
     #clearBtn {
       background: #ffcdd2;
       font-size: 12px;
-      padding: 4px 8px;
+      padding: 4px 6px;
+    }
+    #shotBtn {
+      background: #c8e6c9;
+      font-size: 12px;
+      padding: 4px 6px;
     }
     .grid {
       display: grid;
@@ -54,11 +63,11 @@
       background: #e3f2fd;
       padding: 4px;
       border-radius: 4px;
-      font-size: 13px;
+      font-size: 12px;
     }
     input[type="number"] {
-      width: 50px;
-      font-size: 16px;
+      width: 48px;
+      font-size: 14px;
       text-align: right;
       padding: 2px;
       font-family: monospace;
@@ -69,9 +78,11 @@
   <div class="header" id="total">0</div>
   <div class="controls">
     <div class="timestamp" id="now"></div>
+    <div class="totalsum" id="count">札: 0枚 / 硬貨: 0枚 / 合計: 0枚</div>
     <button id="clearBtn" onclick="clearAll()">クリア</button>
+    <button id="shotBtn" onclick="screenshot()">📸</button>
   </div>
-  <div class="grid">
+  <div class="grid" id="shotArea">
     <div class="cell">一万円札<br><input type="number" id="yen10000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
     <div class="cell">五千円札<br><input type="number" id="yen5000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
     <div class="cell">二千円札<br><input type="number" id="yen2000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
@@ -83,6 +94,7 @@
     <div class="cell">五円玉<br><input type="number" id="yen5" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
     <div class="cell">一円玉<br><input type="number" id="yen1" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
   </div>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script>
     const rate = {
       yen10000: 10000,
@@ -97,16 +109,21 @@
       yen1: 1
     };
 
+    const bills = ["yen10000", "yen5000", "yen2000", "yen1000"];
+    const coins = ["yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
+
     function calc() {
-      let total = 0;
+      let total = 0, billCount = 0, coinCount = 0;
       for (const id in rate) {
         const val = parseInt(document.getElementById(id).value) || 0;
         total += val * rate[id];
+        if (bills.includes(id)) billCount += val;
+        else coinCount += val;
       }
-      const totalEl = document.getElementById("total");
-      totalEl.textContent = total.toLocaleString();
-      totalEl.style.backgroundColor = "#dcedc8";
-      setTimeout(() => totalEl.style.backgroundColor = "#e0f7fa", 200);
+      document.getElementById("total").textContent = total.toLocaleString();
+      document.getElementById("count").textContent = `札: ${billCount}枚 / 硬貨: ${coinCount}枚 / 合計: ${billCount + coinCount}枚`;
+      document.getElementById("total").style.backgroundColor = "#dcedc8";
+      setTimeout(() => document.getElementById("total").style.backgroundColor = "#e0f7fa", 200);
       updateNow();
     }
 
@@ -123,9 +140,16 @@
       document.getElementById("now").textContent = txt;
     }
 
-    // リアルタイム時計
-    setInterval(updateNow, 1000);
+    function screenshot() {
+      html2canvas(document.getElementById("shotArea")).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `kinshu_${new Date().toISOString().slice(0,19).replace(/[:T]/g, '-')}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
 
+    setInterval(updateNow, 1000);
     updateNow();
     calc();
   </script>
