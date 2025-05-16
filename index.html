@@ -1,92 +1,95 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>金種在高計算</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      background: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-      font-size: 1.5em;
-    }
-    .row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .row label {
-      flex: 1;
-    }
-    .row input {
-      flex: 1;
-      font-size: 1.2em;
-      padding: 5px;
-      width: 100px;
-    }
-    #result {
-      text-align: center;
-      font-size: 1.5em;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      font-size: 1.2em;
-      background: #007acc;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    button:active {
-      background: #005f99;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>金種在高計算</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            background: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+            .row label {
+                flex: 1;
+            }
+
+            .row input {
+                flex: 1;
+                font-size: 1.1em;
+                padding: 4px;
+            }
+
+        #result {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+            button:active {
+                background: #005a99;
+            }
+    </style>
 </head>
 <body>
-  <h1>金種在高計算</h1>
-  <div class="row"><label>10,000円</label><input type="number" id="yen10000" value="0" min="0" /></div>
-  <div class="row"><label>5,000円</label><input type="number" id="yen5000" value="0" min="0" /></div>
-  <div class="row"><label>2,000円</label><input type="number" id="yen2000" value="0" min="0" /></div>
-  <div class="row"><label>1,000円</label><input type="number" id="yen1000" value="0" min="0" /></div>
-  <div class="row"><label>500円</label><input type="number" id="yen500" value="0" min="0" /></div>
-  <div class="row"><label>100円</label><input type="number" id="yen100" value="0" min="0" /></div>
-  <div class="row"><label>50円</label><input type="number" id="yen50" value="0" min="0" /></div>
-  <div class="row"><label>10円</label><input type="number" id="yen10" value="0" min="0" /></div>
-  <div class="row"><label>5円</label><input type="number" id="yen5" value="0" min="0" /></div>
-  <div class="row"><label>1円</label><input type="number" id="yen1" value="0" min="0" /></div>
+    <h1>金種在高計算</h1>
+    <div class="row"><label>10,000円</label><input type="number" id="yen10000" value="0" min="0" /></div>
+    <div class="row"><label>5,000円</label><input type="number" id="yen5000" value="0" min="0" /></div>
+    <div class="row"><label>2,000円</label><input type="number" id="yen2000" value="0" min="0" /></div>
+    <div class="row"><label>1,000円</label><input type="number" id="yen1000" value="0" min="0" /></div>
+    <div class="row"><label>500円</label><input type="number" id="yen500" value="0" min="0" /></div>
+    <div class="row"><label>100円</label><input type="number" id="yen100" value="0" min="0" /></div>
+    <div class="row"><label>50円</label><input type="number" id="yen50" value="0" min="0" /></div>
+    <div class="row"><label>10円</label><input type="number" id="yen10" value="0" min="0" /></div>
+    <div class="row"><label>5円</label><input type="number" id="yen5" value="0" min="0" /></div>
+    <div class="row"><label>1円</label><input type="number" id="yen1" value="0" min="0" /></div>
+    <button onclick="calc()">合計を計算</button>
+    <div id="result">合計: ¥0</div>
 
-  <button onclick="calc()">合計を計算</button>
-  <div id="result">合計: \0</div>
-
-  <script>
-    function calc() {
-      const rate = {
-        yen10000: 10000,
-        yen5000: 5000,
-        yen2000: 2000,
-        yen1000: 1000,
-        yen500: 500,
-        yen100: 100,
-        yen50: 50,
-        yen10: 10,
-        yen5: 5,
-        yen1: 1,
-      };
-      let total = 0;
-      for (const id in rate) {
-        const count = parseInt(document.getElementById(id).value || 0, 10);
-        total += count * rate[id];
-      }
-      document.getElementById("result").textContent = "合計: \" + total.toLocaleString();
-    }
-  </script>
+    <script>
+        function calc() {
+            const rate = {
+                yen10000: 10000,
+                yen5000: 5000,
+                yen2000: 2000,
+                yen1000: 1000,
+                yen500: 500,
+                yen100: 100,
+                yen50: 50,
+                yen10: 10,
+                yen5: 5,
+                yen1: 1
+            };
+            let total = 0;
+            for (const id in rate) {
+                const qty = parseInt(document.getElementById(id).value || "0", 10);
+                total += qty * rate[id];
+            }
+            document.getElementById("result").textContent = "合計: ¥" + total.toLocaleString();
+        }
+    </script>
 </body>
 </html>
