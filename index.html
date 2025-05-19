@@ -213,10 +213,18 @@ function downloadCanvasAsImage(canvas) {
   elm.onfocus = () => elm.select();
   // Enterキー判定削除
 });
-
+function initNisen() {
+  const el = document.getElementById("yen2000");
+  const cell = document.getElementById("nisenCell");
+  el.disabled = !useNisen;
+  cell.classList.toggle("disabled", !useNisen);
+  if (!useNisen) el.value = 0;
+  document.getElementById("toggleBtn").textContent = useNisen ? "二千円札を使用する" : "二千円札を使用しない";
+}
 
     setInterval(updateNow, 1000);
     updateNow();
+    initNisen();
     calc();
   </script>
 </body>
