@@ -5,82 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>金種計算</title>
   <style>
-    body {
-  font-family: sans-serif;
-  background: #fff;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
+  body {
+    font-family: sans-serif;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
 
-.header {
-  position: sticky;
-  top: 0;
-  background: #f8f9fa;
-  padding: 12px;
-  font-size: 26px;
-  font-weight: bold;
-  z-index: 10;
-  border-bottom: 1px solid #ccc;
-}
+  .header {
+    position: sticky;
+    top: 0;
+    background: #f8f9fa;
+    padding: 12px;
+    font-size: 26px;
+    font-weight: bold;
+    z-index: 10;
+    border-bottom: 1px solid #ccc;
+  }
 
-.controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
-  font-size: 14px;
-  flex-wrap: wrap;
-  gap: 6px;
-}
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
 
-.timestamp, .totalsum {
-  font-size: 14px;
-  color: #333;
-}
+  .timestamp, .totalsum {
+    font-size: 14px;
+    color: #333;
+  }
 
-button {
-  font-size: 12px;
-  padding: 4px 6px;
-  border: none;
-  border-radius: 4px;
-  margin: 0;
-  cursor: pointer;
-}
+  button {
+    font-size: 12px;
+    padding: 4px 6px;
+    border: none;
+    border-radius: 4px;
+    margin: 0;
+    cursor: pointer;
+  }
 
-#clearBtn {
-  background: #ffcdd2;
-}
+  #clearBtn {
+    background: #ffcdd2;
+  }
 
-#shotBtn {
-  background: #c8e6c9;
-}
+  #shotBtn {
+    background: #c8e6c9;
+  }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  padding: 6px;
-}
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 8px;
+  }
 
-.cell {
-  background: #f1f8ff;
-  padding: 4px;
-  border-radius: 4px;
-  font-size: 13px;
-  border: 1px solid #ccc;
-}
+  .cell {
+    background: #f1f8ff;
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+  }
 
-input[type="number"] {
-  width: 46px;
-  font-size: 14px;
-  text-align: right;
-  padding: 2px;
-  font-family: monospace;
-}
+  input[type="number"] {
+    width: 48px;
+    font-size: 14px;
+    text-align: right;
+    padding: 3px;
+    font-family: monospace;
+  }
+</style>
 
-  </style>
 </head>
 <body>
   <div class="header" id="total">0</div>
