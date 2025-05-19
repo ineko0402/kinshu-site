@@ -1,107 +1,102 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>金種計算</title>
   <style>
-  body {
-    font-family: sans-serif;
-    background: #ffffff;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
-
-  .header {
-    position: sticky;
-    top: 0;
-    background: #f8f9fa;
-    padding: 12px;
-    font-size: 26px;
-    font-weight: bold;
-    z-index: 10;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    border-bottom: 1px solid #ccc;
-    font-size: 14px;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .timestamp, .totalsum {
-    font-size: 14px;
-    color: #333;
-  }
-
-  button {
-    font-size: 12px;
-    padding: 4px 6px;
-    border: none;
-    border-radius: 4px;
-    margin: 0;
-    cursor: pointer;
-  }
-
-  #clearBtn {
-    background: #ffcdd2;
-  }
-
-  #shotBtn {
-    background: #c8e6c9;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    padding: 8px;
-  }
-
-  .cell {
-    background: #f1f8ff;
-    padding: 6px;
-    border-radius: 4px;
-    font-size: 13px;
-    border: 1px solid #ccc;
-  }
-
-  input[type="number"] {
-    width: 48px;
-    font-size: 14px;
-    text-align: right;
-    padding: 3px;
-    font-family: monospace;
-  }
-</style>
-
+    body {
+      font-family: sans-serif;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .header {
+      font-size: 28px;
+      font-weight: bold;
+      padding: 12px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #ccc;
+    }
+    .timestamp {
+      font-size: 13px;
+      color: #444;
+      margin: 4px 0;
+    }
+    .totalsum {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .section {
+      display: grid;
+      gap: 6px;
+      justify-content: center;
+      margin: 8px 0;
+    }
+    .bills {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .coins {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .cell {
+      background: #f1f8ff;
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      min-width: 100px;
+    }
+    input[type="number"] {
+      width: 60px;
+      font-size: 14px;
+      text-align: right;
+      font-family: monospace;
+    }
+    .buttons {
+      margin: 10px 0;
+    }
+    button {
+      font-size: 12px;
+      padding: 4px 8px;
+      margin: 4px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #clearBtn { background: #ffcdd2; }
+    #shotBtn { background: #c8e6c9; }
+  </style>
 </head>
 <body>
-  <div class="header" id="total">0</div>
-  <div class="controls">
-    <div class="timestamp" id="now"></div>
+  <div id="shotArea">
+    <div class="header" id="total">0</div>
+    <div class="timestamp" id="now">--:--</div>
     <div class="totalsum" id="count">札: 0枚 / 硬貨: 0枚 / 合計: 0枚</div>
+
+    <div class="section bills">
+      <div class="cell">一万円札<br><input type="number" id="yen10000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">五千円札<br><input type="number" id="yen5000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">二千円札<br><input type="number" id="yen2000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">千円札<br><input type="number" id="yen1000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+    </div>
+
+    <div class="section coins">
+      <div class="cell">五百円玉<br><input type="number" id="yen500" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">百円玉<br><input type="number" id="yen100" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">五十円玉<br><input type="number" id="yen50" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">十円玉<br><input type="number" id="yen10" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">五円玉<br><input type="number" id="yen5" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+      <div class="cell">一円玉<br><input type="number" id="yen1" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
+    </div>
+  </div>
+
+  <div class="buttons">
     <button id="clearBtn" onclick="clearAll()">クリア</button>
     <button id="shotBtn" onclick="screenshot()">📸</button>
   </div>
-  <div class="grid" id="shotArea">
-    <div class="cell">一万円札<br><input type="number" id="yen10000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">五千円札<br><input type="number" id="yen5000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">二千円札<br><input type="number" id="yen2000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">千円札<br><input type="number" id="yen1000" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">五百円玉<br><input type="number" id="yen500" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">百円玉<br><input type="number" id="yen100" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">五十円玉<br><input type="number" id="yen50" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">十円玉<br><input type="number" id="yen10" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">五円玉<br><input type="number" id="yen5" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-    <div class="cell">一円玉<br><input type="number" id="yen1" value="0" min="0" inputmode="numeric" onfocus="this.select()" onchange="calc()"></div>
-  </div>
+
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script>
     const rate = {
@@ -116,7 +111,6 @@
       yen5: 5,
       yen1: 1
     };
-
     const bills = ["yen10000", "yen5000", "yen2000", "yen1000"];
     const coins = ["yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
 
@@ -130,8 +124,6 @@
       }
       document.getElementById("total").textContent = total.toLocaleString();
       document.getElementById("count").textContent = `札: ${billCount}枚 / 硬貨: ${coinCount}枚 / 合計: ${billCount + coinCount}枚`;
-      document.getElementById("total").style.backgroundColor = "#dcedc8";
-      setTimeout(() => document.getElementById("total").style.backgroundColor = "#e0f7fa", 200);
       updateNow();
     }
 
