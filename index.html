@@ -86,24 +86,24 @@
       <button id="shotBtn" onclick="screenshot()">ダウンロード</button>
     </div>
     <div class="grid">
-      <div class="row">
-        <div class="cell">一万円札<br><input type="number" id="yen10000" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-        <div class="cell">五千円札<br><input type="number" id="yen5000" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-      </div>
-      <div class="row">
-        <div class="cell" id="nisenCell">二千円札<br><input type="number" id="yen2000" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-        <div class="cell">千円札<br><input type="number" id="yen1000" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-      </div>
-      <div class="row">
-        <div class="cell">五百円玉<br><input type="number" id="yen500" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-        <div class="cell">百円玉<br><input type="number" id="yen100" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-        <div class="cell">五十円玉<br><input type="number" id="yen50" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-      </div>
-      <div class="row">
-        <div class="cell">十円玉<br><input type="number" id="yen10" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-        <div class="cell">五円玉<br><input type="number" id="yen5" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-        <div class="cell">一円玉<br><input type="number" id="yen1" min="0" value="0" onchange="calc()" onfocus="this.select()"></div>
-      </div>
+    <div class="row">
+      <div class="cell">一万円札<br><input id="yen10000" class="yen" data-next="yen5000"></div>
+      <div class="cell">五千円札<br><input id="yen5000" class="yen" data-next="yen2000"></div>
+    </div>
+    <div class="row">
+      <div class="cell" id="nisenCell">二千円札<br><input id="yen2000" class="yen" data-next="yen1000"></div>
+      <div class="cell">千円札<br><input id="yen1000" class="yen" data-next="yen500"></div>
+    </div>
+    <div class="row">
+      <div class="cell">五百円玉<br><input id="yen500" class="yen" data-next="yen100"></div>
+      <div class="cell">百円玉<br><input id="yen100" class="yen" data-next="yen50"></div>
+      <div class="cell">五十円玉<br><input id="yen50" class="yen" data-next="yen10"></div>
+    </div>
+    <div class="row">
+      <div class="cell">十円玉<br><input id="yen10" class="yen" data-next="yen5"></div>
+      <div class="cell">五円玉<br><input id="yen5" class="yen" data-next="yen1"></div>
+      <div class="cell">一円玉<br><input id="yen1" class="yen"></div>
+    </div>
     </div>
   </div>
 
@@ -148,7 +148,7 @@
       const txt = now.toLocaleString("ja-JP", { hour12: false });
       document.getElementById("now").textContent = txt;
     }
-
+    
     function clearAll() {
       for (const id in rate) {
         const el = document.getElementById(id);
@@ -168,22 +168,60 @@
       calc();
     }
 
-    function screenshot() {
-      const area = document.getElementById("shotArea");
-      const clone = area.cloneNode(true);
-      const padding = document.createElement("div");
-      padding.style.height = "30px";
-      clone.appendChild(padding);
-      clone.style.backgroundColor = "#eef8ff";
-      document.body.appendChild(clone);
-      html2canvas(clone).then(canvas => {
-        document.body.removeChild(clone);
-        const link = document.createElement("a");
-        link.download = `kinshu_${new Date().toISOString().slice(0,19).replace(/[:T]/g, '-')}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-      });
+function screenshot() {
+  const area = document.getElementById("shotArea");
+
+  createScreenshotCanvas(area).then(canvas => {
+    downloadCanvasAsImage(canvas);
+  });
+}
+
+function createScreenshotCanvas(area) {
+  return new Promise(resolve => {
+    const clone = area.cloneNode(true);
+
+    const padding = document.createElement("div");
+    padding.style.height = "30px";
+    clone.appendChild(padding);
+
+    clone.style.backgroundColor = "#eef8ff";
+    document.body.appendChild(clone);
+
+    html2canvas(clone).then(canvas => {
+      document.body.removeChild(clone);
+      resolve(canvas);
+    });
+  });
+}
+
+function downloadCanvasAsImage(canvas) {
+  const a = document.createElement("a");
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+  a.href = canvas.toDataURL();
+  a.download = `kinshu_${timestamp}.png`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a); // 複製防止
+}
+
+    document.querySelectorAll('.yen').forEach(elm => {
+  elm.type = 'text';
+  elm.inputMode = 'numeric';
+  elm.pattern = '[0-9]*';
+  elm.value = '0';
+  elm.onchange = calc;
+  elm.onfocus = () => elm.select();
+  elm.onkeydown = e => {
+    if (e.key === 'Enter') {
+      const nextId = elm.dataset.next;
+      const next = document.getElementById(nextId);
+      if (next) {
+        next.focus();
+        next.select();
+      }
     }
+  };
+});
 
     setInterval(updateNow, 1000);
     updateNow();
