@@ -62,8 +62,13 @@
     input[type="text"] {
       width: 60px;
       font-size: 16px;
-      padding: 4px;
-      text-align: right;
+      padding: 0px 2px;
+      text-align: center;
+      border: none;
+      border-bottom: 1px solid #ccc; /* 下線だけ表示 */
+      background: transparent;       /* 背景を透明に（好み） */
+      outline: none;                 /* フォーカス時の枠線を消す */
+      height: 20px;
     }
     @media (max-width: 600px) {
       .cell {
@@ -79,7 +84,7 @@
   <div id="shotArea">
     <div class="header" id="total">0</div>
     <div class="info" id="now"></div>
-    <div class="count" id="count">札: 0枚 / 硬貨: 0枚 / 合計: 0枚</div>
+    <div class="count" id="count">紙幣: 0枚  硬貨: 0枚  合計: 0枚</div>
     <div class="buttons">
       <button id="clearBtn" onclick="clearAll()">クリア</button>
       <button id="toggleBtn" onclick="toggleNisen()">二千円札を使用する</button>
@@ -137,7 +142,7 @@
         else coinCount += val;
       }
       document.getElementById("total").textContent = total.toLocaleString();
-      document.getElementById("count").textContent = `札: ${billCount}枚 / 硬貨: ${coinCount}枚 / 合計: ${billCount + coinCount}枚`;
+      document.getElementById("count").textContent = `紙幣: ${billCount}枚 ｜ 硬貨: ${coinCount}枚 ｜ 合計: ${billCount + coinCount}枚`;
       document.getElementById("total").style.backgroundColor = "#dcedc8";
       setTimeout(() => document.getElementById("total").style.backgroundColor = "#dcedc8", 200);
       updateNow();
@@ -170,11 +175,20 @@
 
 function screenshot() {
   const area = document.getElementById("shotArea");
+  const buttons = document.querySelector(".buttons");
+
+  // ボタンを一時的にDOMから削除
+  const parent = buttons.parentNode;
+  const backup = buttons.cloneNode(true);
+  parent.removeChild(buttons);
 
   createScreenshotCanvas(area).then(canvas => {
+    // ボタンを元に戻す
+    parent.insertBefore(backup, parent.querySelector(".grid")); // gridの前に戻す例
     downloadCanvasAsImage(canvas);
   });
 }
+
 
 function createScreenshotCanvas(area) {
   return new Promise(resolve => {
