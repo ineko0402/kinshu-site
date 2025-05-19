@@ -211,17 +211,9 @@ function downloadCanvasAsImage(canvas) {
   elm.value = '0';
   elm.onchange = calc;
   elm.onfocus = () => elm.select();
-  elm.onkeydown = e => {
-    if (e.key === 'Enter') {
-      const nextId = elm.dataset.next;
-      const next = document.getElementById(nextId);
-      if (next) {
-        next.focus();
-        next.select();
-      }
-    }
-  };
+  // Enterキー判定削除
 });
+
 
     setInterval(updateNow, 1000);
     updateNow();
