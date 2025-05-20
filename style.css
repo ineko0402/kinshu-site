@@ -1,0 +1,103 @@
+﻿body {
+    font-family: sans-serif;
+    background: #eef8ff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 16px;
+}
+
+.header {
+    background: #dcedc8;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.info, .count {
+    margin: 5px 0;
+}
+
+.info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.buttons {
+    margin: 10px 0;
+}
+
+button {
+    font-size: 14px;
+    padding: 6px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#clearBtn {
+    background: #ffcdd2;
+}
+
+#toggleBtn {
+    background: #bbdefb;
+}
+
+#shotBtn {
+    background: #c8e6c9;
+}
+
+#currencyBtn {
+    background: #ffe082;
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+}
+
+.cell {
+    background: #e3f2fd;
+    padding: 8px;
+    border-radius: 6px;
+    min-width: 100px;
+}
+
+    .cell.disabled {
+        background: #f0f0f0;
+        opacity: 0.6;
+    }
+
+input[type="text"] {
+    width: 60px;
+    font-size: 16px;
+    padding: 0px 2px;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background: transparent;
+    outline: none;
+    height: 20px;
+}
+
+@media (max-width: 600px) {
+    .cell {
+        min-width: 80px;
+    }
+
+    input[type="text"] {
+        width: 50px;
+    }
+}

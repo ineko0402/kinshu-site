@@ -1,245 +1,28 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>金種計算</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #eef8ff;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      font-size: 16px;
-    }
-    .header {
-      background: #dcedc8;
-      font-size: 28px;
-      font-weight: bold;
-      padding: 10px 0;
-    }
-    .info, .count {
-      margin: 5px 0;
-    }
-    .buttons {
-      margin: 10px 0;
-    }
-    button {
-      font-size: 14px;
-      padding: 6px 10px;
-      margin: 0 5px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #clearBtn { background: #ffcdd2; }
-    #toggleBtn { background: #bbdefb; }
-    #shotBtn { background: #c8e6c9; }
-
-    .grid {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-bottom: 40px;
-    }
-    .row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 6px 0;
-    }
-    .cell {
-      background: #e3f2fd;
-      padding: 8px;
-      border-radius: 6px;
-      min-width: 100px;
-    }
-    .cell.disabled {
-      background: #f0f0f0;
-      opacity: 0.6;
-    }
-    input[type="text"] {
-      width: 60px;
-      font-size: 16px;
-      padding: 0px 2px;
-      text-align: center;
-      border: none;
-      border-bottom: 1px solid #ccc; /* 下線だけ表示 */
-      background: transparent;       /* 背景を透明に（好み） */
-      outline: none;                 /* フォーカス時の枠線を消す */
-      height: 20px;
-    }
-    @media (max-width: 600px) {
-      .cell {
-        min-width: 80px;
-      }
-      input[type="text"] {
-        width: 50px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>金種計算</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="shotArea">
-    <div class="header" id="total">0</div>
-    <div class="info" id="now"></div>
-    <div class="count" id="count">紙幣: 0枚  硬貨: 0枚  合計: 0枚</div>
-    <div class="buttons">
-      <button id="clearBtn" onclick="clearAll()">クリア</button>
-      <button id="toggleBtn" onclick="toggleNisen()">二千円札を使用する</button>
-      <button id="shotBtn" onclick="screenshot()">ダウンロード</button>
+    <div id="shotArea">
+        <div class="header" id="total">0</div>
+        <div class="info" id="now">
+            <span id="dateTime"></span>
+            <button id="currencyBtn" onclick="confirmCurrencySwitch()">通貨: JPY</button>
+        </div>
+        <div class="count" id="count">紙幣: 0枚 ｜ 硬貨: 0枚 ｜ 合計: 0枚</div>
+        <div class="buttons">
+            <button id="clearBtn" onclick="clearAll()">クリア</button>
+            <button id="toggleBtn" onclick="toggleNisen()">二千円札を使用する</button>
+            <button id="shotBtn" onclick="screenshot()">ダウンロード</button>
+        </div>
+        <div class="grid" id="moneyGrid"></div>
     </div>
-    <div class="grid">
-    <div class="row">
-      <div class="cell">一万円札<br><input id="yen10000" class="yen" data-next="yen5000"></div>
-      <div class="cell">五千円札<br><input id="yen5000" class="yen" data-next="yen2000"></div>
-    </div>
-    <div class="row">
-      <div class="cell" id="nisenCell">二千円札<br><input id="yen2000" class="yen" data-next="yen1000"></div>
-      <div class="cell">千円札<br><input id="yen1000" class="yen" data-next="yen500"></div>
-    </div>
-    <div class="row">
-      <div class="cell">五百円玉<br><input id="yen500" class="yen" data-next="yen100"></div>
-      <div class="cell">百円玉<br><input id="yen100" class="yen" data-next="yen50"></div>
-      <div class="cell">五十円玉<br><input id="yen50" class="yen" data-next="yen10"></div>
-    </div>
-    <div class="row">
-      <div class="cell">十円玉<br><input id="yen10" class="yen" data-next="yen5"></div>
-      <div class="cell">五円玉<br><input id="yen5" class="yen" data-next="yen1"></div>
-      <div class="cell">一円玉<br><input id="yen1" class="yen"></div>
-    </div>
-    </div>
-  </div>
 
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  <script>
-    const rate = {
-      yen10000: 10000,
-      yen5000: 5000,
-      yen2000: 2000,
-      yen1000: 1000,
-      yen500: 500,
-      yen100: 100,
-      yen50: 50,
-      yen10: 10,
-      yen5: 5,
-      yen1: 1
-    };
-
-    const bills = ["yen10000", "yen5000", "yen2000", "yen1000"];
-    const coins = ["yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
-    let useNisen = false;
-
-    function calc() {
-      let total = 0, billCount = 0, coinCount = 0;
-      for (const id in rate) {
-        const el = document.getElementById(id);
-        if (el.disabled) continue;
-        const val = parseInt(el.value) || 0;
-        total += val * rate[id];
-        if (bills.includes(id)) billCount += val;
-        else coinCount += val;
-      }
-      document.getElementById("total").textContent = total.toLocaleString();
-      document.getElementById("count").textContent = `紙幣: ${billCount}枚 ｜ 硬貨: ${coinCount}枚 ｜ 合計: ${billCount + coinCount}枚`;
-      document.getElementById("total").style.backgroundColor = "#dcedc8";
-      setTimeout(() => document.getElementById("total").style.backgroundColor = "#dcedc8", 200);
-      updateNow();
-    }
-
-    function updateNow() {
-      const now = new Date();
-      const txt = now.toLocaleString("ja-JP", { hour12: false });
-      document.getElementById("now").textContent = txt;
-    }
-    
-    function clearAll() {
-      for (const id in rate) {
-        const el = document.getElementById(id);
-        if (!el.disabled) el.value = 0;
-      }
-      calc();
-    }
-
-    function toggleNisen() {
-      useNisen = !useNisen;
-      const el = document.getElementById("yen2000");
-      const cell = document.getElementById("nisenCell");
-      el.disabled = !useNisen;
-      cell.classList.toggle("disabled", !useNisen);
-      if (!useNisen) el.value = 0;
-      document.getElementById("toggleBtn").textContent = useNisen ? "二千円札を使用する" : "二千円札を使用しない";
-      calc();
-    }
-
-function screenshot() {
-  const area = document.getElementById("shotArea");
-  const buttons = document.querySelector(".buttons");
-
-  // ボタンを一時的にDOMから削除
-  const parent = buttons.parentNode;
-  const backup = buttons.cloneNode(true);
-  parent.removeChild(buttons);
-
-  createScreenshotCanvas(area).then(canvas => {
-    // ボタンを元に戻す
-    parent.insertBefore(backup, parent.querySelector(".grid")); // gridの前に戻す例
-    downloadCanvasAsImage(canvas);
-  });
-}
-
-
-function createScreenshotCanvas(area) {
-  return new Promise(resolve => {
-    const clone = area.cloneNode(true);
-
-    const padding = document.createElement("div");
-    padding.style.height = "30px";
-    clone.appendChild(padding);
-
-    clone.style.backgroundColor = "#eef8ff";
-    document.body.appendChild(clone);
-
-    html2canvas(clone).then(canvas => {
-      document.body.removeChild(clone);
-      resolve(canvas);
-    });
-  });
-}
-
-function downloadCanvasAsImage(canvas) {
-  const a = document.createElement("a");
-  const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
-  a.href = canvas.toDataURL();
-  a.download = `kinshu_${timestamp}.png`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a); // 複製防止
-}
-
-    document.querySelectorAll('.yen').forEach(elm => {
-  elm.type = 'text';
-  elm.inputMode = 'numeric';
-  elm.pattern = '[0-9]*';
-  elm.value = '0';
-  elm.onchange = calc;
-  elm.onfocus = () => elm.select();
-  // Enterキー判定削除
-});
-function initNisen() {
-  const el = document.getElementById("yen2000");
-  const cell = document.getElementById("nisenCell");
-  el.disabled = !useNisen;
-  cell.classList.toggle("disabled", !useNisen);
-  if (!useNisen) el.value = 0;
-  document.getElementById("toggleBtn").textContent = useNisen ? "二千円札を使用する" : "二千円札を使用しない";
-}
-
-    setInterval(updateNow, 1000);
-    updateNow();
-    initNisen();
-    calc();
-  </script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
