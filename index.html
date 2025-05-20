@@ -2,24 +2,67 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>金種計算</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div id="shotArea">
         <div class="header" id="total">0</div>
         <div class="info" id="now">
-            <span id="dateTime"></span>
-            <button id="currencyBtn" onclick="confirmCurrencySwitch()">通貨: JPY</button>
+            <span id="datetime"></span>
+            <button id="modeBtn" class="btn-toggle">通貨切替: JPY</button>
         </div>
         <div class="count" id="count">紙幣: 0枚 ｜ 硬貨: 0枚 ｜ 合計: 0枚</div>
         <div class="buttons">
-            <button id="clearBtn" onclick="clearAll()">クリア</button>
-            <button id="toggleBtn" onclick="toggleNisen()">二千円札を使用する</button>
-            <button id="shotBtn" onclick="screenshot()">ダウンロード</button>
+            <button id="clearBtn" class="btn-clear">クリア</button>
+            <button id="shotBtn" class="btn-shot">ダウンロード</button>
         </div>
-        <div class="grid" id="moneyGrid"></div>
+
+        <!-- JPY用 -->
+        <div id="JPYgrid" class="grid">
+            <div class="row">
+                <div class="cell">一万円札<br><input id="yen10000" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">五千円札<br><input id="yen5000" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+            <div class="row">
+                <div class="cell">二千円札<br><input id="yen2000" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">千円札<br><input id="yen1000" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+            <div class="row">
+                <div class="cell">五百円玉<br><input id="yen500" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">百円玉<br><input id="yen100" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">五十円玉<br><input id="yen50" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+            <div class="row">
+                <div class="cell">十円玉<br><input id="yen10" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">五円玉<br><input id="yen5" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">一円玉<br><input id="yen1" class="yen" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+        </div>
+
+        <!-- CNY用 -->
+        <div id="CNYgrid" class="grid" style="display:none;">
+            <!-- 紙幣 2列3行 -->
+            <div class="row">
+                <div class="cell">100元<br><input id="cny100" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">50元<br><input id="cny50" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+            <div class="row">
+                <div class="cell">20元<br><input id="cny20" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">10元<br><input id="cny10" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+            <div class="row">
+                <div class="cell">5元<br><input id="cny5" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">1元<br><input id="cny1" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+            <!-- 硬貨 3列1行 -->
+            <div class="row">
+                <div class="cell">1元硬貨<br><input id="coin1" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">5角硬貨<br><input id="coin05" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+                <div class="cell">1角硬貨<br><input id="coin01" class="cny" type="text" inputmode="numeric" pattern="[0-9]*" value="0"></div>
+            </div>
+        </div>
     </div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>

@@ -1,138 +1,90 @@
-const moneyData = {
-    JPY: {
-        yen: '‰~',
-        sen: '‘K',
-        list: [10000, 5000, 2000, 1000, 500, 100, 50, 10, 5, 1],
-        skip: 2000
-    },
-    CNY: {
-        yen: 'Œ³',
-        sen: 'Šp',
-        list: [100, 50, 20, 10, 5, 2, 1],
-        skip: 0
-    }
+ï»¿// ãƒ¢ãƒ¼ãƒ‰ç®¡ç†
+let mode = "JPY"; // "JPY" or "CNY"
+
+// JPYãƒ‡ãƒ¼ã‚¿
+const jpyRate = {
+    yen10000: 10000,
+    yen5000: 5000,
+    yen2000: 2000,
+    yen1000: 1000,
+    yen500: 500,
+    yen100: 100,
+    yen50: 50,
+    yen10: 10,
+    yen5: 5,
+    yen1: 1
 };
+const jpyBills = ["yen10000", "yen5000", "yen2000", "yen1000"];
+const jpyCoins = ["yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
 
-let current = "JPY";
-let useNisen = false;
-
-// ‰Šú‰»
-window.onload = () => {
-    setInterval(updateTime, 1000);
-    buildGrid();
-    updateTotal();
+// CNYãƒ‡ãƒ¼ã‚¿
+const cnyRate = {
+    cny100: 100,
+    cny50: 50,
+    cny20: 20,
+    cny10: 10,
+    cny5: 5,
+    cny1: 1,
+    coin1: 1,
+    coin05: 0.5,
+    coin01: 0.1
 };
+const cnyBills = ["cny100", "cny50", "cny20", "cny10", "cny5", "cny1"];
+const cnyCoins = ["coin1", "coin05", "coin01"];
 
-// •\¦
-function updateTime() {
-    const now = new Date();
-    const str = `${now.getFullYear()}”N${now.getMonth() + 1}Œ${now.getDate()}“ú ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    document.getElementById("dateTime").textContent = str;
-}
-
-// ƒOƒŠƒbƒh¶¬
-function buildGrid() {
-    const grid = document.getElementById("moneyGrid");
-    grid.innerHTML = "";
-
-    const list = moneyData[current].list;
-    const isJPY = current === "JPY";
-
-    const billRow = createRow(list.filter(v => v >= (isJPY ? 1000 : 10)));
-    const coinRow = createRow(list.filter(v => v < (isJPY ? 1000 : 10)));
-
-    grid.appendChild(billRow);
-    grid.appendChild(coinRow);
-}
-
-function createRow(values) {
-    const row = document.createElement("div");
-    row.className = "row";
-
-    for (const v of values) {
-        if (!useNisen && v === 2000) continue;
-
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.innerHTML = `
-      <div>${formatMoney(v)}</div>
-      <input type="text" inputmode="numeric" pattern="[0-9]*" oninput="onInput()" />
-    `;
-        row.appendChild(cell);
-    }
-
-    return row;
-}
-
-// •\¦Œ`®
-function formatMoney(v) {
-    const { yen, sen } = moneyData[current];
-    return current === "JPY"
-        ? `${v.toLocaleString()}${yen}`
-        : v >= 10
-            ? `${v / 10}${yen}`
-            : `${v}${sen}`;
-}
-
-// “ü—Íˆ—
-function onInput() {
-    updateTotal();
-}
-
-// ‡ŒvXV
-function updateTotal() {
-    let total = 0, count = 0, bills = 0, coins = 0;
-    const cells = document.querySelectorAll(".cell");
-
-    cells.forEach(cell => {
-        const value = parseInt(cell.querySelector("input").value) || 0;
-        const label = cell.querySelector("div").textContent;
-        const num = parseFloat(label.replace(/[^\d.]/g, "")) * (current === "JPY" ? 1 : 10);
-
-        total += num * value;
-        count += value;
-        (num >= (current === "JPY" ? 1000 : 10)) ? (bills += value) : (coins += value);
-    });
-
-    document.getElementById("total").textContent = `${(current === "JPY" ? total.toLocaleString() : (total / 10).toFixed(1))}${moneyData[current].yen}`;
-    document.getElementById("count").textContent = `†•¼: ${bills}–‡ b d‰İ: ${coins}–‡ b ‡Œv: ${count}–‡`;
-}
-
-// “ñç‰~Ø‘Ö
-function toggleNisen() {
-    useNisen = !useNisen;
-    document.getElementById("toggleBtn").textContent = useNisen ? "“ñç‰~D‚ğg—p‚µ‚È‚¢" : "“ñç‰~D‚ğg—p‚·‚é";
-    buildGrid();
-    updateTotal();
-}
-
-// ’Ê‰İØ‘ÖŠm”F
-function confirmCurrencySwitch() {
-    const next = current === "JPY" ? "CNY" : "JPY";
-    if (!confirm(`’Ê‰İ‚ğ ${next} ‚ÉØ‚è‘Ö‚¦‚Ü‚·‚©H\nŒ»İ‚Ì“ü—Í‚ÍƒNƒŠƒA‚³‚ê‚Ü‚·B`)) return;
-    current = next;
-    useNisen = false;
-    document.getElementById("currencyBtn").textContent = `’Ê‰İ: ${current}`;
-    buildGrid();
-    updateTotal();
-}
-
-// “ü—ÍƒNƒŠƒA
-function clearAll() {
-    if (!confirm("‚·‚×‚Ä‚Ì“ü—Í‚ğƒNƒŠƒA‚µ‚Ü‚·‚©H")) return;
-    document.querySelectorAll(".cell input").forEach(i => i.value = "");
-    updateTotal();
-}
-
-// ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg
-function screenshot() {
-    const area = document.getElementById("shotArea");
-    html2canvas(area).then(canvas => {
+// åˆæœŸåŒ–
+document.querySelectorAll("input").forEach(el => {
+    el.addEventListener("input", calc);
+});
+document.getElementById("clearBtn").onclick = () => {
+    document.querySelectorAll("input").forEach(el => el.value = "0");
+    calc();
+};
+document.getElementById("modeBtn").onclick = () => {
+    mode = mode === "JPY" ? "CNY" : "JPY";
+    document.getElementById("JPYgrid").style.display = mode === "JPY" ? "block" : "none";
+    document.getElementById("CNYgrid").style.display = mode === "CNY" ? "block" : "none";
+    document.getElementById("modeBtn").textContent = `é€šè²¨åˆ‡æ›¿: ${mode}`;
+    calc();
+};
+document.getElementById("shotBtn").onclick = () => {
+    html2canvas(document.getElementById("shotArea")).then(canvas => {
         const link = document.createElement("a");
         link.href = canvas.toDataURL();
-        const now = new Date();
-        const name = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
-        link.download = `kinsyu_${name}.png`;
+        link.download = `screenshot_${mode}_${new Date().toISOString().replace(/[:.]/g, "-")}.png`;
         link.click();
     });
+};
+
+// æ—¥æ™‚è¡¨ç¤º
+setInterval(() => {
+    const now = new Date();
+    document.getElementById("datetime").textContent = now.toLocaleString();
+}, 1000);
+
+// è¨ˆç®—é–¢æ•°
+function calc() {
+    let total = 0, bills = 0, coins = 0;
+    let rate, billsList, coinsList;
+    if (mode === "JPY") {
+        rate = jpyRate;
+        billsList = jpyBills;
+        coinsList = jpyCoins;
+    } else {
+        rate = cnyRate;
+        billsList = cnyBills;
+        coinsList = cnyCoins;
+    }
+
+    for (const id in rate) {
+        const el = document.getElementById(id);
+        if (!el || el.disabled) continue;
+        const count = parseFloat(el.value) || 0;
+        total += rate[id] * count;
+        if (billsList.includes(id)) bills += count;
+        if (coinsList.includes(id)) coins += count;
+    }
+
+    document.getElementById("total").textContent = total.toLocaleString();
+    document.getElementById("count").textContent = `ç´™å¹£: ${bills}æš ï½œ ç¡¬è²¨: ${coins}æš ï½œ åˆè¨ˆ: ${(bills + coins)}æš`;
 }

@@ -16,13 +16,10 @@
 
 .info, .count {
     margin: 5px 0;
-}
-
-.info {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .buttons {
@@ -38,20 +35,18 @@ button {
     cursor: pointer;
 }
 
-#clearBtn {
+.btn-clear {
     background: #ffcdd2;
 }
 
-#toggleBtn {
-    background: #bbdefb;
-}
-
-#shotBtn {
+.btn-shot {
     background: #c8e6c9;
 }
 
-#currencyBtn {
-    background: #ffe082;
+.btn-toggle {
+    background: #bbdefb;
+    font-weight: bold;
+    white-space: nowrap;
 }
 
 .grid {
@@ -75,11 +70,6 @@ button {
     min-width: 100px;
 }
 
-    .cell.disabled {
-        background: #f0f0f0;
-        opacity: 0.6;
-    }
-
 input[type="text"] {
     width: 60px;
     font-size: 16px;
@@ -90,6 +80,11 @@ input[type="text"] {
     background: transparent;
     outline: none;
     height: 20px;
+}
+
+.cell.disabled {
+    background: #f0f0f0;
+    opacity: 0.6;
 }
 
 @media (max-width: 600px) {
