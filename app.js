@@ -101,12 +101,57 @@
         if (input) input.value = "";
     };
 
+    // フォーカス時に全選択
     document.querySelectorAll('input.yen').forEach(input => {
         input.addEventListener('focus', e => e.target.select());
     });
 
     document.querySelectorAll('input.cny').forEach(input => {
         input.addEventListener('focus', e => e.target.select());
+    });
+
+    // ▼▼▼ 追加：テンキー制御 ▼▼▼
+    const keypad = document.createElement('div');
+    keypad.id = 'customKeypad';
+    keypad.innerHTML = `
+        <div class="keypad-row"><button onclick="insertCalc('7')">7</button><button onclick="insertCalc('8')">8</button><button onclick="insertCalc('9')">9</button></div>
+        <div class="keypad-row"><button onclick="insertCalc('4')">4</button><button onclick="insertCalc('5')">5</button><button onclick="insertCalc('6')">6</button></div>
+        <div class="keypad-row"><button onclick="insertCalc('1')">1</button><button onclick="insertCalc('2')">2</button><button onclick="insertCalc('3')">3</button></div>
+        <div class="keypad-row"><button onclick="insertCalc('0')">0</button><button onclick="insertCalc('00')">00</button><button onclick="clearCalc()">C</button></div>
+    `;
+    keypad.style.display = 'none';
+    keypad.className = 'keypad-container';
+    document.body.appendChild(keypad);
+
+    let currentInput = null;
+
+    function showKeypad(input) {
+        currentInput = input;
+        const rect = input.getBoundingClientRect();
+        keypad.style.top = `${rect.bottom + window.scrollY + 5}px`;
+        keypad.style.left = `${rect.left + window.scrollX}px`;
+        keypad.style.display = 'block';
+    }
+
+    function hideKeypad() {
+        keypad.style.display = 'none';
+        currentInput = null;
+    }
+
+    document.addEventListener('focusin', (e) => {
+        if (e.target.matches('input.yen, input.cny')) {
+            showKeypad(e.target);
+        } else if (e.target.id === 'calcInput') {
+            hideKeypad(); // 記号付きテンキーが別に存在するならここは分岐
+        } else {
+            hideKeypad();
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!keypad.contains(e.target) && !e.target.matches('input.yen, input.cny')) {
+            hideKeypad();
+        }
     });
 
     // 初回計算

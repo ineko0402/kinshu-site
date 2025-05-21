@@ -142,3 +142,27 @@ input[type="text"] {
     .calc-buttons button:nth-child(6) {
         background-color: #388e3c; /* グリーン */
     }
+
+/* ▼ テンキー ▼ */
+.keypad-container {
+    position: absolute;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 5px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.keypad-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+    .keypad-row button {
+        width: 50px;
+        height: 40px;
+        font-size: 16px;
+        margin: 1px;
+    }
+
