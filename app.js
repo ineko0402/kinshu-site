@@ -77,13 +77,31 @@
         document.getElementById("total").textContent = total.toLocaleString();
         document.getElementById("count").textContent = `紙幣: ${bills}枚 ｜ 硬貨: ${coins}枚 ｜ 合計: ${bills + coins}枚`;
     }
-     // テキストエリアをフォーカスしたときに全選択状態にする
-        document.querySelectorAll("textarea, input[type='text']").forEach(el => {
-            el.addEventListener("focus", e => e.target.select());
-            el.addEventListener("mouseup", e => {
-                e.preventDefault(); // クリックで選択解除されるのを防ぐ
-            });
-        });
+
+    window.runCalc = function () {
+        const input = document.getElementById("calcInput");
+        if (!input) return;
+
+        try {
+            const result = Function(`'use strict'; return (${input.value})`)();
+            input.value = result.toString(); // ← 結果をそのまま input に表示
+        } catch (e) {
+            alert("式が無効です");
+        }
+    };
+
+    window.insertCalc = function (char) {
+        const input = document.getElementById("calcInput");
+        input.value += char;
+        input.focus();
+    };
+
+    window.clearCalc = function () {
+        const input = document.getElementById("calcInput");
+        if (input) input.value = "";
+    };
+
+
     // 初回計算
     calc();
 });

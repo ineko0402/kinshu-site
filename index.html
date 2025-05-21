@@ -64,7 +64,25 @@
             </div>
         </div>
     </div>
+    <!-- ▼ 電卓エリア ▼ -->
+    <div class="calc-area">
+        <hr />
+        <h3>電卓</h3>
+        <input type="text" id="calcInput" inputmode="numeric" placeholder="例: 1000*3+500*2"
+               onkeydown="if(event.key==='Enter'){runCalc();}" />
+        <div class="calc-buttons">
+            <button onclick="insertCalc('+')">+</button>
+            <button onclick="insertCalc('-')">−</button>
+            <button onclick="insertCalc('*')">×</button>
+            <button onclick="insertCalc('/')">÷</button>
 
+            <button onclick="clearCalc()">C</button>
+            <button onclick="runCalc()">計算</button>
+        </div>
+    </div>
+
+
+    <!-- ライブラリ読み込み -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="app.js"></script>
 </body>
