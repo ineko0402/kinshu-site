@@ -101,6 +101,13 @@
         if (input) input.value = "";
     };
 
+    document.querySelectorAll('input.yen').forEach(input => {
+        input.addEventListener('focus', e => e.target.select());
+    });
+
+    document.querySelectorAll('input.cny').forEach(input => {
+        input.addEventListener('focus', e => e.target.select());
+    });
 
     // 初回計算
     calc();
