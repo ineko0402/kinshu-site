@@ -91,15 +91,21 @@
     };
 
     window.insertCalc = function (char) {
-        const input = document.getElementById("calcInput");
-        input.value += char;
-        input.focus();
+        if (currentInput && currentInput.tagName === "INPUT") {
+            currentInput.value += char;
+            currentInput.focus();
+            currentInput.dispatchEvent(new Event('input')); // 計算を反映
+        }
     };
 
     window.clearCalc = function () {
-        const input = document.getElementById("calcInput");
-        if (input) input.value = "";
+        if (currentInput && currentInput.tagName === "INPUT") {
+            currentInput.value = "";
+            currentInput.focus();
+            currentInput.dispatchEvent(new Event('input'));
+        }
     };
+
 
     // フォーカス時に全選択
     document.querySelectorAll('input.yen').forEach(input => {
@@ -124,6 +130,38 @@
     document.body.appendChild(keypad);
 
     let currentInput = null;
+
+    // フォーカス時に入力欄を記憶
+    document.querySelectorAll('input.yen, input.cny, #calcInput').forEach(input => {
+        input.addEventListener('focusin', e => {
+            currentInput = e.target;
+            e.target.select();
+        });
+    });
+
+    // ボタンクリック前に入力欄を保持し続ける
+    document.addEventListener('mousedown', e => {
+        const active = document.activeElement;
+        if (active && active.tagName === "INPUT") {
+            currentInput = active;
+        }
+    });
+
+    window.insertCalc = function (char) {
+        if (currentInput && currentInput.tagName === "INPUT") {
+            currentInput.value += char;
+            currentInput.focus();
+            currentInput.dispatchEvent(new Event('input')); // 自動反映
+        }
+    };
+
+    window.clearCalc = function () {
+        if (currentInput && currentInput.tagName === "INPUT") {
+            currentInput.value = "";
+            currentInput.focus();
+            currentInput.dispatchEvent(new Event('input'));
+        }
+    };
 
     function showKeypad(input) {
         currentInput = input;
