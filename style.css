@@ -157,6 +157,11 @@ input[readonly] {
     }
 
     #virtualKeyboardContainer {
-        max-width: 95%;
-    }
+    position: absolute;
+    z-index: 9999;
+    max-width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    background: #fff;
+}
+
 }
