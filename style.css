@@ -124,15 +124,6 @@ input[type="text"] {
     border-radius: 4px;
     color: white;
 }
-
-    /* 演算子ボタン */
-    .calc-buttons button:nth-child(1),
-    .calc-buttons button:nth-child(2),
-    .calc-buttons button:nth-child(3),
-    .calc-buttons button:nth-child(4) {
-        background-color: #f57c00; /* オレンジ */
-    }
-
     /* クリアボタン */
     .calc-buttons button:nth-child(5) {
         background-color: #757575; /* グレー */
@@ -143,26 +134,39 @@ input[type="text"] {
         background-color: #388e3c; /* グリーン */
     }
 
-/* ▼ テンキー ▼ */
-.keypad-container {
-    position: absolute;
-    background: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 5px;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+body {
+    font-family: sans-serif;
+    margin: 10px;
 }
 
-.keypad-row {
+.grid {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 2px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-    .keypad-row button {
-        width: 50px;
-        height: 40px;
-        font-size: 16px;
-        margin: 1px;
-    }
+.cell {
+    width: 120px;
+}
 
+input {
+    width: 100%;
+    font-size: 18px;
+    text-align: right;
+}
+
+#calcInput {
+    width: 80%;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+#virtualKeyboardContainer {
+    max-width: 300px;
+    margin-top: 10px;
+}
+
+.hg-button {
+    font-size: 18px;
+}

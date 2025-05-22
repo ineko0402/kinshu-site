@@ -1,8 +1,8 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-    // モード管理
-    let mode = "JPY"; // "JPY" or "CNY"
+    let mode = "JPY";
+    let currentInput = null;
+    let virtualKeyboardEnabled = true;
 
-    // JPYデータ
     const jpyRate = {
         yen10000: 10000, yen5000: 5000, yen2000: 2000, yen1000: 1000,
         yen500: 500, yen100: 100, yen50: 50, yen10: 10, yen5: 5, yen1: 1
@@ -10,7 +10,6 @@
     const jpyBills = ["yen10000", "yen5000", "yen2000", "yen1000"];
     const jpyCoins = ["yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
 
-    // CNYデータ
     const cnyRate = {
         cny100: 100, cny50: 50, cny20: 20, cny10: 10, cny5: 5, cny1: 1,
         coin1: 1, coin05: 0.5, coin01: 0.1
@@ -18,13 +17,51 @@
     const cnyBills = ["cny100", "cny50", "cny20", "cny10", "cny5", "cny1"];
     const cnyCoins = ["coin1", "coin05", "coin01"];
 
-    // 初期化
-    document.querySelectorAll("input").forEach(el => {
-        el.addEventListener("input", calc);
+    const keyboard = new SimpleKeyboard.default({
+        onKeyPress: button => handleInput(button),
+        layout: {
+            default: [
+                "7 8 9 ÷",
+                "4 5 6 ×",
+                "1 2 3 -",
+                "0 00 {bksp} +",
+                "{left} {right} C 決定"
+            ]
+        },
+        display: {
+            "{bksp}": "BS",
+            "{left}": "←",
+            "{right}": "→"
+        },
+        theme: "hg-theme-default hg-layout-default",
+        container: "#virtualKeyboardContainer"
     });
 
+    const inputs = document.querySelectorAll('input.yen, input.cny, #calcInput');
+    inputs.forEach(el => {
+        el.readOnly = virtualKeyboardEnabled;
+
+        el.addEventListener('focus', e => {
+            if (!virtualKeyboardEnabled) return;
+            currentInput = e.target;
+            keyboard.setInput(currentInput.value);
+        });
+
+        el.addEventListener('input', () => calc());
+    });
+
+    document.getElementById("vkToggleBtn").onclick = () => {
+        virtualKeyboardEnabled = !virtualKeyboardEnabled;
+        inputs.forEach(el => el.readOnly = virtualKeyboardEnabled);
+
+        document.getElementById("vkToggleBtn").textContent =
+            `仮想キーボード: ${virtualKeyboardEnabled ? "ON" : "OFF"}`;
+
+        if (!virtualKeyboardEnabled) document.activeElement.blur();
+    };
+
     document.getElementById("clearBtn").onclick = () => {
-        document.querySelectorAll("input").forEach(el => el.value = "0");
+        inputs.forEach(el => el.value = "0");
         calc();
     };
 
@@ -45,25 +82,16 @@
         });
     };
 
-    // 日時表示
     setInterval(() => {
         const now = new Date();
         document.getElementById("datetime").textContent = now.toLocaleString();
     }, 1000);
 
-    // 計算関数
     function calc() {
         let total = 0, bills = 0, coins = 0;
-        let rate, billsList, coinsList;
-        if (mode === "JPY") {
-            rate = jpyRate;
-            billsList = jpyBills;
-            coinsList = jpyCoins;
-        } else {
-            rate = cnyRate;
-            billsList = cnyBills;
-            coinsList = cnyCoins;
-        }
+        const rate = mode === "JPY" ? jpyRate : cnyRate;
+        const billsList = mode === "JPY" ? jpyBills : cnyBills;
+        const coinsList = mode === "JPY" ? jpyCoins : cnyCoins;
 
         for (const id in rate) {
             const el = document.getElementById(id);
@@ -78,120 +106,67 @@
         document.getElementById("count").textContent = `紙幣: ${bills}枚 ｜ 硬貨: ${coins}枚 ｜ 合計: ${bills + coins}枚`;
     }
 
-    window.runCalc = function () {
+    window.runCalc = () => {
         const input = document.getElementById("calcInput");
-        if (!input) return;
-
         try {
             const result = Function(`'use strict'; return (${input.value})`)();
-            input.value = result.toString(); // ← 結果をそのまま input に表示
-        } catch (e) {
+            input.value = result.toString();
+        } catch {
             alert("式が無効です");
         }
     };
 
-    window.insertCalc = function (char) {
-        if (currentInput && currentInput.tagName === "INPUT") {
-            currentInput.value += char;
-            currentInput.focus();
-            currentInput.dispatchEvent(new Event('input')); // 計算を反映
-        }
+    window.clearCalc = () => {
+        const input = document.getElementById("calcInput");
+        input.value = "";
     };
 
-    window.clearCalc = function () {
-        if (currentInput && currentInput.tagName === "INPUT") {
+    function handleInput(key) {
+        if (!currentInput) return;
+
+        const start = currentInput.selectionStart;
+        const end = currentInput.selectionEnd;
+        let val = currentInput.value;
+
+        if (key === "決定") {
+            currentInput.blur();
+            return;
+        }
+
+        if (key === "C") {
             currentInput.value = "";
-            currentInput.focus();
-            currentInput.dispatchEvent(new Event('input'));
+            return;
         }
-    };
 
-
-    // フォーカス時に全選択
-    document.querySelectorAll('input.yen').forEach(input => {
-        input.addEventListener('focus', e => e.target.select());
-    });
-
-    document.querySelectorAll('input.cny').forEach(input => {
-        input.addEventListener('focus', e => e.target.select());
-    });
-
-    // ▼▼▼ 追加：テンキー制御 ▼▼▼
-    const keypad = document.createElement('div');
-    keypad.id = 'customKeypad';
-    keypad.innerHTML = `
-        <div class="keypad-row"><button onclick="insertCalc('7')">7</button><button onclick="insertCalc('8')">8</button><button onclick="insertCalc('9')">9</button></div>
-        <div class="keypad-row"><button onclick="insertCalc('4')">4</button><button onclick="insertCalc('5')">5</button><button onclick="insertCalc('6')">6</button></div>
-        <div class="keypad-row"><button onclick="insertCalc('1')">1</button><button onclick="insertCalc('2')">2</button><button onclick="insertCalc('3')">3</button></div>
-        <div class="keypad-row"><button onclick="insertCalc('0')">0</button><button onclick="insertCalc('00')">00</button><button onclick="clearCalc()">C</button></div>
-    `;
-    keypad.style.display = 'none';
-    keypad.className = 'keypad-container';
-    document.body.appendChild(keypad);
-
-    let currentInput = null;
-
-    // フォーカス時に入力欄を記憶
-    document.querySelectorAll('input.yen, input.cny, #calcInput').forEach(input => {
-        input.addEventListener('focusin', e => {
-            currentInput = e.target;
-            e.target.select();
-        });
-    });
-
-    // ボタンクリック前に入力欄を保持し続ける
-    document.addEventListener('mousedown', e => {
-        const active = document.activeElement;
-        if (active && active.tagName === "INPUT") {
-            currentInput = active;
+        if (key === "BS" || key === "{bksp}") {
+            if (start > 0) {
+                currentInput.value = val.slice(0, start - 1) + val.slice(end);
+                currentInput.setSelectionRange(start - 1, start - 1);
+            }
+            return;
         }
-    });
 
-    window.insertCalc = function (char) {
-        if (currentInput && currentInput.tagName === "INPUT") {
-            currentInput.value += char;
-            currentInput.focus();
-            currentInput.dispatchEvent(new Event('input')); // 自動反映
+        if (key === "←" || key === "{left}") {
+            currentInput.setSelectionRange(Math.max(0, start - 1), Math.max(0, start - 1));
+            return;
         }
-    };
 
-    window.clearCalc = function () {
-        if (currentInput && currentInput.tagName === "INPUT") {
-            currentInput.value = "";
-            currentInput.focus();
-            currentInput.dispatchEvent(new Event('input'));
+        if (key === "→" || key === "{right}") {
+            currentInput.setSelectionRange(Math.min(val.length, start + 1), Math.min(val.length, start + 1));
+            return;
         }
-    };
 
-    function showKeypad(input) {
-        currentInput = input;
-        const rect = input.getBoundingClientRect();
-        keypad.style.top = `${rect.bottom + window.scrollY + 5}px`;
-        keypad.style.left = `${rect.left + window.scrollX}px`;
-        keypad.style.display = 'block';
+        const ops = ["+", "-", "*", "/", "÷", "×"];
+        if (ops.includes(key) && currentInput.id !== "calcInput") return;
+
+        let insert = key;
+        if (insert === "×") insert = "*";
+        if (insert === "÷") insert = "/";
+
+        currentInput.value = val.slice(0, start) + insert + val.slice(end);
+        const newPos = start + insert.length;
+        currentInput.setSelectionRange(newPos, newPos);
     }
 
-    function hideKeypad() {
-        keypad.style.display = 'none';
-        currentInput = null;
-    }
-
-    document.addEventListener('focusin', (e) => {
-        if (e.target.matches('input.yen, input.cny')) {
-            showKeypad(e.target);
-        } else if (e.target.id === 'calcInput') {
-            hideKeypad(); // 記号付きテンキーが別に存在するならここは分岐
-        } else {
-            hideKeypad();
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!keypad.contains(e.target) && !e.target.matches('input.yen, input.cny')) {
-            hideKeypad();
-        }
-    });
-
-    // 初回計算
     calc();
 });
