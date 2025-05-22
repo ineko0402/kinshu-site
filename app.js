@@ -43,12 +43,31 @@
 
         el.addEventListener('focus', e => {
             if (!virtualKeyboardEnabled) return;
+        
             currentInput = e.target;
             keyboard.setInput(currentInput.value);
+        
+            // 入力欄の下に仮想キーボードを表示する位置を調整
+            const rect = currentInput.getBoundingClientRect();
+            const keyboardEl = document.getElementById("virtualKeyboardContainer");
+        
+            keyboardEl.style.display = "block";
+            keyboardEl.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            keyboardEl.style.left = `${rect.left + window.scrollX}px`;
         });
 
         el.addEventListener('input', () => calc());
     });
+     
+    document.addEventListener('click', e => {
+    if (!virtualKeyboardEnabled) return;
+
+    const keyboardEl = document.getElementById("virtualKeyboardContainer");
+    if (!keyboardEl.contains(e.target) && !e.target.classList.contains('yen') && !e.target.classList.contains('cny') && e.target.id !== 'calcInput') {
+        keyboardEl.style.display = "none";
+        currentInput = null;
+    }
+});
 
     document.getElementById("vkToggleBtn").onclick = () => {
         virtualKeyboardEnabled = !virtualKeyboardEnabled;
