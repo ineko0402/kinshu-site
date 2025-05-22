@@ -61,7 +61,7 @@
     };
 
     document.getElementById("clearBtn").onclick = () => {
-        inputs.forEach(el => el.value = "0");
+        inputs.forEach(el => el.value = "");
         calc();
     };
 
