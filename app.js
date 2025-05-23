@@ -148,12 +148,18 @@
         let val = currentInput.value;
 
         if (key === "決定") {
-            currentInput.blur();
+            currentInput.blur(); // 入力欄のフォーカス解除
+
+            const keyboardEl = document.getElementById("virtualKeyboardContainer");
+            keyboardEl.style.display = "none"; // 仮想キーボードを非表示にする
+
             return;
         }
 
+
         if (key === "C") {
             currentInput.value = "";
+            calc(); // ← C の時も計算リセット
             return;
         }
 
@@ -162,6 +168,7 @@
                 currentInput.value = val.slice(0, start - 1) + val.slice(end);
                 currentInput.setSelectionRange(start - 1, start - 1);
             }
+            calc(); // ← BSも再計算
             return;
         }
 
@@ -185,6 +192,9 @@
         currentInput.value = val.slice(0, start) + insert + val.slice(end);
         const newPos = start + insert.length;
         currentInput.setSelectionRange(newPos, newPos);
+
+        // ✅ 最後に計算
+        calc();
     }
 
     calc();
