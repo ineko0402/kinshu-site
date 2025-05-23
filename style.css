@@ -50,7 +50,7 @@ button {
     white-space: nowrap;
 }
 
-/* 金種グリッド */
+/* グリッド */
 .grid {
     display: flex;
     flex-direction: column;
@@ -68,25 +68,27 @@ button {
 
 .cell {
     background: #e3f2fd;
-    padding: 8px;
+    padding: 6px 4px;
     border-radius: 6px;
-    min-width: 90px;
-    flex: 1 1 90px;
+    min-width: 80px;
+    flex: 1 1 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="tel"] {
-    width: 60px;
-    font-size: 16px;
-    padding: 0px 2px;
-    text-align: center;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    background: transparent;
-    outline: none;
-    height: 20px;
-}
+    .cell input {
+        width: 60px;
+        font-size: 16px;
+        text-align: center;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        background: transparent;
+        outline: none;
+        height: 22px;
+        margin-top: 4px;
+    }
 
 input[readonly] {
     caret-color: transparent;
@@ -139,7 +141,7 @@ input[readonly] {
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    max-width: 400px;
+    max-width: 360px;
     background: #ffffff;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
     z-index: 9999;
@@ -147,7 +149,6 @@ input[readonly] {
     box-sizing: border-box;
 }
 
-/* 仮想キーのフォント調整 */
 .hg-button {
     font-size: 18px;
 }
@@ -155,15 +156,14 @@ input[readonly] {
 /* モバイル対応 */
 @media (max-width: 600px) {
     .cell {
-        min-width: 80px;
-        flex: 1 1 80px;
+        min-width: 70px;
+        flex: 1 1 70px;
     }
 
-    input[type="text"],
-    input[type="number"],
-    input[type="tel"] {
-        width: 50px;
-    }
+        .cell input {
+            width: 50px;
+            font-size: 15px;
+        }
 
     #calcInput {
         width: 95%;
@@ -171,6 +171,5 @@ input[readonly] {
 
     #virtualKeyboardContainer {
         max-width: 100%;
-        font-size: 16px;
     }
 }
