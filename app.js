@@ -25,7 +25,7 @@
                 "4 5 6 ×",
                 "1 2 3 -",
                 "0 00 {bksp} +",
-                "{left} {right} C 決定"
+                "{left} {right} C ✔"
             ]
         },
         display: {
@@ -43,18 +43,36 @@
 
         el.addEventListener('focus', e => {
             if (!virtualKeyboardEnabled) return;
-        
+
             currentInput = e.target;
             keyboard.setInput(currentInput.value);
-        
-            // 入力欄の下に仮想キーボードを表示する位置を調整
-            const rect = currentInput.getBoundingClientRect();
-            const keyboardEl = document.getElementById("virtualKeyboardContainer");
-        
-            keyboardEl.style.display = "block";
-            keyboardEl.style.top = `${rect.bottom + window.scrollY + 5}px`;
-            keyboardEl.style.left = `${rect.left + window.scrollX}px`;
+
+            const vk = document.getElementById("virtualKeyboardContainer");
+            vk.style.display = "block";
+
+            const rect = e.target.getBoundingClientRect();
+            const kbHeight = 220; // 想定キーボード高さ（ピクセル）
+            const margin = 8;
+
+            let top = rect.bottom + window.scrollY + margin;
+            let left = rect.left + window.scrollX;
+
+            // 画面下にはみ出す場合 → 上に出す
+            if ((top + kbHeight) > (window.scrollY + window.innerHeight)) {
+                top = rect.top + window.scrollY - kbHeight - margin;
+            }
+
+            // 画面右にはみ出す場合 → 左に寄せる
+            const kbWidth = 320; // 想定キーボード幅
+            if ((left + kbWidth) > (window.scrollX + window.innerWidth)) {
+                left = window.innerWidth - kbWidth - margin;
+            }
+
+            vk.style.position = "absolute";
+            vk.style.top = `${top}px`;
+            vk.style.left = `${left}px`;
         });
+
 
         el.addEventListener('input', () => calc());
     });
@@ -147,7 +165,7 @@
         const end = currentInput.selectionEnd;
         let val = currentInput.value;
 
-        if (key === "決定") {
+        if (key === "✔") {
             currentInput.blur(); // 入力欄のフォーカス解除
 
             const keyboardEl = document.getElementById("virtualKeyboardContainer");

@@ -5,6 +5,7 @@
     padding: 0;
     text-align: center;
     font-size: 16px;
+    overflow-x: visible;
 }
 
 .header {
@@ -50,12 +51,13 @@ button {
     white-space: nowrap;
 }
 
-/* グリッド */
+/* 金種グリッド */
 .grid {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-bottom: 40px;
+    overflow: visible;
 }
 
 .row {
@@ -99,7 +101,7 @@ input[readonly] {
     opacity: 0.6;
 }
 
-/* 電卓エリア */
+/* 電卓 */
 .calc-area {
     margin-top: 5px;
     padding: 5px;
@@ -136,42 +138,57 @@ input[readonly] {
 
 /* 仮想キーボード */
 #virtualKeyboardContainer {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    max-width: 300px;
+    position: absolute;
+    width: 148px; /* ← 4キー分（28+2*2）* 4 + α */
     background: #ffffff;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
     z-index: 9999;
     padding: 4px;
     display: none;
+    border-radius: 6px;
+    transition: top 0.1s ease, left 0.1s ease;
 }
 
+/* ボタンサイズを .btn-clear に近づけた仮想キー */
 .simple-keyboard {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 148px !important;
     font-size: 14px !important;
 }
 
 .hg-button {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    padding: 0 !important;
+    margin: 2px !important;
     font-size: 14px !important;
-    padding: 6px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
-
+    /* 決定ボタンなどを横長にする（任意） */
+    .hg-button[data-skbtn="決定"] {
+        width: 60px !important;
+    }
 
 /* モバイル対応 */
 @media (max-width: 600px) {
     .cell {
         min-width: 70px;
         flex: 1 1 70px;
+        font-size: 13px;
     }
 
         .cell input {
             width: 50px;
-            font-size: 15px;
+            font-size: 14px;
+            padding: 2px;
         }
 
     #calcInput {
@@ -179,6 +196,18 @@ input[readonly] {
     }
 
     #virtualKeyboardContainer {
-        max-width: 100%;
+        width: 95vw;
+        font-size: 13px;
     }
+
+    .hg-button {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 13px !important;
+        margin: 2px !important;
+    }
+
+        .hg-button[data-skbtn="決定"] {
+            width: 60px !important;
+        }
 }
