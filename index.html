@@ -6,13 +6,26 @@
     <title>金種計算</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css" />
+    <!--
+      使用ライブラリ:
+
+      1. simple-keyboard
+         https://github.com/hodgef/simple-keyboard
+         MIT License
+         Copyright (c) 2018-present Francisco Hodge
+
+      2. html2canvas
+         https://github.com/niklasvh/html2canvas
+         MIT License
+         Copyright (c) 2010 Niklas von Hertzen
+    -->
 </head>
 <body>
     <div id="shotArea">
         <div class="header" id="total">0</div>
         <div class="info" id="now">
             <span id="datetime"></span>
-            <button id="modeBtn" class="btn-toggle">通貨切替: JPY</button>
+            <button id="modeBtn" class="btn-toggle">通貨: JPY</button>
             <button id="vkToggleBtn" class="btn-toggle">⌨: ON</button>
         </div>
         <div class="count" id="count">紙幣: 0枚 ｜ 硬貨: 0枚 ｜ 合計: 0枚</div>

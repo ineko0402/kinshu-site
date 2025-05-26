@@ -24,8 +24,8 @@
                 "7 8 9 ÷",
                 "4 5 6 ×",
                 "1 2 3 -",
-                "0 00 {bksp} +",
-                "{left} {right} C ✔"
+                "0 00 C +",
+                "{left} {right} {bksp} ✔"
             ]
         },
         display: {
@@ -92,7 +92,7 @@
         inputs.forEach(el => el.readOnly = virtualKeyboardEnabled);
 
         document.getElementById("vkToggleBtn").textContent =
-            `仮想キーボード: ${virtualKeyboardEnabled ? "ON" : "OFF"}`;
+            `⌨: ${virtualKeyboardEnabled ? "ON" : "OFF"}`;
 
         if (!virtualKeyboardEnabled) document.activeElement.blur();
     };
@@ -106,7 +106,7 @@
         mode = mode === "JPY" ? "CNY" : "JPY";
         document.getElementById("JPYgrid").style.display = mode === "JPY" ? "block" : "none";
         document.getElementById("CNYgrid").style.display = mode === "CNY" ? "block" : "none";
-        document.getElementById("modeBtn").textContent = `通貨切替: ${mode}`;
+        document.getElementById("modeBtn").textContent = `通貨: ${mode}`;
         calc();
     };
 
