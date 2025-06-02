@@ -1,98 +1,49 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>金種計算</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css" />
-    <!--
-      使用ライブラリ:
-
-      1. simple-keyboard
-         https://github.com/hodgef/simple-keyboard
-         MIT License
-         Copyright (c) 2018-present Francisco Hodge
-
-      2. html2canvas
-         https://github.com/niklasvh/html2canvas
-         MIT License
-         Copyright (c) 2010 Niklas von Hertzen
-    -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>金種入力アプリ</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <div id="shotArea">
-        <div class="header" id="total">0</div>
-        <div class="info" id="now">
-            <span id="datetime"></span>
-            <button id="modeBtn" class="btn-toggle">通貨: JPY</button>
-            <button id="vkToggleBtn" class="btn-toggle">⌨: ON</button>
-        </div>
-        <div class="count" id="count">紙幣: 0枚 ｜ 硬貨: 0枚 ｜ 合計: 0枚</div>
-        <div class="buttons">
-            <button id="clearBtn" class="btn-clear">クリア</button>
-            <button id="shotBtn" class="btn-shot">ダウンロード</button>
-        </div>
+  <header>金種入力アプリ</header>
 
-        <!-- JPY用 -->
-        <div id="JPYgrid" class="grid">
-            <div class="row">
-                <div class="cell">一万円札<br><input id="yen10000" class="yen" value="" readonly></div>
-                <div class="cell">五千円札<br><input id="yen5000" class="yen" value="" readonly></div>
-            </div>
-            <div class="row">
-                <div class="cell">二千円札<br><input id="yen2000" class="yen" value="" readonly></div>
-                <div class="cell">千円札<br><input id="yen1000" class="yen" value="" readonly></div>
-            </div>
-            <div class="row">
-                <div class="cell">五百円玉<br><input id="yen500" class="yen" value="" readonly></div>
-                <div class="cell">百円玉<br><input id="yen100" class="yen" value="" readonly></div>
-                <div class="cell">五十円玉<br><input id="yen50" class="yen" value="" readonly></div>
-            </div>
-            <div class="row">
-                <div class="cell">十円玉<br><input id="yen10" class="yen" value="" readonly></div>
-                <div class="cell">五円玉<br><input id="yen5" class="yen" value="" readonly></div>
-                <div class="cell">一円玉<br><input id="yen1" class="yen" value="" readonly></div>
-            </div>
-        </div>
+  <div class="summary">
+    <span id="total">¥0</span>
+    紙幣：<span id="billCount">0</span>枚　
+    硬貨：<span id="coinCount">0</span>枚　
+    合計：<span id="totalCount">0</span>枚
+  </div>
 
-        <!-- CNY用 -->
-        <div id="CNYgrid" class="grid" style="display:none;">
-            <div class="row">
-                <div class="cell">100元<br><input id="cny100" class="cny" value="" readonly></div>
-                <div class="cell">50元<br><input id="cny50" class="cny" value="" readonly></div>
-            </div>
-            <div class="row">
-                <div class="cell">20元<br><input id="cny20" class="cny" value="" readonly></div>
-                <div class="cell">10元<br><input id="cny10" class="cny" value="" readonly></div>
-            </div>
-            <div class="row">
-                <div class="cell">5元<br><input id="cny5" class="cny" value="" readonly></div>
-                <div class="cell">1元<br><input id="cny1" class="cny" value="" readonly></div>
-            </div>
-            <div class="row">
-                <div class="cell">1元硬貨<br><input id="coin1" class="cny" value="" readonly></div>
-                <div class="cell">5角硬貨<br><input id="coin05" class="cny" value="" readonly></div>
-                <div class="cell">1角硬貨<br><input id="coin01" class="cny" value="" readonly></div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="bills"></div>
+    <div class="coins"></div>
+  </div>
+
+  <div class="actions">
+    <button onclick="resetAll()">全クリア</button>
+    <button onclick="downloadImage()">ダウンロード</button>
+    <button onclick="openSettings()">⚙️ 設定</button>
+  </div>
+
+  <!-- オーバーレイテンキー -->
+  <div id="overlay">
+    <div id="keypadPanel">
+      <div id="keypadLabel">金種名</div>
+      <input id="keypadInput" type="text" readonly value="0" />
+      <div class="keyrow"><button class="operator">+</button><button class="operator">-</button><button class="operator">×</button><button class="operator">÷</button></div>
+      <div class="keyrow"><button class="digit">7</button><button class="digit">8</button><button class="digit">9</button><button class="special">AC</button></div>
+      <div class="keyrow"><button class="digit">4</button><button class="digit">5</button><button class="digit">6</button><button class="special">⇐</button></div>
+      <div class="keyrow"><button class="digit">1</button><button class="digit">2</button><button class="digit">3</button><button class="operator">=</button></div>
+      <div class="keyrow"><button class="digit">0</button><button class="digit">00</button><button class="digit">.</button><button class="special">Enter</button></div>
     </div>
+  </div>
 
-    <!-- ▼ 電卓エリア ▼ -->
-    <div class="calc-area">
-        <hr />
-        <h3>電卓</h3>
-        <input type="text" id="calcInput" readonly placeholder="例: 1000*3+500*2" />
-        <div class="calc-buttons">
-            <button onclick="clearCalc()">C</button>
-            <button onclick="runCalc()">計算</button>
-        </div>
-    </div>
+  <!-- ダウンロード用HTML（非表示） -->
+  <div id="download-area"></div>
 
-    <div id="virtualKeyboardContainer" class="simple-keyboard"></div>
-
-    <script src="https://unpkg.com/simple-keyboard@3.7.89/build/index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

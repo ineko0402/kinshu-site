@@ -1,206 +1,256 @@
-﻿body {
-    font-family: sans-serif;
-    background: #eef8ff;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    font-size: 16px;
-    overflow-x: visible;
+:root {
+  --bg-color: #f0f0f0;
+  --text-color: #000;
+  --cell-bg: #e3f2fd;
+  --display-bg: #fff;
+  --button-bg: #cfd8dc;
+  --accent: #1976d2;
+}
+body.dark {
+  --bg-color: #121212;
+  --text-color: #fff;
+  --cell-bg: #37474f;
+  --display-bg: #263238;
+  --button-bg: #455a64;
+  --accent: #90caf9;
 }
 
-.header {
-    background: #dcedc8;
-    font-size: 28px;
-    font-weight: bold;
-    padding: 10px 0;
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
-.info, .count {
-    margin: 5px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
+header {
+  background: var(--button-bg);
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-.buttons {
-    margin: 10px 0;
+.summary {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0 20px 8px;
+  color: var(--accent);
 }
 
-button {
-    font-size: 14px;
-    padding: 6px 10px;
-    margin: 0 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.summary #total {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
-.btn-clear {
-    background: #ffcdd2;
+.summary span:not(#total) {
+  font-size: 16px;
+  margin: 0 4px;
 }
 
-.btn-shot {
-    background: #c8e6c9;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px;
 }
 
-.btn-toggle {
-    background: #bbdefb;
-    font-weight: bold;
-    white-space: nowrap;
+.bills, .coins {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 500px;
 }
 
-/* 金種グリッド */
-.grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 40px;
-    overflow: visible;
+.bills {
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.row {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 6px 0;
-    flex-wrap: wrap;
+.coins {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .cell {
-    background: #e3f2fd;
-    padding: 6px 4px;
-    border-radius: 6px;
-    min-width: 80px;
-    flex: 1 1 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 14px;
+  background: var(--cell-bg);
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
-    .cell input {
-        width: 60px;
-        font-size: 16px;
-        text-align: center;
-        border: none;
-        border-bottom: 1px solid #ccc;
-        background: transparent;
-        outline: none;
-        height: 22px;
-        margin-top: 4px;
-    }
-
-input[readonly] {
-    caret-color: transparent;
+.cell:active {
+  transform: scale(0.95);
 }
-
 .cell.disabled {
-    background: #f0f0f0;
-    opacity: 0.6;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
-/* 電卓 */
-.calc-area {
-    margin-top: 5px;
-    padding: 5px;
+.display {
+  margin-top: 6px;
+  padding: 8px;
+  background: var(--display-bg);
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
-    .calc-area h3 {
-        margin-bottom: 10px;
-        font-size: 16px;
-    }
-
-#calcInput {
-    font-size: 18px;
-    width: 80%;
-    padding: 6px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    text-align: right;
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 
-/* 電卓ボタン */
-.calc-buttons button {
-    padding: 6px 12px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    background-color: #388e3c;
+.actions button {
+  flex: 1;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  padding: 8px 0;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  background-color: #f0f0f0;
 }
 
-    .calc-buttons button:first-child {
-        background-color: #757575;
-    }
-
-/* 仮想キーボード */
-#virtualKeyboardContainer {
-    position: absolute;
-    width: 152px; /* 148px← 4キー分（28+2*2）* 4 + α */
-    background: #ffffff;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-    z-index: 9999;
-    padding: 4px;
-    display: none;
-    border-radius: 6px;
-    transition: top 0.1s ease, left 0.1s ease;
+button:hover {
+  background: #b0bec5;
+}
+button:active {
+  transform: scale(0.97);
 }
 
-/* ボタンサイズを .btn-clear に近づけた仮想キー */
-.simple-keyboard {
-    width: 100% !important;
-    max-width: 152px !important;
-    font-size: 14px !important;
+#overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
 }
 
-.hg-button {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-    max-width: 32px !important;
-    max-height: 32px !important;
-    padding: 0 !important;
-    margin: 2px !important;
-    font-size: 16px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
+#overlay.show {
+  display: flex;
 }
 
+#keypadPanel {
+  background: var(--display-bg);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  min-width: 260px;
+  text-align: center;
+}
 
-/* モバイル対応 */
-@media (max-width: 600px) {
-    .cell {
-        min-width: 70px;
-        flex: 1 1 70px;
-        font-size: 13px;
-    }
+#keypadLabel {
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
 
-        .cell input {
-            width: 50px;
-            font-size: 14px;
-            padding: 2px;
-        }
+#keypadInput {
+  width: 90%;
+  padding: 6px;
+  font-size: 1.2rem;
+  text-align: right;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background: var(--display-bg);
+  color: var(--text-color);
+}
 
-    #calcInput {
-        width: 50%;
-    }
+.keyrow {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0;
+}
 
-    #virtualKeyboardContainer {
-        width: 95vw;
-        font-size: 13px;
-    }
+.keyrow button {
+  flex: 1;
+  min-width: 48px;
+  height: 42px;
+  font-size: 16px;
+  border-radius: 4px;
+  background: var(--button-bg);
+  color: var(--text-color);
+}
 
-    .hg-button {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 16px !important;
-        margin: 2px !important;
-    }
+button.operator {
+  background: #ffe0b2;
+}
+button.digit {
+  background: #bbdefb;
+}
+button.special {
+  background: #cfd8dc;
+}
 
+/* ダウンロード用レイアウト */
+#download-area {
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 16px;
+}
+
+#download-area strong {
+  font-size: 18px;
+}
+
+#download-area table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+#download-area th,
+#download-area td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #ccc;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+}
+
+#download-area th:first-child,
+#download-area td:first-child {
+  text-align: left;
+  width: 55%;
+}
+
+#download-area th:nth-child(2),
+#download-area td:nth-child(2) {
+  width: 15%;
+  text-align: center;
+}
+
+#download-area th:nth-child(3),
+#download-area td:nth-child(3) {
+  width: 30%;
+}
+
+#download-area div:last-child {
+  margin-top: 12px;
+  font-size: 16px;
+}
+
+/* 偶数行の背景色で視認性アップ */
+#download-area tr:nth-child(even) {
+  background-color: #f5f5f5;
 }

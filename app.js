@@ -1,219 +1,268 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
-    let mode = "JPY";
-    let currentInput = null;
-    let virtualKeyboardEnabled = true;
+let currentCurrency = 'JPY';
+let hide2000 = false;
+let hideBills = false;
+let hideCoins = false;
+let currentInput = '';
+let activeDisplay = null;
 
-    const jpyRate = {
-        yen10000: 10000, yen5000: 5000, yen2000: 2000, yen1000: 1000,
-        yen500: 500, yen100: 100, yen50: 50, yen10: 10, yen5: 5, yen1: 1
-    };
-    const jpyBills = ["yen10000", "yen5000", "yen2000", "yen1000"];
-    const jpyCoins = ["yen500", "yen100", "yen50", "yen10", "yen5", "yen1"];
+const jpyData = [
+  { kind: 10000, label: '一万円札' },
+  { kind: 5000, label: '五千円札' },
+  { kind: 2000, label: '二千円札' },
+  { kind: 1000, label: '千円札' },
+  { kind: 500, label: '五百円玉' , isCoin: true },
+  { kind: 100, label: '百円玉' , isCoin: true },
+  { kind: 50, label: '五十円玉' , isCoin: true },
+  { kind: 10, label: '十円玉' , isCoin: true },
+  { kind: 5, label: '五円玉' , isCoin: true },
+  { kind: 1, label: '一円玉' , isCoin: true },
+];
 
-    const cnyRate = {
-        cny100: 100, cny50: 50, cny20: 20, cny10: 10, cny5: 5, cny1: 1,
-        coin1: 1, coin05: 0.5, coin01: 0.1
-    };
-    const cnyBills = ["cny100", "cny50", "cny20", "cny10", "cny5", "cny1"];
-    const cnyCoins = ["coin1", "coin05", "coin01"];
+const cnyData = [
+  { kind: 100, label: '100元札' },
+  { kind: 50, label: '50元札' },
+  { kind: 20, label: '20元札' },
+  { kind: 10, label: '10元札' },
+  { kind: 5, label: '5元札' },
+  { kind: 1, label: '1元札' },
+  { kind: 1, label: '1元硬貨', isCoin: true },
+  { kind: 0.5, label: '5角硬貨', isCoin: true },
+  { kind: 0.1, label: '1角硬貨', isCoin: true }
+];
 
-    const keyboard = new SimpleKeyboard.default({
-        onKeyPress: button => handleInput(button),
-        layout: {
-            default: [
-                "7 8 9 ÷",
-                "4 5 6 ×",
-                "1 2 3 -",
-                "0 00 C +",
-                "{left} {right} {bksp} ✔"
-            ]
-        },
-        display: {
-            "{bksp}": "BS",
-            "{left}": "←",
-            "{right}": "→"
-        },
-        theme: "hg-theme-default hg-layout-default",
-        container: "#virtualKeyboardContainer"
-    });
+function renderCurrency() {
+  const container = document.querySelector('.container');
+  container.querySelector('.bills').innerHTML = '';
+  container.querySelector('.coins').innerHTML = '';
 
-    const inputs = document.querySelectorAll('input.yen, input.cny, #calcInput');
-    inputs.forEach(el => {
-        el.readOnly = virtualKeyboardEnabled;
+  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
 
-        el.addEventListener('focus', e => {
-            if (!virtualKeyboardEnabled) return;
+  // CNY用レイアウト切替
+  document.body.classList.toggle('layout-cny', currentCurrency === 'CNY');
 
-            currentInput = e.target;
-            keyboard.setInput(currentInput.value);
+  data.forEach(({ kind, label, isCoin }) => {
+    const coin = !!isCoin || kind < 1;
+    const bill = !coin;
+    const is2000 = kind === 2000;
 
-            const vk = document.getElementById("virtualKeyboardContainer");
-            vk.style.display = "block";
-
-            const rect = e.target.getBoundingClientRect();
-            const kbHeight = 220; // 想定キーボード高さ（ピクセル）
-            const margin = 8;
-
-            let top = rect.bottom + window.scrollY + margin;
-            let left = rect.left + window.scrollX;
-
-            // 画面下にはみ出す場合 → 上に出す
-            if ((top + kbHeight) > (window.scrollY + window.innerHeight)) {
-                top = rect.top + window.scrollY - kbHeight - margin;
-            }
-
-            // 画面右にはみ出す場合 → 左に寄せる
-            const kbWidth = 320; // 想定キーボード幅
-            if ((left + kbWidth) > (window.scrollX + window.innerWidth)) {
-                left = window.innerWidth - kbWidth - margin;
-            }
-
-            vk.style.position = "absolute";
-            vk.style.top = `${top}px`;
-            vk.style.left = `${left}px`;
-        });
-
-
-        el.addEventListener('input', () => calc());
-    });
-     
-    document.addEventListener('click', e => {
-    if (!virtualKeyboardEnabled) return;
-
-    const keyboardEl = document.getElementById("virtualKeyboardContainer");
-    if (!keyboardEl.contains(e.target) && !e.target.classList.contains('yen') && !e.target.classList.contains('cny') && e.target.id !== 'calcInput') {
-        keyboardEl.style.display = "none";
-        currentInput = null;
+    let disabled = false;
+    if (currentCurrency === 'JPY') {
+      if (is2000 && hide2000) disabled = true;
+      if (bill && hideBills) disabled = true;
+      if (coin && hideCoins) disabled = true;
     }
+
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.kind = kind;
+    cell.innerHTML = `${label}<div class="display" data-value="0">0</div>`;
+
+    if (disabled) {
+      cell.classList.add('disabled');
+      cell.style.opacity = '0.4';
+      cell.style.pointerEvents = 'none';
+      const disp = cell.querySelector('.display');
+      disp.dataset.value = '0';
+      disp.textContent = '0';
+    }
+
+    cell.addEventListener('click', () => showKeypad(cell));
+    const target = coin ? '.coins' : '.bills';
+    container.querySelector(target).appendChild(cell);
+  });
+
+  updateSummary();
+}
+
+function showKeypad(cell) {
+  activeDisplay = cell.querySelector('.display');
+  currentInput = activeDisplay.dataset.value || '0';
+  document.getElementById('keypadLabel').textContent = cell.textContent.split('\n')[0];
+  document.getElementById('keypadInput').value = currentInput;
+  document.getElementById('overlay').classList.add('show');
+}
+
+function hideKeypad() {
+  document.getElementById('overlay').classList.remove('show');
+  activeDisplay = null;
+}
+
+document.querySelectorAll('#keypadPanel button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!activeDisplay) return;
+    const key = btn.textContent;
+    const inputEl = document.getElementById('keypadInput');
+
+    if (key === 'AC') {
+      currentInput = '0';
+    } else if (key === '⇐') {
+      currentInput = currentInput.slice(0, -1) || '0';
+    } else if (key === '=') {
+      try {
+        currentInput = eval(currentInput.replace(/×/g, '*').replace(/÷/g, '/')).toString();
+      } catch { currentInput = '0'; }
+    } else if (key === 'Enter') {
+      try {
+        currentInput = eval(currentInput.replace(/×/g, '*').replace(/÷/g, '/')).toString();
+      } catch { currentInput = '0'; }
+      activeDisplay.dataset.value = currentInput;
+      activeDisplay.textContent = currentInput;
+      updateSummary();
+      hideKeypad();
+      return;
+    } else {
+      if (currentInput === '0') currentInput = '';
+      currentInput += key;
+    }
+
+    inputEl.value = currentInput;
+  });
 });
 
-    document.getElementById("vkToggleBtn").onclick = () => {
-        virtualKeyboardEnabled = !virtualKeyboardEnabled;
-        inputs.forEach(el => el.readOnly = virtualKeyboardEnabled);
+function updateSummary() {
+  const displays = document.querySelectorAll('.display');
+  let total = 0, bills = 0, coins = 0;
 
-        document.getElementById("vkToggleBtn").textContent =
-            `⌨: ${virtualKeyboardEnabled ? "ON" : "OFF"}`;
+  displays.forEach(d => {
+    const val = parseFloat(d.dataset.value || '0');
+    const kind = parseFloat(d.closest('.cell').dataset.kind);
+    if (isNaN(val)) return;
 
-        if (!virtualKeyboardEnabled) document.activeElement.blur();
-    };
+    const label = d.closest('.cell').textContent;
+    const isCoin = d.closest('.cell').dataset.kind < 1 || label.includes('硬貨');
 
-    document.getElementById("clearBtn").onclick = () => {
-        inputs.forEach(el => el.value = "");
-        calc();
-    };
+    if (isCoin) coins += val;
+    else bills += val;
 
-    document.getElementById("modeBtn").onclick = () => {
-        mode = mode === "JPY" ? "CNY" : "JPY";
-        document.getElementById("JPYgrid").style.display = mode === "JPY" ? "block" : "none";
-        document.getElementById("CNYgrid").style.display = mode === "CNY" ? "block" : "none";
-        document.getElementById("modeBtn").textContent = `通貨: ${mode}`;
-        calc();
-    };
+    total += kind * val;
+  });
 
-    document.getElementById("shotBtn").onclick = () => {
-        html2canvas(document.getElementById("shotArea")).then(canvas => {
-            const link = document.createElement("a");
-            link.href = canvas.toDataURL();
-            link.download = `screenshot_${mode}_${new Date().toISOString().replace(/[:.]/g, "-")}.png`;
-            link.click();
-        });
-    };
+  const unit = currentCurrency === 'JPY' ? '¥' : '元';
+  document.getElementById('total').textContent = `${unit}${total.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  document.getElementById('billCount').textContent = bills;
+  document.getElementById('coinCount').textContent = coins;
+  document.getElementById('totalCount').textContent = bills + coins;
+}
 
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById("datetime").textContent = now.toLocaleString();
-    }, 1000);
+function resetAll() {
+  document.querySelectorAll('.display').forEach(d => {
+    d.dataset.value = '0';
+    d.textContent = '0';
+  });
+  updateSummary();
+}
 
-    function calc() {
-        let total = 0, bills = 0, coins = 0;
-        const rate = mode === "JPY" ? jpyRate : cnyRate;
-        const billsList = mode === "JPY" ? jpyBills : cnyBills;
-        const coinsList = mode === "JPY" ? jpyCoins : cnyCoins;
+function toggleDarkMode() {
+  document.body.classList.toggle('dark');
+}
 
-        for (const id in rate) {
-            const el = document.getElementById(id);
-            if (!el || el.disabled) continue;
-            const count = parseFloat(el.value) || 0;
-            total += rate[id] * count;
-            if (billsList.includes(id)) bills += count;
-            if (coinsList.includes(id)) coins += count;
-        }
+function toggleCurrency() {
+  currentCurrency = currentCurrency === 'JPY' ? 'CNY' : 'JPY';
+  renderCurrency();
+}
 
-        document.getElementById("total").textContent = total.toLocaleString();
-        document.getElementById("count").textContent = `紙幣: ${bills}枚 ｜ 硬貨: ${coins}枚 ｜ 合計: ${bills + coins}枚`;
+function openSettings() {
+  const html = `
+    <h3>⚙️ 設定</h3>
+    <label><input type="checkbox" ${document.body.classList.contains('dark') ? 'checked' : ''} onchange="toggleDarkMode()"> ダークモード</label><br>
+    <label><input type="checkbox" ${currentCurrency === 'CNY' ? 'checked' : ''} onchange="toggleCurrency()"> 通貨をCNYに切り替える</label><br><hr>
+    <strong>使用金種の制限（JPYのみ）</strong><br>
+    <label><input type="checkbox" ${hide2000 ? 'checked' : ''} onchange="hide2000 = this.checked; renderCurrency();"> 2千円を使わない</label><br>
+    <label><input type="checkbox" ${hideBills ? 'checked' : ''} onchange="hideBills = this.checked; renderCurrency();"> お札を使わない</label><br>
+    <label><input type="checkbox" ${hideCoins ? 'checked' : ''} onchange="hideCoins = this.checked; renderCurrency();"> 小銭を使わない</label><br>
+  `;
+  const box = document.createElement('div');
+  box.style.position = 'fixed';
+  box.style.top = '20px';
+  box.style.left = '20px';
+  box.style.right = '20px';
+  box.style.margin = 'auto';
+  box.style.maxWidth = '300px';
+  box.style.background = '#fff';
+  box.style.color = '#000';
+  box.style.padding = '20px';
+  box.style.borderRadius = '12px';
+  box.style.zIndex = 9999;
+  box.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+  box.innerHTML = html + '<br><button onclick="this.parentElement.remove()">閉じる</button>';
+  document.body.appendChild(box);
+}
+
+function downloadImage() {
+  const area = document.getElementById('download-area');
+  const now = new Date();
+  const pad = n => n.toString().padStart(2, '0');
+  const datetime = `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const currencyUnit = currentCurrency === 'JPY' ? '円' : '元';
+
+  // データ集計
+  const rows = [];
+  let total = 0, bills = 0, coins = 0;
+  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
+  const map = new Map();
+
+  data.forEach(({ kind, label, isCoin }) => {
+    const key = `${kind}_${label}`;
+    const display = document.querySelector(`.cell[data-kind="${kind}"] .display`);
+    if (!display) return;
+    const val = parseFloat(display.dataset.value || '0');
+    if (isNaN(val)) return; // ←
+    const amt = val * kind;
+
+    if (!map.has(key)) {
+      map.set(key, { label, kind, val: 0, amt: 0, isCoin });
     }
+    const entry = map.get(key);
+    entry.val += val;
+    entry.amt += amt;
 
-    window.runCalc = () => {
-        const input = document.getElementById("calcInput");
-        try {
-            const result = Function(`'use strict'; return (${input.value})`)();
-            input.value = result.toString();
-        } catch {
-            alert("式が無効です");
-        }
-    };
+    if (entry.isCoin || kind < 1 || label.includes('硬貨')) coins += val;
+    else bills += val;
 
-    window.clearCalc = () => {
-        const input = document.getElementById("calcInput");
-        input.value = "";
-    };
+    total += amt;
+  });
 
-    function handleInput(key) {
-        if (!currentInput) return;
+  map.forEach(entry => {
+    rows.push(`<tr><td>${entry.label}</td><td>${entry.val}</td><td>${entry.amt.toLocaleString()} ${currencyUnit}</td></tr>`);
+  });
 
-        const start = currentInput.selectionStart;
-        const end = currentInput.selectionEnd;
-        let val = currentInput.value;
+  // HTML構築
+  area.innerHTML = `
+    <div><strong>現在日時：</strong>${datetime}</div>
+    <div><strong>合計：</strong>${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${currencyUnit}</div>
+    <table>
+      <tr><th>金種</th><th>枚数</th><th>金額</th></tr>
+      ${rows.join('')}
+    </table>
+    <div>紙幣：${bills}枚　硬貨：${coins}枚（合計：${bills + coins}枚）</div>
+  `;
 
-        if (key === "✔") {
-            currentInput.blur(); // 入力欄のフォーカス解除
+  // 📏 軽量化用に一時的に縦長＆縮小サイズに設定
+  area.style.display = 'block';
+  area.style.width = '360px';
+  area.style.height = '640px';
+  area.style.padding = '20px';
+  area.style.boxSizing = 'border-box';
 
-            const keyboardEl = document.getElementById("virtualKeyboardContainer");
-            keyboardEl.style.display = "none"; // 仮想キーボードを非表示にする
+  // 📷 JPEGで出力（85%品質）
+  html2canvas(area, {
+    width: 360,
+    height: 640,
+    backgroundColor: '#fff'
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `report_${now.toISOString().slice(0,16).replace(/[:T]/g, '-')}.jpg`;
+    link.href = canvas.toDataURL("image/jpeg", 0.85); // 85%画質
+    link.click();
 
-            return;
-        }
+    // 後処理（元に戻す）
+    area.style.display = 'none';
+    area.style.width = '';
+    area.style.height = '';
+    area.style.padding = '';
+  });
+}
 
-
-        if (key === "C") {
-            currentInput.value = "";
-            calc(); // ← C の時も計算リセット
-            return;
-        }
-
-        if (key === "BS" || key === "{bksp}") {
-            if (start > 0) {
-                currentInput.value = val.slice(0, start - 1) + val.slice(end);
-                currentInput.setSelectionRange(start - 1, start - 1);
-            }
-            calc(); // ← BSも再計算
-            return;
-        }
-
-        if (key === "←" || key === "{left}") {
-            currentInput.setSelectionRange(Math.max(0, start - 1), Math.max(0, start - 1));
-            return;
-        }
-
-        if (key === "→" || key === "{right}") {
-            currentInput.setSelectionRange(Math.min(val.length, start + 1), Math.min(val.length, start + 1));
-            return;
-        }
-
-        const ops = ["+", "-", "*", "/", "÷", "×"];
-        if (ops.includes(key) && currentInput.id !== "calcInput") return;
-
-        let insert = key;
-        if (insert === "×") insert = "*";
-        if (insert === "÷") insert = "/";
-
-        currentInput.value = val.slice(0, start) + insert + val.slice(end);
-        const newPos = start + insert.length;
-        currentInput.setSelectionRange(newPos, newPos);
-
-        // ✅ 最後に計算
-        calc();
-    }
-
-    calc();
-});
+window.onload = () => {
+  renderCurrency();
+};
