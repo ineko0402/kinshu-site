@@ -138,7 +138,7 @@ function updateSummary() {
   });
 
   const unit = currentCurrency === 'JPY' ? '¥' : '元';
-  document.getElementById('total').textContent = `${unit}${total.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  document.getElementById('total').textContent = `${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${unit}`;
   document.getElementById('billCount').textContent = bills;
   document.getElementById('coinCount').textContent = coins;
   document.getElementById('totalCount').textContent = bills + coins;
