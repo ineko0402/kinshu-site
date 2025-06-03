@@ -78,11 +78,15 @@ function showKeypad(cell) {
   activeDisplay = cell.querySelector('.display');
   currentInput = activeDisplay.dataset.value || '0';
 
-  const label = cell.textContent.split('\n')[0];               // 金種名
-  const kind = parseFloat(cell.dataset.kind);                  // 金額単価
-  const count = parseFloat(activeDisplay.dataset.value || '0'); // 枚数
+  const kind = parseFloat(cell.dataset.kind);
+  const count = parseFloat(activeDisplay.dataset.value || '0');
   const currencyUnit = currentCurrency === 'JPY' ? '円' : '元';
   const total = kind * count;
+
+  // 金種名をデータから取得（ラベルに余計な枚数が含まれない）
+  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
+  const item = data.find(d => d.kind === kind);
+  const label = item ? item.label : `${kind}${currencyUnit}`;
 
   const displayLabel = `${label} ${total.toLocaleString(undefined, { maximumFractionDigits: 2 })}${currencyUnit}（${count}枚）`;
   document.getElementById('keypadLabel').textContent = displayLabel;
@@ -90,6 +94,7 @@ function showKeypad(cell) {
   document.getElementById('keypadInput').value = currentInput;
   document.getElementById('overlay').classList.add('show');
 }
+
 
 
 function hideKeypad() {
