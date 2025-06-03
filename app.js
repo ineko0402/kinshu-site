@@ -77,10 +77,20 @@ function renderCurrency() {
 function showKeypad(cell) {
   activeDisplay = cell.querySelector('.display');
   currentInput = activeDisplay.dataset.value || '0';
-  document.getElementById('keypadLabel').textContent = cell.textContent.split('\n')[0];
+
+  const label = cell.textContent.split('\n')[0];               // 金種名
+  const kind = parseFloat(cell.dataset.kind);                  // 金額単価
+  const count = parseFloat(activeDisplay.dataset.value || '0'); // 枚数
+  const currencyUnit = currentCurrency === 'JPY' ? '円' : '元';
+  const total = kind * count;
+
+  const displayLabel = `${label} ${total.toLocaleString(undefined, { maximumFractionDigits: 2 })}${currencyUnit}（${count}枚）`;
+  document.getElementById('keypadLabel').textContent = displayLabel;
+
   document.getElementById('keypadInput').value = currentInput;
   document.getElementById('overlay').classList.add('show');
 }
+
 
 function hideKeypad() {
   document.getElementById('overlay').classList.remove('show');
@@ -137,7 +147,7 @@ function updateSummary() {
     total += kind * val;
   });
 
-  const unit = currentCurrency === 'JPY' ? '¥' : '元';
+  const unit = currentCurrency === 'JPY' ? '円' : '元';
   document.getElementById('total').textContent = `${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${unit}`;
   document.getElementById('billCount').textContent = bills;
   document.getElementById('coinCount').textContent = coins;
