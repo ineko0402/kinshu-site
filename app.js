@@ -41,35 +41,38 @@ function renderCurrency() {
   document.body.classList.toggle('layout-cny', currentCurrency === 'CNY');
 
   data.forEach(({ kind, label, isCoin }) => {
-    const coin = !!isCoin || kind < 1;
-    const bill = !coin;
-    const is2000 = kind === 2000;
+  const coin = !!isCoin || kind < 1;
+  const bill = !coin;
+  const is2000 = kind === 2000;
 
-    let disabled = false;
-    if (currentCurrency === 'JPY') {
-      if (is2000 && hide2000) disabled = true;
-      if (bill && hideBills) disabled = true;
-      if (coin && hideCoins) disabled = true;
-    }
+  let disabled = false;
+  if (currentCurrency === 'JPY') {
+    if (is2000 && hide2000) disabled = true;
+    if (bill && hideBills) disabled = true;
+    if (coin && hideCoins) disabled = true;
+  }
 
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.dataset.kind = kind;
-    cell.innerHTML = `${label}<div class="display" data-value="0">0</div>`;
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.dataset.kind = kind;
+  cell.dataset.label = label;
+  cell.dataset.key = `${kind}_${label}`; // ← 一意識別キー
 
-    if (disabled) {
-      cell.classList.add('disabled');
-      cell.style.opacity = '0.4';
-      cell.style.pointerEvents = 'none';
-      const disp = cell.querySelector('.display');
-      disp.dataset.value = '0';
-      disp.textContent = '0';
-    }
+  cell.innerHTML = `${label}<div class="display" data-value="0">0</div>`;
 
-    cell.addEventListener('click', () => showKeypad(cell));
-    const target = coin ? '.coins' : '.bills';
-    container.querySelector(target).appendChild(cell);
-  });
+  if (disabled) {
+    cell.classList.add('disabled');
+    cell.style.opacity = '0.4';
+    cell.style.pointerEvents = 'none';
+    const disp = cell.querySelector('.display');
+    disp.dataset.value = '0';
+    disp.textContent = '0';
+  }
+
+  cell.addEventListener('click', () => showKeypad(cell));
+  const target = coin ? '.coins' : '.bills';
+  container.querySelector(target).appendChild(cell);
+});
 
   updateSummary();
 }
@@ -137,14 +140,16 @@ document.querySelectorAll('#keypadPanel button').forEach(btn => {
 function updateSummary() {
   const displays = document.querySelectorAll('.display');
   let total = 0, bills = 0, coins = 0;
+  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
 
   displays.forEach(d => {
     const val = parseFloat(d.dataset.value || '0');
-    const kind = parseFloat(d.closest('.cell').dataset.kind);
+    const cell = d.closest('.cell');
+    const kind = parseFloat(cell.dataset.kind);
     if (isNaN(val)) return;
 
-    const label = d.closest('.cell').textContent;
-    const isCoin = d.closest('.cell').dataset.kind < 1 || label.includes('硬貨');
+    const item = data.find(entry => entry.kind === kind && cell.textContent.includes(entry.label));
+    const isCoin = item?.isCoin || kind < 1;
 
     if (isCoin) coins += val;
     else bills += val;
@@ -158,6 +163,7 @@ function updateSummary() {
   document.getElementById('coinCount').textContent = coins;
   document.getElementById('totalCount').textContent = bills + coins;
 }
+
 
 function resetAll() {
   document.querySelectorAll('.display').forEach(d => {
@@ -217,25 +223,28 @@ function downloadImage() {
   const map = new Map();
 
   data.forEach(({ kind, label, isCoin }) => {
-    const key = `${kind}_${label}`;
-    const display = document.querySelector(`.cell[data-kind="${kind}"] .display`);
-    if (!display) return;
-    const val = parseFloat(display.dataset.value || '0');
-    if (isNaN(val)) return; // ←
-    const amt = val * kind;
+  const key = `${kind}_${label}`;
+  const cell = document.querySelector(`.cell[data-key="${key}"]`);
+  if (!cell) return;
 
-    if (!map.has(key)) {
-      map.set(key, { label, kind, val: 0, amt: 0, isCoin });
-    }
-    const entry = map.get(key);
-    entry.val += val;
-    entry.amt += amt;
+  const display = cell.querySelector('.display');
+  const val = parseFloat(display.dataset.value || '0');
+  if (isNaN(val)) return;
 
-    if (entry.isCoin || kind < 1 || label.includes('硬貨')) coins += val;
-    else bills += val;
+  const amt = val * kind;
 
-    total += amt;
-  });
+  if (!map.has(key)) {
+    map.set(key, { label, kind, val: 0, amt: 0, isCoin });
+  }
+  const entry = map.get(key);
+  entry.val += val;
+  entry.amt += amt;
+
+  if (entry.isCoin || kind < 1 || label.includes('硬貨')) coins += val;
+  else bills += val;
+
+  total += amt;
+});
 
   map.forEach(entry => {
     rows.push(`<tr><td>${entry.label}</td><td>${entry.val}</td><td>${entry.amt.toLocaleString()} ${currencyUnit}</td></tr>`);
