@@ -174,24 +174,52 @@ function resetAll() {
 }
 
 function toggleDarkMode() {
-  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', isDark);
 }
 
 function toggleCurrency() {
   currentCurrency = currentCurrency === 'JPY' ? 'CNY' : 'JPY';
+  localStorage.setItem('currency', currentCurrency);
   renderCurrency();
 }
 
 function openSettings() {
   const html = `
     <h3>⚙️ 設定</h3>
-    <label><input type="checkbox" ${document.body.classList.contains('dark') ? 'checked' : ''} onchange="toggleDarkMode()"> ダークモード</label><br>
-    <label><input type="checkbox" ${currentCurrency === 'CNY' ? 'checked' : ''} onchange="toggleCurrency()"> 通貨をCNYに切り替える</label><br><hr>
+    <label>
+      <input type="checkbox" ${document.body.classList.contains('dark') ? 'checked' : ''} 
+        onchange="toggleDarkMode(); localStorage.setItem('darkMode', document.body.classList.contains('dark'));">
+      ダークモード
+    </label><br>
+
+    <label>
+      <input type="checkbox" ${currentCurrency === 'CNY' ? 'checked' : ''} 
+        onchange="toggleCurrency(); localStorage.setItem('currency', currentCurrency);">
+      通貨をCNYに切り替える
+    </label><br><hr>
+
     <strong>使用金種の制限（JPYのみ）</strong><br>
-    <label><input type="checkbox" ${hide2000 ? 'checked' : ''} onchange="hide2000 = this.checked; renderCurrency();"> 2千円を使わない</label><br>
-    <label><input type="checkbox" ${hideBills ? 'checked' : ''} onchange="hideBills = this.checked; renderCurrency();"> お札を使わない</label><br>
-    <label><input type="checkbox" ${hideCoins ? 'checked' : ''} onchange="hideCoins = this.checked; renderCurrency();"> 小銭を使わない</label><br>
+
+    <label>
+      <input type="checkbox" ${hide2000 ? 'checked' : ''} 
+        onchange="hide2000 = this.checked; localStorage.setItem('hide2000', hide2000); renderCurrency();">
+      2千円を使わない
+    </label><br>
+
+    <label>
+      <input type="checkbox" ${hideBills ? 'checked' : ''} 
+        onchange="hideBills = this.checked; localStorage.setItem('hideBills', hideBills); renderCurrency();">
+      お札を使わない
+    </label><br>
+
+    <label>
+      <input type="checkbox" ${hideCoins ? 'checked' : ''} 
+        onchange="hideCoins = this.checked; localStorage.setItem('hideCoins', hideCoins); renderCurrency();">
+      小銭を使わない
+    </label><br>
   `;
+
   const box = document.createElement('div');
   box.style.position = 'fixed';
   box.style.top = '20px';
@@ -206,6 +234,7 @@ function openSettings() {
   box.style.zIndex = 9999;
   box.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
   box.innerHTML = html + '<br><button onclick="this.parentElement.remove()">閉じる</button>';
+
   document.body.appendChild(box);
 }
 
@@ -288,5 +317,14 @@ function downloadImage() {
 }
 
 window.onload = () => {
+  // 保存された設定を読み込み
+  hide2000 = localStorage.getItem('hide2000') === 'true';
+  hideBills = localStorage.getItem('hideBills') === 'true';
+  hideCoins = localStorage.getItem('hideCoins') === 'true';
+  currentCurrency = localStorage.getItem('currency') || 'JPY';
+  const isDark = localStorage.getItem('darkMode') === 'true';
+
+  document.body.classList.toggle('dark', isDark);
   renderCurrency();
 };
+
