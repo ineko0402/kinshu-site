@@ -6,14 +6,6 @@
   --button-bg: #cfd8dc;
   --accent: #1976d2;
 }
-body.dark {
-  --bg-color: #121212;
-  --text-color: #fff;
-  --cell-bg: #37474f;
-  --display-bg: #263238;
-  --button-bg: #455a64;
-  --accent: #90caf9;
-}
 
 body {
   margin: 0;
@@ -259,3 +251,37 @@ button.special {
 #download-area tr:nth-child(even) {
   background-color: #f5f5f5;
 }
+
+/* ダークモード専用カラー追加 */
+body.dark {
+  --bg-color: #121212;
+  --text-color: #e0e0e0; /* 少しグレーに */
+  --cell-bg: #37474f;
+  --display-bg: #263238;
+  --button-bg: #455a64;
+  --accent: #90caf9;
+}
+
+/* キータイプごとにコントラストの高い色を設定 */
+body.dark .keyrow button.digit {
+  background: #64b5f6;  /* 明るいブルー */
+  color: #000;          /* 黒文字でコントラスト確保 */
+}
+
+body.dark .keyrow button.operator {
+  background: #ffd54f;  /* 明るいオレンジ系 */
+  color: #000;
+}
+
+body.dark .keyrow button.special {
+  background: #b0bec5;  /* 明るめグレー */
+  color: #000;
+}
+
+/* 一般ボタン（全クリアなど） */
+body.dark .actions button {
+  background: #78909c;
+  color: #fff;
+  border-color: #90a4ae;
+}
+
