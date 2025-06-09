@@ -304,11 +304,16 @@ function downloadImage() {
     backgroundColor: '#fff'
   }).then(canvas => {
     const link = document.createElement('a');
-    link.download = `report_${now.toISOString().slice(0,16).replace(/[:T]/g, '-')}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", 0.85); // 85%画質
+  
+    const now = new Date();
+    const pad = n => n.toString().padStart(2, '0');
+    const ymdhm = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const currencyCode = currentCurrency;
+  
+    link.download = `kinshu-site_${ymdhm}_${currencyCode}.jpeg`;
+    link.href = canvas.toDataURL("image/jpeg", 0.85);
     link.click();
-
-    // 後処理（元に戻す）
+  
     area.style.display = 'none';
     area.style.width = '';
     area.style.height = '';
