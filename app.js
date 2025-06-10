@@ -265,9 +265,9 @@ function downloadImage() {
   const data = currentCurrency === 'JPY' ? jpyData : cnyData;
   const rows = [];
   let total = 0, bills = 0, coins = 0;
-
   const map = new Map();
 
+  // 金種ごとに集計
   data.forEach(({ id, kind, label, isCoin }) => {
     const cell = document.querySelector(`.cell[data-id="${id}"]`);
     if (!cell) return;
@@ -279,7 +279,7 @@ function downloadImage() {
     const amt = val * kind;
 
     if (!map.has(id)) {
-      map.set(id, { label, kind, val: 0, amt: 0, isCoin });
+      map.set(id, { id, label, kind, val: 0, amt: 0, isCoin });
     }
     const entry = map.get(id);
     entry.val += val;
@@ -291,12 +291,18 @@ function downloadImage() {
     total += amt;
   });
 
-  // 表示用HTML行
+  // 表示対象の行のみ構築（hide設定を考慮）
   map.forEach(entry => {
+    if (currentCurrency === 'JPY') {
+      if (hide2000 && entry.kind === 2000) return;
+      if (hideBills && !entry.isCoin) return;
+      if (hideCoins && entry.isCoin) return;
+    }
+
     rows.push(`<tr><td>${entry.label}</td><td>${entry.val}</td><td>${entry.amt.toLocaleString()} ${currencyUnit}</td></tr>`);
   });
 
-  // ダウンロード用HTML構築
+  // ダウンロードエリア構築
   area.innerHTML = `
     <div><strong>現在日時：</strong>${datetime}</div>
     <div><strong>合計：</strong>${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${currencyUnit}</div>
@@ -307,14 +313,14 @@ function downloadImage() {
     <div>紙幣：${bills}枚　硬貨：${coins}枚（合計：${bills + coins}枚）</div>
   `;
 
-  // 📏 軽量化用のレイアウト適用
+  // 📏 一時的なスタイル適用
   area.style.display = 'block';
   area.style.width = '360px';
   area.style.height = '640px';
   area.style.padding = '20px';
   area.style.boxSizing = 'border-box';
 
-  // 📷 キャプチャ実行
+  // 📷 スクリーンショット出力
   html2canvas(area, {
     width: 360,
     height: 640,
@@ -325,7 +331,7 @@ function downloadImage() {
     link.href = canvas.toDataURL("image/jpeg", 0.85);
     link.click();
 
-    // 📦 後処理（非表示＋リセット）
+    // 後処理：非表示とスタイルリセット
     area.style.display = 'none';
     area.style.width = '';
     area.style.height = '';
