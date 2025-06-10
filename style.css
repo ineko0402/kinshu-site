@@ -101,10 +101,13 @@ header {
   padding: 8px;
   flex-wrap: wrap;
   margin-top: 20px;
+  max-width: 500px;  /* ← これを追加！ */
+  width: 100%;
 }
 
 .actions button {
   flex: 1;
+  min-width: 100px; /* 最小サイズ（スマホ対策） */
   background: var(--button-bg);
   color: var(--text-color);
   border: 1px solid #aaa;
