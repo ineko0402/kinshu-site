@@ -6,28 +6,28 @@ let currentInput = '';
 let activeDisplay = null;
 
 const jpyData = [
-  { kind: 10000, label: '一万円札' },
-  { kind: 5000, label: '五千円札' },
-  { kind: 2000, label: '二千円札' },
-  { kind: 1000, label: '千円札' },
-  { kind: 500, label: '五百円玉' , isCoin: true },
-  { kind: 100, label: '百円玉' , isCoin: true },
-  { kind: 50, label: '五十円玉' , isCoin: true },
-  { kind: 10, label: '十円玉' , isCoin: true },
-  { kind: 5, label: '五円玉' , isCoin: true },
-  { kind: 1, label: '一円玉' , isCoin: true },
+  { id: 'jpy-10000', kind: 10000, label: '一万円札' },
+  { id: 'jpy-5000', kind: 5000, label: '五千円札' },
+  { id: 'jpy-2000', kind: 2000, label: '二千円札' },
+  { id: 'jpy-1000', kind: 1000, label: '千円札' },
+  { id: 'jpy-500', kind: 500, label: '五百円玉', isCoin: true },
+  { id: 'jpy-100', kind: 100, label: '百円玉', isCoin: true },
+  { id: 'jpy-50', kind: 50, label: '五十円玉', isCoin: true },
+  { id: 'jpy-10', kind: 10, label: '十円玉', isCoin: true },
+  { id: 'jpy-5', kind: 5, label: '五円玉', isCoin: true },
+  { id: 'jpy-1', kind: 1, label: '一円玉', isCoin: true },
 ];
 
 const cnyData = [
-  { kind: 100, label: '100元札' },
-  { kind: 50, label: '50元札' },
-  { kind: 20, label: '20元札' },
-  { kind: 10, label: '10元札' },
-  { kind: 5, label: '5元札' },
-  { kind: 1, label: '1元札' },
-  { kind: 1, label: '1元硬貨', isCoin: true },
-  { kind: 0.5, label: '5角硬貨', isCoin: true },
-  { kind: 0.1, label: '1角硬貨', isCoin: true }
+  { id: 'cny-100', kind: 100, label: '100元札' },
+  { id: 'cny-50', kind: 50, label: '50元札' },
+  { id: 'cny-20', kind: 20, label: '20元札' },
+  { id: 'cny-10', kind: 10, label: '10元札' },
+  { id: 'cny-5', kind: 5, label: '5元札' },
+  { id: 'cny-1b', kind: 1, label: '1元札' },
+  { id: 'cny-1c', kind: 1, label: '1元硬貨', isCoin: true },
+  { id: 'cny-05', kind: 0.5, label: '5角硬貨', isCoin: true },
+  { id: 'cny-01', kind: 0.1, label: '1角硬貨', isCoin: true },
 ];
 
 function renderCurrency() {
@@ -36,43 +36,50 @@ function renderCurrency() {
   container.querySelector('.coins').innerHTML = '';
 
   const data = currentCurrency === 'JPY' ? jpyData : cnyData;
-
-  // CNY用レイアウト切替
   document.body.classList.toggle('layout-cny', currentCurrency === 'CNY');
 
-  data.forEach(({ kind, label, isCoin }) => {
-  const coin = !!isCoin || kind < 1;
-  const bill = !coin;
-  const is2000 = kind === 2000;
+  data.forEach(({ id, kind, label, isCoin }) => {
+    const coin = !!isCoin || kind < 1;
+    const bill = !coin;
+    const is2000 = kind === 2000;
 
-  let disabled = false;
-  if (currentCurrency === 'JPY') {
-    if (is2000 && hide2000) disabled = true;
-    if (bill && hideBills) disabled = true;
-    if (coin && hideCoins) disabled = true;
-  }
+    let disabled = false;
+    if (currentCurrency === 'JPY') {
+      if (is2000 && hide2000) disabled = true;
+      if (bill && hideBills) disabled = true;
+      if (coin && hideCoins) disabled = true;
+    }
 
-  const cell = document.createElement('div');
-  cell.className = 'cell';
-  cell.dataset.kind = kind;
-  cell.dataset.label = label;
-  cell.dataset.key = `${kind}_${label}`; // ← 一意識別キー
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.id = id;
+    cell.dataset.kind = kind;
+    cell.dataset.label = label;
 
-  cell.innerHTML = `${label}<div class="display" data-value="0">0</div>`;
+    cell.innerHTML = `${label}<div class="display" data-value="0">0</div>`;
 
-  if (disabled) {
-    cell.classList.add('disabled');
-    cell.style.opacity = '0.4';
-    cell.style.pointerEvents = 'none';
-    const disp = cell.querySelector('.display');
-    disp.dataset.value = '0';
-    disp.textContent = '0';
-  }
+    if (disabled) {
+      cell.classList.add('disabled');
+      cell.style.opacity = '0.4';
+      cell.style.pointerEvents = 'none';
+    }
 
-  cell.addEventListener('click', () => showKeypad(cell));
-  const target = coin ? '.coins' : '.bills';
-  container.querySelector(target).appendChild(cell);
-});
+    cell.addEventListener('click', () => showKeypad(cell));
+    const target = coin ? '.coins' : '.bills';
+    container.querySelector(target).appendChild(cell);
+  });
+
+  // ✅ 枚数復元
+  const saved = JSON.parse(localStorage.getItem(`counts_${currentCurrency}`) || '{}');
+  document.querySelectorAll('.cell').forEach(cell => {
+    const id = cell.dataset.id;
+    const val = saved[id];
+    if (val !== undefined) {
+      const d = cell.querySelector('.display');
+      d.dataset.value = val;
+      d.textContent = val;
+    }
+  });
 
   updateSummary();
 }
@@ -138,23 +145,22 @@ document.querySelectorAll('#keypadPanel button').forEach(btn => {
 });
 
 function updateSummary() {
-  const displays = document.querySelectorAll('.display');
-  let total = 0, bills = 0, coins = 0;
   const data = currentCurrency === 'JPY' ? jpyData : cnyData;
+  let total = 0, bills = 0, coins = 0;
 
-  displays.forEach(d => {
-    const val = parseFloat(d.dataset.value || '0');
-    const cell = d.closest('.cell');
-    const kind = parseFloat(cell.dataset.kind);
+  document.querySelectorAll('.cell').forEach(cell => {
+    const val = parseFloat(cell.querySelector('.display').dataset.value || '0');
     if (isNaN(val)) return;
 
-    const item = data.find(entry => entry.kind === kind && cell.textContent.includes(entry.label));
-    const isCoin = item?.isCoin || kind < 1;
+    const id = cell.dataset.id;
+    const item = data.find(d => d.id === id);
+    if (!item) return;
 
-    if (isCoin) coins += val;
+    const amt = item.kind * val;
+    if (item.isCoin || item.kind < 1) coins += val;
     else bills += val;
 
-    total += kind * val;
+    total += amt;
   });
 
   const unit = currentCurrency === 'JPY' ? '円' : '元';
@@ -162,6 +168,15 @@ function updateSummary() {
   document.getElementById('billCount').textContent = bills;
   document.getElementById('coinCount').textContent = coins;
   document.getElementById('totalCount').textContent = bills + coins;
+
+  // ✅ 保存
+  const values = {};
+  document.querySelectorAll('.cell').forEach(cell => {
+    const id = cell.dataset.id;
+    const val = cell.querySelector('.display').dataset.value || '0';
+    values[id] = val;
+  });
+  localStorage.setItem(`counts_${currentCurrency}`, JSON.stringify(values));
 }
 
 
@@ -243,43 +258,45 @@ function downloadImage() {
   const now = new Date();
   const pad = n => n.toString().padStart(2, '0');
   const datetime = `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const ymdhm = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}`;
   const currencyUnit = currentCurrency === 'JPY' ? '円' : '元';
+  const currencyCode = currentCurrency;
 
-  // データ集計
+  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
   const rows = [];
   let total = 0, bills = 0, coins = 0;
-  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
+
   const map = new Map();
 
-  data.forEach(({ kind, label, isCoin }) => {
-  const key = `${kind}_${label}`;
-  const cell = document.querySelector(`.cell[data-key="${key}"]`);
-  if (!cell) return;
+  data.forEach(({ id, kind, label, isCoin }) => {
+    const cell = document.querySelector(`.cell[data-id="${id}"]`);
+    if (!cell) return;
 
-  const display = cell.querySelector('.display');
-  const val = parseFloat(display.dataset.value || '0');
-  if (isNaN(val)) return;
+    const display = cell.querySelector('.display');
+    const val = parseFloat(display.dataset.value || '0');
+    if (isNaN(val)) return;
 
-  const amt = val * kind;
+    const amt = val * kind;
 
-  if (!map.has(key)) {
-    map.set(key, { label, kind, val: 0, amt: 0, isCoin });
-  }
-  const entry = map.get(key);
-  entry.val += val;
-  entry.amt += amt;
+    if (!map.has(id)) {
+      map.set(id, { label, kind, val: 0, amt: 0, isCoin });
+    }
+    const entry = map.get(id);
+    entry.val += val;
+    entry.amt += amt;
 
-  if (entry.isCoin || kind < 1 || label.includes('硬貨')) coins += val;
-  else bills += val;
+    if (entry.isCoin || kind < 1 || label.includes('硬貨')) coins += val;
+    else bills += val;
 
-  total += amt;
-});
+    total += amt;
+  });
 
+  // 表示用HTML行
   map.forEach(entry => {
     rows.push(`<tr><td>${entry.label}</td><td>${entry.val}</td><td>${entry.amt.toLocaleString()} ${currencyUnit}</td></tr>`);
   });
 
-  // HTML構築
+  // ダウンロード用HTML構築
   area.innerHTML = `
     <div><strong>現在日時：</strong>${datetime}</div>
     <div><strong>合計：</strong>${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${currencyUnit}</div>
@@ -290,30 +307,25 @@ function downloadImage() {
     <div>紙幣：${bills}枚　硬貨：${coins}枚（合計：${bills + coins}枚）</div>
   `;
 
-  // 📏 軽量化用に一時的に縦長＆縮小サイズに設定
+  // 📏 軽量化用のレイアウト適用
   area.style.display = 'block';
   area.style.width = '360px';
   area.style.height = '640px';
   area.style.padding = '20px';
   area.style.boxSizing = 'border-box';
 
-  // 📷 JPEGで出力（85%品質）
+  // 📷 キャプチャ実行
   html2canvas(area, {
     width: 360,
     height: 640,
     backgroundColor: '#fff'
   }).then(canvas => {
     const link = document.createElement('a');
-  
-    const now = new Date();
-    const pad = n => n.toString().padStart(2, '0');
-    const ymdhm = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}`;
-    const currencyCode = currentCurrency;
-  
     link.download = `kinshu-site_${ymdhm}_${currencyCode}.jpeg`;
     link.href = canvas.toDataURL("image/jpeg", 0.85);
     link.click();
-  
+
+    // 📦 後処理（非表示＋リセット）
     area.style.display = 'none';
     area.style.width = '';
     area.style.height = '';
