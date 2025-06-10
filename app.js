@@ -200,6 +200,9 @@ function toggleCurrency() {
 }
 
 function openSettings() {
+  // ✅ 設定画面が既に存在する場合は何もしない
+  if (document.getElementById('settings-box')) return;
+
   const html = `
     <h3>⚙️ 設定</h3>
     <label>
@@ -235,7 +238,9 @@ function openSettings() {
     </label><br>
   `;
 
+  // ✅ 設定ウィンドウ本体を作成
   const box = document.createElement('div');
+  box.id = 'settings-box';  // ← 識別用IDで複数生成を防ぐ
   box.style.position = 'fixed';
   box.style.top = '20px';
   box.style.left = '20px';
@@ -248,8 +253,11 @@ function openSettings() {
   box.style.borderRadius = '12px';
   box.style.zIndex = 9999;
   box.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-  box.innerHTML = html + '<br><button onclick="this.parentElement.remove()">閉じる</button>';
 
+  // ✅ 内容と閉じるボタンを設定
+  box.innerHTML = html + '<br><button onclick="document.getElementById(\'settings-box\').remove()">閉じる</button>';
+
+  // ✅ 追加
   document.body.appendChild(box);
 }
 
