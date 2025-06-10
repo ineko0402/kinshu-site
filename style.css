@@ -176,24 +176,43 @@ button:active {
   margin: 4px 0;
 }
 
+/* ---------- テンキー全体ボタン ---------- */
 .keyrow button {
   flex: 1;
-  min-width: 48px;
-  height: 42px;
-  font-size: 16px;
-  border-radius: 4px;
+  min-width: 60px;
+  height: 60px;                /* 正方形 */
+  font-size: 20px;             /* 大きめの文字 */
+  border-radius: 6px;
   background: var(--button-bg);
   color: var(--text-color);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-button.operator {
-  background: #ffe0b2;
+/* ---------- キーの種類別カラー（必要に応じて調整） ---------- */
+.keyrow button.digit {
+  background: #bbdefb;         /* 明るい水色 */
+  color: #000;
 }
-button.digit {
-  background: #bbdefb;
+.keyrow button.operator {
+  background: #ffe082;         /* 明るいオレンジ */
+  color: #000;
 }
-button.special {
-  background: #cfd8dc;
+.keyrow button.special {
+  background: #cfd8dc;         /* 落ち着いたグレー */
+  color: #000;
+  font-weight: bold;
+  font-size: 18px;             /* 少し控えめにして枠に収める */
+}
+
+/* オプション：Enterだけクラス分離したい場合 */
+.keyrow button.enter {
+  font-size: 18px;
+  background: #aed581;         /* 薄いグリーン（任意） */
+  color: #000;
 }
 
 /* ダウンロード用レイアウト */
