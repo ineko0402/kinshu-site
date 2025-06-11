@@ -318,7 +318,7 @@ button:active {
   font-weight: bold;
 }
 
-/* === ダウンロードエリア（変数使用） === */
+/* === ダウンロードエリア（変数使用改善版） === */
 #download-area {
   display: none;
   font-size: 16px;
@@ -328,50 +328,84 @@ button:active {
   color: var(--download-text);
 }
 
-#download-area strong {
+#download-area .download-header {
+  margin-bottom: 16px;
+}
+
+#download-area .download-header strong {
   font-size: 18px;
 }
 
-#download-area table {
+#download-area .datetime {
+  margin-bottom: 8px;
+}
+
+#download-area .total-amount {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#download-area .summary-table {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  margin-top: 16px;
+  margin: 16px 0;
 }
 
-#download-area th,
-#download-area td {
+/* ヘッダー行のスタイル */
+#download-area .summary-table thead th {
+  padding: 10px 6px;
+  border-bottom: 2px solid var(--download-border);
+  font-weight: bold;
+  background-color: var(--download-stripe);
+}
+
+/* データ行のスタイル */
+#download-area .summary-table tbody td {
   padding: 8px 6px;
   border-bottom: 1px solid var(--download-border);
-  text-align: right;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: 16px;
 }
 
-#download-area th:first-child,
-#download-area td:first-child {
-  text-align: left;
+/* 列幅とテキスト配置を明示的に指定 */
+#download-area .denomination-header,
+#download-area .denomination {
   width: 55%;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-#download-area th:nth-child(2),
-#download-area td:nth-child(2) {
+#download-area .count-header,
+#download-area .count {
   width: 15%;
   text-align: center;
 }
 
-#download-area th:nth-child(3),
-#download-area td:nth-child(3) {
+#download-area .amount-header,
+#download-area .amount {
   width: 30%;
+  text-align: right;
+  white-space: nowrap;
 }
 
-#download-area div:last-child {
+/* データなしの場合 */
+#download-area .no-data {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* 縞模様 */
+#download-area .summary-table tbody tr:nth-child(even) {
+  background-color: var(--download-stripe);
+}
+
+#download-area .download-footer {
   margin-top: 12px;
   font-size: 16px;
-}
-
-#download-area tr:nth-child(even) {
-  background-color: var(--download-stripe);
+  text-align: center;
+  font-weight: bold;
 }

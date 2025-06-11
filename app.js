@@ -273,66 +273,95 @@ function downloadImage() {
   const data = currentCurrency === 'JPY' ? jpyData : cnyData;
   const rows = [];
   let total = 0, bills = 0, coins = 0;
-  const map = new Map();
 
-  // 金種ごとに集計
+  // 金種ごとに集計（枚数0でも表示、hide設定のみ除外）
   data.forEach(({ id, kind, label, isCoin }) => {
+    // hide設定による除外判定を最初に実行
+    if (currentCurrency === 'JPY') {
+      if (hide2000 && kind === 2000) return;
+      if (hideBills && !isCoin && kind >= 1) return;
+      if (hideCoins && (isCoin || kind < 1)) return;
+    }
+
     const cell = document.querySelector(`.cell[data-id="${id}"]`);
     if (!cell) return;
 
     const display = cell.querySelector('.display');
-    const val = parseFloat(display.dataset.value || '0');
-    if (isNaN(val)) return;
+    let val = parseFloat(display.dataset.value || '0');
+    
+    // NaN処理を改善（0に置換）
+    if (isNaN(val)) val = 0;
 
     const amt = val * kind;
-
-    if (!map.has(id)) {
-      map.set(id, { id, label, kind, val: 0, amt: 0, isCoin });
-    }
-    const entry = map.get(id);
-    entry.val += val;
-    entry.amt += amt;
-
-    if (entry.isCoin || kind < 1 || label.includes('硬貨')) coins += val;
-    else bills += val;
-
-    total += amt;
-  });
-
-  // 表示対象の行のみ構築（hide設定を考慮）
-  map.forEach(entry => {
-    if (currentCurrency === 'JPY') {
-      if (hide2000 && entry.kind === 2000) return;
-      if (hideBills && !entry.isCoin) return;
-      if (hideCoins && entry.isCoin) return;
+    
+    // 紙幣・硬貨の分類を統一（枚数が0より大きい場合のみカウント）
+    const isCoinType = isCoin || kind < 1;
+    if (val > 0) {
+      if (isCoinType) {
+        coins += val;
+      } else {
+        bills += val;
+      }
+      total += amt;
     }
 
-    rows.push(`<tr><td>${entry.label}</td><td>${entry.val}</td><td>${entry.amt.toLocaleString()} ${currencyUnit}</td></tr>`);
+    // 小数点を含む金額の適切な表示
+    const formattedAmount = currentCurrency === 'CNY' && kind < 1 
+      ? amt.toFixed(1) // 0.5元、0.1元など小数を正確に表示
+      : amt.toLocaleString();
+
+    // 枚数が0でも行を追加
+    rows.push(`
+      <tr>
+        <td class="denomination">${label}</td>
+        <td class="count">${val}</td>
+        <td class="amount">${formattedAmount} ${currencyUnit}</td>
+      </tr>
+    `);
   });
 
-  // ダウンロードエリア構築
+  // テーブルの構築（枚数0の行も含めて表示）
+  const tableContent = rows.join('');
+
+  // ダウンロードエリア構築（HTMLの構造を改善）
   area.innerHTML = `
-    <div><strong>現在日時：</strong>${datetime}</div>
-    <div><strong>合計：</strong>${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${currencyUnit}</div>
-    <table>
-      <tr><th>金種</th><th>枚数</th><th>金額</th></tr>
-      ${rows.join('')}
+    <div class="download-header">
+      <div class="datetime"><strong>現在日時：</strong>${datetime}</div>
+      <div class="total-amount"><strong>合計：</strong>${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${currencyUnit}</div>
+    </div>
+    
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th class="denomination-header">金種</th>
+          <th class="count-header">枚数</th>
+          <th class="amount-header">金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableContent}
+      </tbody>
     </table>
-    <div>紙幣：${bills}枚　硬貨：${coins}枚（合計：${bills + coins}枚）</div>
+    
+    <div class="download-footer">
+      紙幣：${bills}枚　硬貨：${coins}枚（合計：${bills + coins}枚）
+    </div>
   `;
 
-  // 📏 一時的なスタイル適用
+  // スタイル適用（一時的な設定）
   area.style.display = 'block';
   area.style.width = '360px';
   area.style.height = '640px';
   area.style.padding = '20px';
   area.style.boxSizing = 'border-box';
 
-  // 📷 スクリーンショット出力
+  // スクリーンショット出力
   html2canvas(area, {
     width: 360,
     height: 640,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    scale: 2, // 高解像度化
+    useCORS: true // 外部リソース対応
   }).then(canvas => {
     const link = document.createElement('a');
     link.download = `kinshu-site_${ymdhm}_${currencyCode}.jpeg`;
@@ -340,6 +369,15 @@ function downloadImage() {
     link.click();
 
     // 後処理：非表示とスタイルリセット
+    area.style.display = 'none';
+    area.style.width = '';
+    area.style.height = '';
+    area.style.padding = '';
+  }).catch(error => {
+    console.error('スクリーンショット生成エラー:', error);
+    alert('画像の生成に失敗しました。');
+    
+    // エラー時も後処理を実行
     area.style.display = 'none';
     area.style.width = '';
     area.style.height = '';
