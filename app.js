@@ -236,6 +236,13 @@ function openSettings() {
         onchange="hideCoins = this.checked; localStorage.setItem('hideCoins', hideCoins); renderCurrency();">
       小銭を使わない
     </label><br>
+    
+    <hr>
+    <strong>📄 ライセンス情報</strong><br>
+    <small>
+      このアプリは <a href="https://github.com/niklasvh/html2canvas" target="_blank">html2canvas</a> を使用しています<br>
+      © 2012 Niklas von Hertzen (MIT License)
+    </small><br>
   `;
 
   // ✅ 設定ウィンドウ本体を作成
