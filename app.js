@@ -367,7 +367,7 @@ function downloadImage() {
     width: 360,
     height: 640,
     backgroundColor: '#fff',
-    scale: 1, 
+    scale: 1.5, 
     useCORS: true // 外部リソース対応
   }).then(canvas => {
     const link = document.createElement('a');
