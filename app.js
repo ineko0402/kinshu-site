@@ -351,7 +351,7 @@ function downloadImage() {
     </table>
     
     <div class="download-footer">
-      紙幣：${bills}枚　硬貨：${coins}枚（合計：${bills + coins}枚）
+      紙幣：${bills}枚　硬貨：${coins}枚（計：${bills + coins}枚）
     </div>
   `;
 
@@ -367,7 +367,7 @@ function downloadImage() {
     width: 360,
     height: 640,
     backgroundColor: '#fff',
-    scale: 2, // 高解像度化
+    scale: 1, 
     useCORS: true // 外部リソース対応
   }).then(canvas => {
     const link = document.createElement('a');

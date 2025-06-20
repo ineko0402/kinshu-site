@@ -341,7 +341,7 @@ button:active {
 }
 
 #download-area .total-amount {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -370,7 +370,7 @@ button:active {
 /* 列幅とテキスト配置を明示的に指定 */
 #download-area .denomination-header,
 #download-area .denomination {
-  width: 55%;
+  width: 40%;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -385,7 +385,7 @@ button:active {
 
 #download-area .amount-header,
 #download-area .amount {
-  width: 30%;
+  width: 45%;
   text-align: right;
   white-space: nowrap;
 }
