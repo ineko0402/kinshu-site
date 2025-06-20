@@ -4,6 +4,7 @@ let hideBills = false;
 let hideCoins = false;
 let currentInput = '';
 let activeDisplay = null;
+let isFirstInput = true;
 
 const jpyData = [
   { id: 'jpy-10000', kind: 10000, label: '一万円札' },
@@ -103,9 +104,8 @@ function showKeypad(cell) {
 
   document.getElementById('keypadInput').value = currentInput;
   document.getElementById('overlay').classList.add('show');
+  isFirstInput = true; // ← 初回入力と判定する
 }
-
-
 
 function hideKeypad() {
   document.getElementById('overlay').classList.remove('show');
@@ -118,26 +118,39 @@ document.querySelectorAll('#keypadPanel button').forEach(btn => {
     const key = btn.textContent;
     const inputEl = document.getElementById('keypadInput');
 
+    const isNumber = /^[0-9]$/.test(key);
+
     if (key === 'AC') {
       currentInput = '0';
+      isFirstInput = true;
     } else if (key === '⇐') {
       currentInput = currentInput.slice(0, -1) || '0';
     } else if (key === '=') {
       try {
         currentInput = eval(currentInput.replace(/×/g, '*').replace(/÷/g, '/')).toString();
-      } catch { currentInput = '0'; }
+      } catch {
+        currentInput = '0';
+      }
     } else if (key === 'Enter') {
       try {
         currentInput = eval(currentInput.replace(/×/g, '*').replace(/÷/g, '/')).toString();
-      } catch { currentInput = '0'; }
+      } catch {
+        currentInput = '0';
+      }
       activeDisplay.dataset.value = currentInput;
       activeDisplay.textContent = currentInput;
       updateSummary();
       hideKeypad();
       return;
     } else {
-      if (currentInput === '0') currentInput = '';
-      currentInput += key;
+      // ✅ 数字入力：最初だけ置き換え
+      if (isFirstInput && isNumber) {
+        currentInput = key;
+      } else {
+        if (currentInput === '0' && !isNumber) currentInput = '';
+        currentInput += key;
+      }
+      isFirstInput = false;
     }
 
     inputEl.value = currentInput;
