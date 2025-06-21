@@ -431,7 +431,7 @@ async function downloadImage() {
     useCORS: true
   }).then(canvas => {
     const link = document.createElement('a');
-    link.download = `kinshu-site_${ymdhm}_${currencyCode}.jpeg`;
+    link.download = `${ymdhm}_${currencyCode}.jpg`;
     link.href = canvas.toDataURL("image/jpeg", 0.85);
     link.click();
   }).catch(error => {

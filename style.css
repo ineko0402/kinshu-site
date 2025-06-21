@@ -129,22 +129,29 @@ header {
 }
 
 .summary {
+  display: flex;
+  justify-content: space-between;
   text-align: center;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
-  margin: 10px 0 20px 8px;
+  margin: 10px auto 20px auto;
+  max-width: 500px;
+  padding: 0 12px;
   color: var(--accent);
 }
 
+.summary .item {
+  flex: 1;
+}
+
 .summary #total {
-  display: block;
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 6px;
 }
 
 .summary span:not(#total) {
-  font-size: 14px;
+  font-size: 16px;
   white-space: nowrap;
   margin: 0 2px;
 }
