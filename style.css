@@ -1,93 +1,123 @@
+/* === カラーテーマ（ライト） === */
 :root {
-  /* === ベースカラー === */
   --bg-color: #f0f0f0;
   --text-color: #000;
   --accent: #1976d2;
-  
-  /* === コンポーネント別カラー === */
+
   --cell-bg: #e3f2fd;
   --display-bg: #fff;
   --button-bg: #cfd8dc;
   --button-hover: #b0bec5;
   --header-bg: var(--button-bg);
-  
-  /* === ボーダー・シャドウ === */
+
   --border-color: #ccc;
   --shadow-light: rgba(0,0,0,0.1);
   --shadow-dark: rgba(0,0,0,0.3);
   --overlay-bg: rgba(0,0,0,0.4);
-  
-  /* === テンキーボタン === */
+
   --keypad-digit-bg: #bbdefb;
   --keypad-digit-color: #000;
   --keypad-operator-bg: #ffe082;
   --keypad-operator-color: #000;
   --keypad-special-bg: #cfd8dc;
   --keypad-special-color: #000;
-  --keypad-clear-bg: #f85c51;     /* 赤系 - ACボタン用 */
+  --keypad-clear-bg: #f85c51;
   --keypad-clear-color: #fff;
   --keypad-enter-bg: #aed581;
   --keypad-enter-color: #000;
-  
-  /* === アクションボタン === */
-  --action-clear-bg: #d2544b;     /* 赤系 - 全クリアボタン用 */
+
+  --action-clear-bg: #d2544b;
   --action-clear-color: #fff;
-  
-  /* === ダウンロードエリア === */
+
   --download-bg: #fff;
   --download-text: #000;
   --download-border: #ccc;
   --download-stripe: #f5f5f5;
 }
 
-/* === ダークモード === */
+/* === ダークテーマ === */
 body.dark {
-  /* ベースカラー */
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --accent: #90caf9;
-  
-  /* コンポーネント別カラー */
+
   --cell-bg: #37474f;
   --display-bg: #263238;
   --button-bg: #455a64;
   --button-hover: #546e7a;
   --header-bg: var(--button-bg);
-  
-  /* ボーダー・シャドウ */
+
   --border-color: #666;
   --shadow-light: rgba(255,255,255,0.1);
   --shadow-dark: rgba(0,0,0,0.5);
-  
-  /* テンキーボタン（ダークモード - 落ち着いた色合い） */
-  --keypad-digit-bg: #455a64;     /* 青グレー系（数字） */
+
+  --keypad-digit-bg: #455a64;
   --keypad-digit-color: #fff;
-  --keypad-operator-bg: #25686dc9;  /* ブラウン系（演算子） */
+  --keypad-operator-bg: #25686dc9;
   --keypad-operator-color: #fff;
-  --keypad-special-bg: #546e7a;   /* グレー系（特殊キー） */
+  --keypad-special-bg: #546e7a;
   --keypad-special-color: #fff;
-  --keypad-clear-bg: #d32f2f;     /* 深い赤（クリア系） */
+  --keypad-clear-bg: #d32f2f;
   --keypad-clear-color: #fff;
-  --keypad-enter-bg: #388e3c;     /* 深い緑（Enter） */
+  --keypad-enter-bg: #388e3c;
   --keypad-enter-color: #fff;
-  
-  /* アクションボタン */
-  --action-clear-bg: #ef5350;     /* ダークモード用赤 */
+
+  --action-clear-bg: #ef5350;
   --action-clear-color: #fff;
-  
-  /* ダウンロードエリア */
+
   --download-bg: #263238;
   --download-text: #e0e0e0;
   --download-border: #546e7a;
   --download-stripe: #37474f;
 }
 
-/* === 既存スタイル（変数使用に変更） === */
+/* === CNY用暖色系テーマ（ライト） === */
+body.layout-cny:not(.dark) {
+  --accent: #d77a61;
+  --cell-bg: #fff3e0;
+  --button-bg: #ffe0b2;
+  --button-hover: #ffcc80;
+  --keypad-digit-bg: #ffe0b2;
+  --keypad-operator-bg: #ffb74d;
+  --keypad-special-bg: #ffccbc;
+  --keypad-clear-bg: #e57373;
+  --keypad-enter-bg: #a5d6a7;
+  --download-stripe: #fff8e1;
+}
+
+/* === CNY用暖色系テーマ（ダーク） === */
+body.dark.layout-cny {
+  --accent: #f7a072;
+  --cell-bg: #4e342e;
+  --display-bg: #3e2723;
+  --button-bg: #6d4c41;
+  --button-hover: #8d6e63;
+  --keypad-digit-bg: #795548;
+  --keypad-operator-bg: #d7a36e;
+  --keypad-special-bg: #8d6e63;
+  --keypad-clear-bg: #ef9a9a;
+  --keypad-enter-bg: #81c784;
+  --download-stripe: #5d4037;
+}
+
+/* === ベース === */
 body {
   margin: 0;
   font-family: sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
+}
+
+button, .btn {
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-light);
+  border-radius: 6px;
+  touch-action: manipulation;
+}
+
+button:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 header {
@@ -138,13 +168,8 @@ header {
   max-width: 500px;
 }
 
-.bills {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.coins {
-  grid-template-columns: repeat(3, 1fr);
-}
+.bills { grid-template-columns: repeat(2, 1fr); }
+.coins { grid-template-columns: repeat(3, 1fr); }
 
 .cell {
   background: var(--cell-bg);
@@ -157,14 +182,8 @@ header {
   box-shadow: 0 2px 4px var(--shadow-light);
 }
 
-.cell:active {
-  transform: scale(0.95);
-}
-
-.cell.disabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
+.cell:active { transform: scale(0.95); }
+.cell.disabled { opacity: 0.4; pointer-events: none; }
 
 .display {
   margin-top: 6px;
@@ -193,26 +212,17 @@ header {
   min-width: 100px;
   background: var(--button-bg);
   color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
   padding: 8px 0;
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.2s;
   white-space: nowrap;
   text-align: center;
 }
 
-button {
-  touch-action: manipulation;
-}
-
-button:hover {
-  background: var(--button-hover);
-}
-
-button:active {
-  transform: scale(0.97);
+.actions button.clear-all {
+  background: var(--action-clear-bg);
+  color: var(--action-clear-color);
+  font-weight: bold;
 }
 
 #overlay {
@@ -225,9 +235,7 @@ button:active {
   z-index: 1000;
 }
 
-#overlay.show {
-  display: flex;
-}
+#overlay.show { display: flex; }
 
 #keypadPanel {
   background: var(--display-bg);
@@ -236,6 +244,9 @@ button:active {
   box-shadow: 0 4px 12px var(--shadow-dark);
   min-width: 260px;
   text-align: center;
+  transition: transform 0.2s ease;
+  transform: translateY(0);
+  touch-action: none;
 }
 
 #keypadLabel {
@@ -263,21 +274,18 @@ button:active {
   margin: 4px 0;
 }
 
-/* === テンキーボタン（変数使用） === */
 .keyrow button {
   flex: 1;
-  min-width: 60px;
+  flex-basis: 25%;
+  max-width: 80px;
   height: 60px;
   font-size: 20px;
-  border-radius: 6px;
   background: var(--button-bg);
   color: var(--text-color);
-  border: 1px solid var(--border-color);
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 4px var(--shadow-light);
 }
 
 .keyrow button.digit {
@@ -297,30 +305,30 @@ button:active {
   font-size: 18px;
 }
 
-/* AC（クリア）ボタンを赤く強調 */
 .keyrow button.clear {
   background: var(--keypad-clear-bg);
   color: var(--keypad-clear-color);
-  font-weight: bold;
-  font-size: 18px;
 }
 
 .keyrow button.enter {
   background: var(--keypad-enter-bg);
   color: var(--keypad-enter-color);
-  font-size: 18px;
 }
 
-/* === アクションボタンエリア === */
-.actions button.clear-all {
-  background: var(--action-clear-bg);
-  color: var(--action-clear-color);
-  font-weight: bold;
+.download-capture {
+  display: block !important;
+  width: 360px;
+  height: 640px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
 }
 
-/* === ダウンロードエリア（変数使用改善版） === */
-#download-area {
+#download-area:not(.download-capture) {
   display: none;
+}
+
+#download-area {
   font-size: 16px;
   line-height: 1.6;
   padding: 16px;
@@ -330,10 +338,6 @@ button:active {
 
 #download-area .download-header {
   margin-bottom: 16px;
-}
-
-#download-area .download-header strong {
-  font-size: 18px;
 }
 
 #download-area .datetime {
@@ -352,7 +356,6 @@ button:active {
   margin: 16px 0;
 }
 
-/* ヘッダー行のスタイル */
 #download-area .summary-table thead th {
   padding: 10px 6px;
   border-bottom: 2px solid var(--download-border);
@@ -360,14 +363,12 @@ button:active {
   background-color: var(--download-stripe);
 }
 
-/* データ行のスタイル */
 #download-area .summary-table tbody td {
   padding: 8px 6px;
   border-bottom: 1px solid var(--download-border);
   font-size: 16px;
 }
 
-/* 列幅とテキスト配置を明示的に指定 */
 #download-area .denomination-header,
 #download-area .denomination {
   width: 40%;
@@ -390,22 +391,35 @@ button:active {
   white-space: nowrap;
 }
 
-/* データなしの場合 */
-#download-area .no-data {
-  text-align: center;
-  color: #999;
-  font-style: italic;
-  padding: 20px;
-}
-
-/* 縞模様 */
-#download-area .summary-table tbody tr:nth-child(even) {
-  background-color: var(--download-stripe);
-}
-
 #download-area .download-footer {
   margin-top: 12px;
   font-size: 16px;
   text-align: center;
   font-weight: bold;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-box {
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 300px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+body.dark .settings-box {
+  background: #30343A;
+  color: #FBFEFF;
 }

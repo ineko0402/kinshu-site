@@ -46,5 +46,33 @@
   <div id="download-area"></div>
 
   <script src="app.js"></script>
+
+  <!-- settingsTemplate -->
+  <template id="settingsTemplate">
+    <div class="modal-overlay" id="settings-overlay">
+      <div id="settings-box" class="settings-box">
+        <h3>⚙️ 設定</h3>
+
+        <!-- チェックボックス群はそのまま -->
+        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label><br>
+        <label><input type="checkbox" id="currencyToggleCheckbox"> 通貨をCNYに切り替える</label><br><hr>
+
+        <strong>使用金種の制限（JPYのみ）</strong><br>
+        <label><input type="checkbox" id="hide2000Checkbox"> 2千円を使わない</label><br>
+        <label><input type="checkbox" id="hideBillsCheckbox"> お札を使わない</label><br>
+        <label><input type="checkbox" id="hideCoinsCheckbox"> 小銭を使わない</label><br><hr>
+
+        <strong>📄 ライセンス情報</strong><br>
+        <small>
+          このアプリは <a href="https://github.com/niklasvh/html2canvas" target="_blank">html2canvas</a> を使用しています<br>
+          © 2012 Niklas von Hertzen (MIT License)
+        </small><br><br>
+
+        <button id="closeSettingsBtn">閉じる</button>
+      </div>
+    </div>
+  </template>
+
+
 </body>
 </html>

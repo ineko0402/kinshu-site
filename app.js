@@ -1,10 +1,17 @@
-let currentCurrency = 'JPY';
-let hide2000 = false;
-let hideBills = false;
-let hideCoins = false;
-let currentInput = '';
-let activeDisplay = null;
-let isFirstInput = true;
+const appState = {
+  currentCurrency: 'JPY',
+  hide2000: false,
+  hideBills: false,
+  hideCoins: false,
+  currentInput: '',
+  activeDisplay: null,
+  isFirstInput: true,
+  touchStartY: 0,
+  touchEndY: 0,
+  startY: 0,
+  currentY: 0,
+  isDragging: false
+};
 
 const jpyData = [
   { id: 'jpy-10000', kind: 10000, label: '一万円札' },
@@ -31,13 +38,29 @@ const cnyData = [
   { id: 'cny-01', kind: 0.1, label: '1角硬貨', isCoin: true },
 ];
 
+function safeEval(expr) {
+  // 演算子置換（×や÷→JavaScript演算子）
+  expr = expr.replace(/×/g, '*').replace(/÷/g, '/');
+
+  // 数字と演算子以外を除外（安全性確保）
+  if (!/^[0-9+\-*/().\s]+$/.test(expr)) return '0';
+
+  try {
+    // Functionで簡易的に評価
+    const f = new Function(`return (${expr})`);
+    return f().toString();
+  } catch {
+    return '0';
+  }
+}
+
 function renderCurrency() {
   const container = document.querySelector('.container');
   container.querySelector('.bills').innerHTML = '';
   container.querySelector('.coins').innerHTML = '';
 
-  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
-  document.body.classList.toggle('layout-cny', currentCurrency === 'CNY');
+  const data = appState.currentCurrency === 'JPY' ? jpyData : cnyData;
+  document.body.classList.toggle('layout-cny', appState.currentCurrency === 'CNY');
 
   data.forEach(({ id, kind, label, isCoin }) => {
     const coin = !!isCoin || kind < 1;
@@ -45,10 +68,10 @@ function renderCurrency() {
     const is2000 = kind === 2000;
 
     let disabled = false;
-    if (currentCurrency === 'JPY') {
-      if (is2000 && hide2000) disabled = true;
-      if (bill && hideBills) disabled = true;
-      if (coin && hideCoins) disabled = true;
+    if (appState.currentCurrency === 'JPY') {
+      if (is2000 && appState.hide2000) disabled = true;
+      if (bill && appState.hideBills) disabled = true;
+      if (coin && appState.hideCoins) disabled = true;
     }
 
     const cell = document.createElement('div');
@@ -71,7 +94,7 @@ function renderCurrency() {
   });
 
   // ✅ 枚数復元
-  const saved = JSON.parse(localStorage.getItem(`counts_${currentCurrency}`) || '{}');
+  const saved = JSON.parse(localStorage.getItem(`counts_${appState.currentCurrency}`) || '{}');
   document.querySelectorAll('.cell').forEach(cell => {
     const id = cell.dataset.id;
     const val = saved[id];
@@ -86,79 +109,139 @@ function renderCurrency() {
 }
 
 function showKeypad(cell) {
-  activeDisplay = cell.querySelector('.display');
-  currentInput = activeDisplay.dataset.value || '0';
+  appState.activeDisplay = cell.querySelector('.display');
+  appState.currentInput = appState.activeDisplay.dataset.value || '0';
 
   const kind = parseFloat(cell.dataset.kind);
-  const count = parseFloat(activeDisplay.dataset.value || '0');
-  const currencyUnit = currentCurrency === 'JPY' ? '円' : '元';
+  const count = parseFloat(appState.activeDisplay.dataset.value || '0');
+  const currencyUnit = appState.currentCurrency === 'JPY' ? '円' : '元';
   const total = kind * count;
 
   // 金種名をデータから取得（ラベルに余計な枚数が含まれない）
-  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
+  const data = appState.currentCurrency === 'JPY' ? jpyData : cnyData;
   const item = data.find(d => d.kind === kind);
   const label = item ? item.label : `${kind}${currencyUnit}`;
 
   const displayLabel = `${label} ${total.toLocaleString(undefined, { maximumFractionDigits: 2 })}${currencyUnit}（${count}枚）`;
   document.getElementById('keypadLabel').textContent = displayLabel;
 
-  document.getElementById('keypadInput').value = currentInput;
+  document.getElementById('keypadInput').value = appState.currentInput;
   document.getElementById('overlay').classList.add('show');
-  isFirstInput = true; // ← 初回入力と判定する
+  appState.isFirstInput = true; // ← 初回入力と判定する
 }
 
 function hideKeypad() {
   document.getElementById('overlay').classList.remove('show');
-  activeDisplay = null;
+  appState.activeDisplay = null;
 }
 
-document.querySelectorAll('#keypadPanel button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (!activeDisplay) return;
-    const key = btn.textContent;
-    const inputEl = document.getElementById('keypadInput');
+const overlay = document.getElementById('overlay');
 
-    const isNumber = /^[0-9]$/.test(key);
+overlay.addEventListener('click', (e) => {
+  // クリック（またはタップ）したのが keypadPanel でないなら閉じる
+  if (!panel.contains(e.target)) {
+    hideKeypad();
+  }
+});
 
-    if (key === 'AC') {
-      currentInput = '0';
-      isFirstInput = true;
-    } else if (key === '⇐') {
-      currentInput = currentInput.slice(0, -1) || '0';
-    } else if (key === '=') {
-      try {
-        currentInput = eval(currentInput.replace(/×/g, '*').replace(/÷/g, '/')).toString();
-      } catch {
-        currentInput = '0';
+overlay.addEventListener('touchstart', (e) => {
+  appState.touchStartY = e.touches[0].clientY;
+});
+
+overlay.addEventListener('touchend', (e) => {
+  appState.touchEndY = e.changedTouches[0].clientY;
+
+  const SWIPE_CLOSE_THRESHOLD = 50; // 閉じる距離
+
+  // スワイプの距離をチェック
+  if (appState.touchEndY - appState.touchStartY > SWIPE_CLOSE_THRESHOLD) {
+    // 50px以上下にスワイプしたら閉じる
+    hideKeypad();
+  }
+});
+
+const DRAG_CLOSE_THRESHOLD  = 100; // 閉じる距離
+const panel = document.getElementById('keypadPanel');
+
+panel.addEventListener('touchstart', (e) => {
+  appState.startY = e.touches[0].clientY;
+  appState.isDragging = true;
+  panel.style.transition = 'none'; // ドラッグ中はアニメ無効
+});
+
+panel.addEventListener('touchmove', (e) => {
+  if (!appState.isDragging) return;
+  appState.currentY = e.touches[0].clientY;
+  const deltaY = appState.currentY - appState.startY;
+  if (deltaY > 0) {
+    panel.style.transform = `translateY(${deltaY}px)`;
+  }
+});
+
+panel.addEventListener('touchend', () => {
+  if (!appState.isDragging) return;
+  appState.isDragging = false;
+  const deltaY = appState.currentY - appState.startY;
+
+  if (deltaY > DRAG_CLOSE_THRESHOLD ) {
+    // 閾値を超えたら閉じる
+    panel.style.transition = 'transform 0.2s ease';
+    panel.style.transform = `translateY(100%)`;
+    setTimeout(() => {
+      hideKeypad(); // オーバーレイ非表示などの処理
+      panel.style.transform = 'translateY(0)'; // 次回に備えて初期化
+    }, 200);
+  } else {
+    // 戻す
+    panel.style.transition = 'transform 0.2s ease';
+    panel.style.transform = 'translateY(0)';
+  }
+});
+
+document.getElementById('keypadPanel').addEventListener('click', (e) => {
+  if (e.target.tagName !== 'BUTTON' || !appState.activeDisplay) return;
+
+  const key = e.target.textContent;
+  const inputEl = document.getElementById('keypadInput');
+  const isNumber = /^[0-9]$/.test(key);
+
+  switch (key) {
+    case 'AC':
+      appState.currentInput = '0';
+      appState.isFirstInput = true;
+      break;
+
+    case '⇐':
+      appState.currentInput = appState.currentInput.slice(0, -1) || '0';
+      break;
+
+    case '=':
+    case 'Enter':
+      appState.currentInput = safeEval(appState.currentInput);
+      if (key === 'Enter') {
+        appState.activeDisplay.dataset.value = appState.currentInput;
+        appState.activeDisplay.textContent = appState.currentInput;
+        updateSummary();
+        hideKeypad();
+        return;
       }
-    } else if (key === 'Enter') {
-      try {
-        currentInput = eval(currentInput.replace(/×/g, '*').replace(/÷/g, '/')).toString();
-      } catch {
-        currentInput = '0';
-      }
-      activeDisplay.dataset.value = currentInput;
-      activeDisplay.textContent = currentInput;
-      updateSummary();
-      hideKeypad();
-      return;
-    } else {
-      // ✅ 数字入力：最初だけ置き換え
-      if (isFirstInput && isNumber) {
-        currentInput = key;
+      break;
+
+    default:
+      if (appState.isFirstInput && isNumber) {
+        appState.currentInput = key;
       } else {
-        if (currentInput === '0' && !isNumber) currentInput = '';
-        currentInput += key;
+        if (appState.currentInput === '0' && !isNumber) appState.currentInput = '';
+        appState.currentInput += key;
       }
-      isFirstInput = false;
-    }
+      appState.isFirstInput = false;
+  }
 
-    inputEl.value = currentInput;
-  });
+  inputEl.value = appState.currentInput;
 });
 
 function updateSummary() {
-  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
+  const data = appState.currentCurrency === 'JPY' ? jpyData : cnyData;
   let total = 0, bills = 0, coins = 0;
 
   document.querySelectorAll('.cell').forEach(cell => {
@@ -176,7 +259,7 @@ function updateSummary() {
     total += amt;
   });
 
-  const unit = currentCurrency === 'JPY' ? '円' : '元';
+  const unit = appState.currentCurrency === 'JPY' ? '円' : '元';
   document.getElementById('total').textContent = `${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${unit}`;
   document.getElementById('billCount').textContent = bills;
   document.getElementById('coinCount').textContent = coins;
@@ -189,7 +272,7 @@ function updateSummary() {
     const val = cell.querySelector('.display').dataset.value || '0';
     values[id] = val;
   });
-  localStorage.setItem(`counts_${currentCurrency}`, JSON.stringify(values));
+  localStorage.setItem(`counts_${appState.currentCurrency}`, JSON.stringify(values));
 }
 
 
@@ -207,100 +290,88 @@ function toggleDarkMode() {
 }
 
 function toggleCurrency() {
-  currentCurrency = currentCurrency === 'JPY' ? 'CNY' : 'JPY';
-  localStorage.setItem('currency', currentCurrency);
+  appState.currentCurrency = appState.currentCurrency === 'JPY' ? 'CNY' : 'JPY';
+  localStorage.setItem('currency', appState.currentCurrency);
   renderCurrency();
 }
 
 function openSettings() {
-  // ✅ 設定画面が既に存在する場合は何もしない
   if (document.getElementById('settings-box')) return;
 
-  const html = `
-    <h3>⚙️ 設定</h3>
-    <label>
-      <input type="checkbox" ${document.body.classList.contains('dark') ? 'checked' : ''} 
-        onchange="toggleDarkMode(); localStorage.setItem('darkMode', document.body.classList.contains('dark'));">
-      ダークモード
-    </label><br>
+  const tpl = document.getElementById('settingsTemplate');
+  const overlay = tpl.content.cloneNode(true).querySelector('.modal-overlay');
+  const box = overlay.querySelector('#settings-box');
+  
+  // 各チェックボックスの状態を設定
+  box.querySelector('#darkModeCheckbox').checked = document.body.classList.contains('dark');
+  box.querySelector('#currencyToggleCheckbox').checked = appState.currentCurrency === 'CNY';
+  box.querySelector('#hide2000Checkbox').checked = appState.hide2000;
+  box.querySelector('#hideBillsCheckbox').checked = appState.hideBills;
+  box.querySelector('#hideCoinsCheckbox').checked = appState.hideCoins;
 
-    <label>
-      <input type="checkbox" ${currentCurrency === 'CNY' ? 'checked' : ''} 
-        onchange="toggleCurrency(); localStorage.setItem('currency', currentCurrency);">
-      通貨をCNYに切り替える
-    </label><br><hr>
+  // イベントリスナーを追加
+  box.querySelector('#darkModeCheckbox').addEventListener('change', e => {
+    document.body.classList.toggle('dark', e.target.checked);
+    localStorage.setItem('darkMode', e.target.checked);
+  });
 
-    <strong>使用金種の制限（JPYのみ）</strong><br>
+  box.querySelector('#currencyToggleCheckbox').addEventListener('change', e => {
+    appState.currentCurrency = e.target.checked ? 'CNY' : 'JPY';
+    localStorage.setItem('currency', appState.currentCurrency);
+    renderCurrency();
+  });
 
-    <label>
-      <input type="checkbox" ${hide2000 ? 'checked' : ''} 
-        onchange="hide2000 = this.checked; localStorage.setItem('hide2000', hide2000); renderCurrency();">
-      2千円を使わない
-    </label><br>
+  box.querySelector('#hide2000Checkbox').addEventListener('change', e => {
+    appState.hide2000 = e.target.checked;
+    localStorage.setItem('hide2000', appState.hide2000);
+    renderCurrency();
+  });
 
-    <label>
-      <input type="checkbox" ${hideBills ? 'checked' : ''} 
-        onchange="hideBills = this.checked; localStorage.setItem('hideBills', hideBills); renderCurrency();">
-      お札を使わない
-    </label><br>
+  box.querySelector('#hideBillsCheckbox').addEventListener('change', e => {
+    appState.hideBills = e.target.checked;
+    localStorage.setItem('hideBills', appState.hideBills);
+    renderCurrency();
+  });
 
-    <label>
-      <input type="checkbox" ${hideCoins ? 'checked' : ''} 
-        onchange="hideCoins = this.checked; localStorage.setItem('hideCoins', hideCoins); renderCurrency();">
-      小銭を使わない
-    </label><br>
-    
-    <hr>
-    <strong>📄 ライセンス情報</strong><br>
-    <small>
-      このアプリは <a href="https://github.com/niklasvh/html2canvas" target="_blank">html2canvas</a> を使用しています<br>
-      © 2012 Niklas von Hertzen (MIT License)
-    </small><br>
-  `;
+  box.querySelector('#hideCoinsCheckbox').addEventListener('change', e => {
+    appState.hideCoins = e.target.checked;
+    localStorage.setItem('hideCoins', appState.hideCoins);
+    renderCurrency();
+  });
 
-  // ✅ 設定ウィンドウ本体を作成
-  const box = document.createElement('div');
-  box.id = 'settings-box';  // ← 識別用IDで複数生成を防ぐ
-  box.style.position = 'fixed';
-  box.style.top = '20px';
-  box.style.left = '20px';
-  box.style.right = '20px';
-  box.style.margin = 'auto';
-  box.style.maxWidth = '300px';
-  box.style.background = '#fff';
-  box.style.color = '#000';
-  box.style.padding = '20px';
-  box.style.borderRadius = '12px';
-  box.style.zIndex = 9999;
-  box.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+  box.querySelector('#closeSettingsBtn').addEventListener('click', () => {
+    box.remove();
+  });
 
-  // ✅ 内容と閉じるボタンを設定
-  box.innerHTML = html + '<br><button onclick="document.getElementById(\'settings-box\').remove()">閉じる</button>';
+  overlay.querySelector('#closeSettingsBtn').addEventListener('click', () => {
+    overlay.remove();
+  });
 
-  // ✅ 追加
-  document.body.appendChild(box);
+  // オーバーレイ外をクリックで閉じる（任意）
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  document.body.appendChild(overlay);
 }
-
-function downloadImage() {
+async function downloadImage() {
   const area = document.getElementById('download-area');
   const now = new Date();
   const pad = n => n.toString().padStart(2, '0');
   const datetime = `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
   const ymdhm = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}`;
-  const currencyUnit = currentCurrency === 'JPY' ? '円' : '元';
-  const currencyCode = currentCurrency;
+  const currencyUnit = appState.currentCurrency === 'JPY' ? '円' : '元';
+  const currencyCode = appState.currentCurrency;
 
-  const data = currentCurrency === 'JPY' ? jpyData : cnyData;
+  const data = appState.currentCurrency === 'JPY' ? jpyData : cnyData;
   const rows = [];
   let total = 0, bills = 0, coins = 0;
 
-  // 金種ごとに集計（枚数0でも表示、hide設定のみ除外）
   data.forEach(({ id, kind, label, isCoin }) => {
-    // hide設定による除外判定を最初に実行
-    if (currentCurrency === 'JPY') {
-      if (hide2000 && kind === 2000) return;
-      if (hideBills && !isCoin && kind >= 1) return;
-      if (hideCoins && (isCoin || kind < 1)) return;
+    if (appState.currentCurrency === 'JPY') {
+      if (appState.hide2000 && kind === 2000) return;
+      if (appState.hideBills && !isCoin && kind >= 1) return;
+      if (appState.hideCoins && (isCoin || kind < 1)) return;
     }
 
     const cell = document.querySelector(`.cell[data-id="${id}"]`);
@@ -308,29 +379,20 @@ function downloadImage() {
 
     const display = cell.querySelector('.display');
     let val = parseFloat(display.dataset.value || '0');
-    
-    // NaN処理を改善（0に置換）
     if (isNaN(val)) val = 0;
 
     const amt = val * kind;
-    
-    // 紙幣・硬貨の分類を統一（枚数が0より大きい場合のみカウント）
     const isCoinType = isCoin || kind < 1;
     if (val > 0) {
-      if (isCoinType) {
-        coins += val;
-      } else {
-        bills += val;
-      }
+      if (isCoinType) coins += val;
+      else bills += val;
       total += amt;
     }
 
-    // 小数点を含む金額の適切な表示
-    const formattedAmount = currentCurrency === 'CNY' && kind < 1 
-      ? amt.toFixed(1) // 0.5元、0.1元など小数を正確に表示
+    const formattedAmount = appState.currentCurrency === 'CNY' && kind < 1
+      ? amt.toFixed(1)
       : amt.toLocaleString();
 
-    // 枚数が0でも行を追加
     rows.push(`
       <tr>
         <td class="denomination">${label}</td>
@@ -340,77 +402,54 @@ function downloadImage() {
     `);
   });
 
-  // テーブルの構築（枚数0の行も含めて表示）
-  const tableContent = rows.join('');
-
-  // ダウンロードエリア構築（HTMLの構造を改善）
   area.innerHTML = `
     <div class="download-header">
       <div class="datetime"><strong>現在日時：</strong>${datetime}</div>
       <div class="total-amount"><strong>合計：</strong>${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${currencyUnit}</div>
     </div>
-    
     <table class="summary-table">
       <thead>
-        <tr>
-          <th class="denomination-header">金種</th>
-          <th class="count-header">枚数</th>
-          <th class="amount-header">金額</th>
-        </tr>
+        <tr><th>金種</th><th>枚数</th><th>金額</th></tr>
       </thead>
-      <tbody>
-        ${tableContent}
-      </tbody>
+      <tbody>${rows.join('')}</tbody>
     </table>
-    
     <div class="download-footer">
       紙幣：${bills}枚　硬貨：${coins}枚（計：${bills + coins}枚）
     </div>
   `;
 
-  // スタイル適用（一時的な設定）
-  area.style.display = 'block';
-  area.style.width = '360px';
-  area.style.height = '640px';
-  area.style.padding = '20px';
-  area.style.boxSizing = 'border-box';
+  area.classList.add('download-capture');
 
-  // スクリーンショット出力
+  // ✅ レンダリングを保証（2フレーム待機）
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
   html2canvas(area, {
     width: 360,
     height: 640,
     backgroundColor: '#fff',
-    scale: 1.5, 
-    useCORS: true // 外部リソース対応
+    scale: 1.5,
+    useCORS: true
   }).then(canvas => {
     const link = document.createElement('a');
     link.download = `kinshu-site_${ymdhm}_${currencyCode}.jpeg`;
     link.href = canvas.toDataURL("image/jpeg", 0.85);
     link.click();
-
-    // 後処理：非表示とスタイルリセット
-    area.style.display = 'none';
-    area.style.width = '';
-    area.style.height = '';
-    area.style.padding = '';
   }).catch(error => {
     console.error('スクリーンショット生成エラー:', error);
     alert('画像の生成に失敗しました。');
-    
-    // エラー時も後処理を実行
-    area.style.display = 'none';
-    area.style.width = '';
-    area.style.height = '';
-    area.style.padding = '';
+  }).finally(() => {
+    area.classList.remove('download-capture');
+    area.innerHTML = '';
   });
 }
 
+
 window.onload = () => {
   // 保存された設定を読み込み
-  hide2000 = localStorage.getItem('hide2000') === 'true';
-  hideBills = localStorage.getItem('hideBills') === 'true';
-  hideCoins = localStorage.getItem('hideCoins') === 'true';
-  currentCurrency = localStorage.getItem('currency') || 'JPY';
+  appState.hide2000 = localStorage.getItem('appState.hide2000') === 'true';
+  appState.hideBills = localStorage.getItem('appState.hideBills') === 'true';
+  appState.hideCoins = localStorage.getItem('appState.hideCoins') === 'true';
+  appState.currentCurrency = localStorage.getItem('currency') || 'JPY';
   const isDark = localStorage.getItem('darkMode') === 'true';
 
   document.body.classList.toggle('dark', isDark);
