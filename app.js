@@ -109,6 +109,13 @@ function renderCurrency() {
 }
 
 function showKeypad(cell) {
+  if (!cell || !cell.querySelector('.display')) return;
+
+  // 🧹 強制初期化
+  appState.isDragging = false;
+  appState.touchStartY = 0;
+  appState.touchEndY = 0;
+
   appState.activeDisplay = cell.querySelector('.display');
   appState.currentInput = appState.activeDisplay.dataset.value || '0';
 
@@ -133,6 +140,10 @@ function showKeypad(cell) {
 function hideKeypad() {
   document.getElementById('overlay').classList.remove('show');
   appState.activeDisplay = null;
+  appState.currentInput = '';
+  appState.isDragging = false; // ← スワイプ中状態を解除
+  appState.touchStartY = 0;
+  appState.touchEndY = 0;
 }
 
 const overlay = document.getElementById('overlay');
@@ -144,59 +155,58 @@ overlay.addEventListener('click', (e) => {
   }
 });
 
-overlay.addEventListener('touchstart', (e) => {
-  appState.touchStartY = e.touches[0].clientY;
-});
+// ↓ これらの行を無効化（コメントアウト or 削除）
+// overlay.addEventListener('touchstart', (e) => {
+//   appState.touchStartY = e.touches[0].clientY;
+// }, { passive: false });
 
-overlay.addEventListener('touchend', (e) => {
-  appState.touchEndY = e.changedTouches[0].clientY;
-
-  const SWIPE_CLOSE_THRESHOLD = 50; // 閉じる距離
-
-  // スワイプの距離をチェック
-  if (appState.touchEndY - appState.touchStartY > SWIPE_CLOSE_THRESHOLD) {
-    // 50px以上下にスワイプしたら閉じる
-    hideKeypad();
-  }
-});
+// overlay.addEventListener('touchend', (e) => {
+//   appState.touchEndY = e.changedTouches[0].clientY;
+//   const SWIPE_CLOSE_THRESHOLD = 50;
+//   if (appState.touchEndY - appState.touchStartY > SWIPE_CLOSE_THRESHOLD) {
+//     hideKeypad();
+//   }
+// }, { passive: false });
 
 const DRAG_CLOSE_THRESHOLD  = 100; // 閉じる距離
 const panel = document.getElementById('keypadPanel');
 
-panel.addEventListener('touchstart', (e) => {
-  appState.startY = e.touches[0].clientY;
-  appState.isDragging = true;
-  panel.style.transition = 'none'; // ドラッグ中はアニメ無効
-});
+// これらの行もコメントアウトまたは削除
+// panel.addEventListener('touchstart', (e) => {
+//   appState.startY = e.touches[0].clientY;
+//   appState.isDragging = true;
+//   panel.style.transition = 'none';
+// }, { passive: false });
 
-panel.addEventListener('touchmove', (e) => {
-  if (!appState.isDragging) return;
-  appState.currentY = e.touches[0].clientY;
-  const deltaY = appState.currentY - appState.startY;
-  if (deltaY > 0) {
-    panel.style.transform = `translateY(${deltaY}px)`;
-  }
-});
+// panel.addEventListener('touchmove', (e) => {
+//   if (!appState.isDragging) return;
+//   appState.currentY = e.touches[0].clientY;
+//   const deltaY = appState.currentY - appState.startY;
+//   if (deltaY > 0) {
+//     panel.style.transform = `translateY(${deltaY}px)`;
+//   }
+// }, { passive: false });
 
-panel.addEventListener('touchend', () => {
-  if (!appState.isDragging) return;
-  appState.isDragging = false;
-  const deltaY = appState.currentY - appState.startY;
 
-  if (deltaY > DRAG_CLOSE_THRESHOLD ) {
-    // 閾値を超えたら閉じる
-    panel.style.transition = 'transform 0.2s ease';
-    panel.style.transform = `translateY(100%)`;
-    setTimeout(() => {
-      hideKeypad(); // オーバーレイ非表示などの処理
-      panel.style.transform = 'translateY(0)'; // 次回に備えて初期化
-    }, 200);
-  } else {
-    // 戻す
-    panel.style.transition = 'transform 0.2s ease';
-    panel.style.transform = 'translateY(0)';
-  }
-});
+// panel.addEventListener('touchend', () => {
+//   if (!appState.isDragging) return;
+//   appState.isDragging = false;
+//   const deltaY = appState.currentY - appState.startY;
+
+//   if (deltaY > DRAG_CLOSE_THRESHOLD ) {
+//     // 閾値を超えたら閉じる
+//     panel.style.transition = 'transform 0.2s ease';
+//     panel.style.transform = `translateY(100%)`;
+//     setTimeout(() => {
+//       hideKeypad(); // オーバーレイ非表示などの処理
+//       panel.style.transform = 'translateY(0)'; // 次回に備えて初期化
+//     }, 200);
+//   } else {
+//     // 戻す
+//     panel.style.transition = 'transform 0.2s ease';
+//     panel.style.transform = 'translateY(0)';
+//   }
+// });
 
 document.getElementById('keypadPanel').addEventListener('click', (e) => {
   if (e.target.tagName !== 'BUTTON' || !appState.activeDisplay) return;
@@ -219,8 +229,11 @@ document.getElementById('keypadPanel').addEventListener('click', (e) => {
     case 'Enter':
       appState.currentInput = safeEval(appState.currentInput);
       if (key === 'Enter') {
-        appState.activeDisplay.dataset.value = appState.currentInput;
-        appState.activeDisplay.textContent = appState.currentInput;
+        const display = appState.activeDisplay;
+        if (display) {
+          display.dataset.value = appState.currentInput;
+          display.textContent = appState.currentInput;
+        }
         updateSummary();
         hideKeypad();
         return;
@@ -453,6 +466,7 @@ window.onload = () => {
   const isDark = localStorage.getItem('darkMode') === 'true';
 
   document.body.classList.toggle('dark', isDark);
+
   renderCurrency();
 };
 
