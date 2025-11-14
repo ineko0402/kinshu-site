@@ -12,7 +12,7 @@ export function bindSettingsEvents() {
   btn.addEventListener('click', openSettings);
 }
 
-function openSettings() {
+export function openSettings() {
   if (document.getElementById('settings-box')) return;
 
   const tpl = document.getElementById('settingsTemplate');

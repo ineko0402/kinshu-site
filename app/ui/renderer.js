@@ -90,3 +90,11 @@ export function updateSummary() {
 
   saveCounts();
 }
+
+export function resetAll() {
+  document.querySelectorAll('.display').forEach(d => {
+    d.dataset.value = '0';
+    d.textContent = '0';
+  });
+  updateSummary();
+}
