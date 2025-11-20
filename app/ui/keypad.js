@@ -6,6 +6,10 @@
 import { appState } from '../core/state.js';
 import { safeEval } from '../core/utils.js';
 import { updateSummary } from './renderer.js';
+import { normalizeLeadingZeros, shouldNormalize } from '../core/utils.js';
+import { applyHighlight } from './effects.js';
+
+let prevKey = null;
 
 export function bindKeypadEvents() {
   const overlay = document.getElementById('overlay');
@@ -54,6 +58,18 @@ export function bindKeypadEvents() {
           appState.currentInput += key;
         }
         appState.isFirstInput = false;
+        
+        if (shouldNormalize(prevKey, key)) {
+          const before = appState.currentInput;
+          const after = normalizeLeadingZeros(before);
+
+          if (before !== after) {
+            appState.currentInput = after;
+            applyHighlight(inputEl);
+          }
+        }
+
+        prevKey = key;
     }
 
     inputEl.value = appState.currentInput;

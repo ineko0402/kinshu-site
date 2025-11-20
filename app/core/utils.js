@@ -27,3 +27,28 @@ export function qs(selector, parent = document) {
 export function qsa(selector, parent = document) {
   return [...parent.querySelectorAll(selector)];
 }
+
+/**
+ * 式の中にあるすべての数字ブロックから先頭ゼロを取り除く
+ * 純粋関数
+ */
+export function normalizeLeadingZeros(expr) {
+  if (typeof expr !== 'string') return expr;
+
+  return expr.replace(/\d+/g, (num) => {
+    if (num === '0') return '0';
+    return String(Number(num));
+  });
+}
+
+/**
+ * 今回の入力キーで数字ブロックが区切られるかを判定する
+ * 純粋関数
+ */
+export function shouldNormalize(prevKey, currentKey) {
+  const prevIsNum = /\d/.test(prevKey);
+  const nowIsNum = /\d/.test(currentKey);
+
+  // 「直前が数字」かつ「今回が数字以外」の場合に整形を行う
+  return prevIsNum && !nowIsNum;
+}
