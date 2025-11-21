@@ -6,14 +6,6 @@
 import { appState } from '../core/state.js';
 import { safeEval } from '../core/utils.js';
 import { updateSummary } from './renderer.js';
-import { normalizeLeadingZeros, shouldNormalize } from '../core/utils.js';
-import { applyHighlight } from './effects.js';
-
-let prevKey = null;
-
-function isOperator(k) {
-  return ['+', '-', '×', '÷', '*', '/'].includes(k);
-}
 
 export function bindKeypadEvents() {
   const overlay = document.getElementById('overlay');
@@ -55,58 +47,13 @@ export function bindKeypadEvents() {
         }
         break;
       default:
-        const last = appState.currentInput.slice(-1);
-
-        // 先頭で - 以外の演算子は禁止
-        if ((appState.currentInput === '0' || appState.currentInput === '') && isOperator(key) && key !== '-') {
-          return;
-        }
-
-        // 演算子連続禁止
-        if (isOperator(last) && isOperator(key)) {
-          return;
-        }
-
-        // 演算子直後の 0 入力禁止
-        if (isOperator(last) && key === '0') {
-          return;
-        }
-
-        // 0 → 数字置換
-        if (appState.currentInput === '0' && /^[0-9]$/.test(key)) {
-          appState.currentInput = key;
-          prevKey = key;
-          inputEl.value = appState.currentInput;
-          return;
-        }
-
-        // 最大50桁制限
-        if (appState.currentInput.length >= 50) {
-          return;
-        }
-
-        // 通常入力
         if (appState.isFirstInput && isNumber) {
           appState.currentInput = key;
         } else {
           if (appState.currentInput === '0' && !isNumber) appState.currentInput = '';
           appState.currentInput += key;
         }
-
         appState.isFirstInput = false;
-
-        // leading-zero normalize
-        if (shouldNormalize(prevKey, key)) {
-          const before = appState.currentInput;
-          const after = normalizeLeadingZeros(before);
-
-          if (before !== after) {
-            appState.currentInput = after;
-            applyHighlight(inputEl);
-          }
-        }
-
-        prevKey = key;
     }
 
     inputEl.value = appState.currentInput;
@@ -141,3 +88,4 @@ function hideKeypad() {
   appState.activeDisplay = null;
   appState.currentInput = '';
 }
+

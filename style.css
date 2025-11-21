@@ -441,7 +441,7 @@ header {
 
 
 /* ==========================================================================
-   設定モーダル
+   設定モーダル (既存のスタイル)
    ========================================================================== */
 
 .modal-overlay {
@@ -468,4 +468,61 @@ header {
 body.dark .settings-box {
   background: #30343A;
   color: #FBFEFF;
+}
+
+/* ==========================================================================
+   ノート切り替えUI (追加スタイル)
+   ========================================================================== */
+
+/* ヘッダーのノート切り替えボタン */
+header #noteSwitchBtn {
+  /* index.htmlでインラインスタイルとして記述されていますが、
+     style.cssで定義する場合は以下のようになります */
+  float: left;
+  margin-left: 10px;
+  padding: 5px 10px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ノート一覧の各アイテム */
+#noteList .note-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  background: var(--button-bg);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#noteList .note-item:hover {
+  background: var(--button-hover);
+}
+
+/* アクティブなノート名 */
+#noteList .note-item .note-name.active {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* 削除ボタン */
+#noteList .note-item .delete-note-btn {
+  background: #ef5350; /* 赤色 */
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+#noteList .note-item .delete-note-btn:hover {
+  background: #d32f2f;
 }

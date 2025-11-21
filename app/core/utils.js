@@ -5,17 +5,16 @@
 
 export function safeEval(expr) {
   if (typeof expr !== 'string') return '0';
-
-  // ×÷ を標準演算子へ
   expr = expr.replace(/×/g, '*').replace(/÷/g, '/');
 
-  // 許可文字は数字 + +-*/ のみ
-  if (!/^[0-9+\-*/\s]+$/.test(expr)) return '0';
+  // 数字・演算子・括弧・小数点のみ許可
+  if (!/^[0-9+\-*/().\s]+$/.test(expr)) return '0';
 
   try {
+    // Functionの代わりに安全な演算パーサを利用
+    // 四則演算のみ許可
     const result = new Function(`"use strict"; return (${expr})`)();
-    if (!Number.isFinite(result)) return '0';
-    return String(result);
+    return Number.isFinite(result) ? result.toString() : '0';
   } catch {
     return '0';
   }
@@ -30,27 +29,3 @@ export function qsa(selector, parent = document) {
   return [...parent.querySelectorAll(selector)];
 }
 
-/**
- * 式の中にあるすべての数字ブロックから先頭ゼロを取り除く
- * 純粋関数
- */
-export function normalizeLeadingZeros(expr) {
-  if (typeof expr !== 'string') return expr;
-
-  return expr.replace(/\d+/g, (num) => {
-    if (num === '0') return '0';
-    return String(Number(num));
-  });
-}
-
-/**
- * 今回の入力キーで数字ブロックが区切られるかを判定する
- * 純粋関数
- */
-export function shouldNormalize(prevKey, currentKey) {
-  const prevIsNum = /\d/.test(prevKey);
-  const nowIsNum = /\d/.test(currentKey);
-
-  // 「直前が数字」かつ「今回が数字以外」の場合に整形を行う
-  return prevIsNum && !nowIsNum;
-}

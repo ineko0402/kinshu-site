@@ -10,41 +10,159 @@ export const appState = {
   hideCoins: false,
   currentInput: '',
   activeDisplay: null,
-  isFirstInput: true
+  isFirstInput: true,
+  // --- ノート管理用プロパティ ---
+  currentNoteId: null,
+  notes: [] // { id, name, createdAt, updatedAt, currency, counts } の配列
 };
 
+// UUID生成関数
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// ノートデータをlocalStorageに保存
+function saveNotesData() {
+  const dataToSave = {
+    currentNoteId: appState.currentNoteId,
+    notes: appState.notes
+  };
+  localStorage.setItem('notes_data', JSON.stringify(dataToSave));
+}
+
+// ノートの初期化とロード
+export function initNotes() {
+  const savedData = JSON.parse(localStorage.getItem('notes_data') || '{}');
+  appState.notes = savedData.notes || [];
+
+  // ノートが存在しない場合はデフォルトノートを作成
+  if (appState.notes.length === 0) {
+    const defaultNote = createNewNote('レジ', appState.currentCurrency);
+    appState.notes.push(defaultNote);
+    appState.currentNoteId = defaultNote.id;
+    saveNotesData();
+  } else {
+    appState.currentNoteId = savedData.currentNoteId || appState.notes[0].id;
+  }
+
+  // 現在のノートの通貨設定をappStateに反映
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (currentNote) {
+    appState.currentCurrency = currentNote.currency;
+  }
+}
+
+// 新しいノートを作成
+export function createNewNote(name, currency) {
+  const now = new Date().toISOString();
+  const newNote = {
+    id: generateUUID(),
+    name: name,
+    createdAt: now,
+    updatedAt: now,
+    currency: currency,
+    counts: {}
+  };
+  appState.notes.push(newNote);
+  saveNotesData();
+  return newNote;
+}
+
+// ノートを切り替える
+export function switchNote(noteId) {
+  const targetNote = appState.notes.find(n => n.id === noteId);
+  if (!targetNote) return false;
+
+  // 既存のノートのデータを保存
+  saveCounts();
+
+  appState.currentNoteId = noteId;
+  appState.currentCurrency = targetNote.currency;
+  
+  // 通貨設定をlocalStorageに保存（設定モーダルとの連携のため）
+  localStorage.setItem('currency', appState.currentCurrency);
+
+  // 新しいノートのデータをロード
+  loadState();
+  return true;
+}
+
+// ノートを削除する
+export function deleteNote(noteId) {
+  const index = appState.notes.findIndex(n => n.id === noteId);
+  if (index === -1) return false;
+
+  appState.notes.splice(index, 1);
+  saveNotesData();
+
+  // 削除したノートが現在アクティブなノートだった場合、最初のノートに切り替える
+  if (appState.currentNoteId === noteId) {
+    appState.currentNoteId = appState.notes.length > 0 ? appState.notes[0].id : null;
+    if (appState.currentNoteId) {
+      switchNote(appState.currentNoteId);
+    } else {
+      // 全てのノートが削除された場合、デフォルトノートを作成
+      const defaultNote = createNewNote('レジ', 'JPY');
+      appState.currentNoteId = defaultNote.id;
+      switchNote(defaultNote.id);
+    }
+  }
+  return true;
+}
+
+// 既存のinitStateを改修
 export function initState() {
+  // ノートの初期化を先に行う
+  initNotes();
+
   appState.hide2000 = localStorage.getItem('hide2000') === 'true';
   appState.hideBills = localStorage.getItem('hideBills') === 'true';
   appState.hideCoins = localStorage.getItem('hideCoins') === 'true';
-  appState.currentCurrency = localStorage.getItem('currency') || 'JPY';
+  // appState.currentCurrency は initNotes で設定される
   document.body.classList.toggle('dark', localStorage.getItem('darkMode') === 'true');
 }
 
+// 既存のloadStateを改修
 export function loadState() {
-  const saved = JSON.parse(localStorage.getItem(`counts_${appState.currentCurrency}`) || '{}');
-  Object.keys(saved).forEach(k => {
-    const el = document.querySelector(`.cell[data-id="${k}"] .display`);
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (!currentNote) return;
+
+  const saved = currentNote.counts || {};
+  document.querySelectorAll('.cell').forEach(cell => {
+    const id = cell.dataset.id;
+    const val = saved[id] || '0'; // ノートにデータがない場合は '0'
+    const el = cell.querySelector('.display');
     if (el) {
-      el.dataset.value = saved[k];
-      el.textContent = saved[k];
+      el.dataset.value = val;
+      el.textContent = val;
     }
   });
 }
 
+// 既存のsaveCountsを改修
 export function saveCounts() {
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (!currentNote) return;
+
   const values = {};
   document.querySelectorAll('.cell').forEach(cell => {
     const id = cell.dataset.id;
     const val = cell.querySelector('.display').dataset.value || '0';
     values[id] = val;
   });
-  localStorage.setItem(`counts_${appState.currentCurrency}`, JSON.stringify(values));
+  
+  currentNote.counts = values;
+  currentNote.updatedAt = new Date().toISOString();
+  saveNotesData();
 }
 
+// 既存のsyncSettingsを改修
 export function syncSettings() {
   localStorage.setItem('hide2000', appState.hide2000);
   localStorage.setItem('hideBills', appState.hideBills);
   localStorage.setItem('hideCoins', appState.hideCoins);
-  localStorage.setItem('currency', appState.currentCurrency);
+  // 通貨設定はノートに紐づくため、currencyキーはinitNotes/switchNoteで管理
 }

@@ -14,9 +14,6 @@ export function renderCurrency() {
   const coinsEl = container.querySelector('.coins');
   if (!billsEl || !coinsEl) return;
 
-  // billsEl.innerHTML = ''; // HTML直書きに変更したため削除
-  // coinsEl.innerHTML = ''; // HTML直書きに変更したため削除
-
   // JPYとCNYのセルコンテナの表示/非表示を切り替える
   const isJPY = appState.currentCurrency === 'JPY';
   document.querySelectorAll('.container > .bills:not(.cny-cells), .container > .coins:not(.cny-cells)').forEach(el => {
@@ -68,20 +65,22 @@ export function renderCurrency() {
   }
 
   // 保存値を復元
-  const saved = JSON.parse(localStorage.getItem(`counts_${appState.currentCurrency}`) || '{}');
-  document.querySelectorAll('.cell').forEach(cell => {
-    const id = cell.dataset.id;
-    const val = saved[id];
-    const d = cell.querySelector('.display');
-    if (val !== undefined) {
-      d.dataset.value = val;
-      d.textContent = val;
-    } else {
-      // 存在しない場合は初期値に戻す
-      d.dataset.value = '0';
-      d.textContent = '0';
-    }
-  });
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (currentNote) {
+    const saved = currentNote.counts || {};
+    document.querySelectorAll('.cell').forEach(cell => {
+      const id = cell.dataset.id;
+      const val = saved[id];
+      const d = cell.querySelector('.display');
+      if (val !== undefined) {
+        d.dataset.value = val;
+        d.textContent = val;
+      } else {
+        d.dataset.value = '0';
+        d.textContent = '0';
+      }
+    });
+  }
 
   updateSummary();
 }
