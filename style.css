@@ -1,433 +1,471 @@
-/* === カラーテーマ（ライト） === */
+/* ==========================================================================
+   カラーテーマ (CSS Variables)
+   ========================================================================== */
+
+/* --- ライトテーマ (デフォルト) --- */
 :root {
-	--bg-color: #f0f0f0;
-	--text-color: #000;
-	--accent: #1976d2;
-	--cell-bg: #e3f2fd;
-	--display-bg: #fff;
-	--button-bg: #cfd8dc;
-	--button-hover: #b0bec5;
-	--header-bg: var(--button-bg);
-	--border-color: #ccc;
-	--shadow-light: rgba(0, 0, 0, 0.1);
-	--shadow-dark: rgba(0, 0, 0, 0.3);
-	--overlay-bg: rgba(0, 0, 0, 0.4);
-	--keypad-digit-bg: #bbdefb;
-	--keypad-digit-color: #000;
-	--keypad-operator-bg: #ffe082;
-	--keypad-operator-color: #000;
-	--keypad-special-bg: #cfd8dc;
-	--keypad-special-color: #000;
-	--keypad-clear-bg: #f85c51;
-	--keypad-clear-color: #fff;
-	--keypad-enter-bg: #aed581;
-	--keypad-enter-color: #000;
-	--action-clear-bg: #d2544b;
-	--action-clear-color: #fff;
-	--download-bg: #fff;
-	--download-text: #000;
-	--download-border: #ccc;
-	--download-stripe: #f5f5f5;
-}
-/* === ダークテーマ === */
-body.dark {
-	--bg-color: #121212;
-	--text-color: #e0e0e0;
-	--accent: #90caf9;
-	--cell-bg: #37474f;
-	--display-bg: #263238;
-	--button-bg: #455a64;
-	--button-hover: #546e7a;
-	--header-bg: var(--button-bg);
-	--border-color: #666;
-	--shadow-light: rgba(255, 255, 255, 0.1);
-	--shadow-dark: rgba(0, 0, 0, 0.5);
-	--keypad-digit-bg: #455a64;
-	--keypad-digit-color: #fff;
-	--keypad-operator-bg: #25686dc9;
-	--keypad-operator-color: #fff;
-	--keypad-special-bg: #546e7a;
-	--keypad-special-color: #fff;
-	--keypad-clear-bg: #d32f2f;
-	--keypad-clear-color: #fff;
-	--keypad-enter-bg: #388e3c;
-	--keypad-enter-color: #fff;
-	--action-clear-bg: #ef5350;
-	--action-clear-color: #fff;
-	--download-bg: #263238;
-	--download-text: #e0e0e0;
-	--download-border: #546e7a;
-	--download-stripe: #37474f;
-}
-/* === CNY用暖色系テーマ（ライト） === */
-body.layout-cny:not(.dark) {
-	--accent: #d77a61;
-	--cell-bg: #fff3e0;
-	--button-bg: #ffe0b2;
-	--button-hover: #ffcc80;
-	--keypad-digit-bg: #ffe0b2;
-	--keypad-operator-bg: #ffb74d;
-	--keypad-special-bg: #ffccbc;
-	--keypad-clear-bg: #e57373;
-	--keypad-enter-bg: #a5d6a7;
-	--download-stripe: #fff8e1;
-}
-/* === CNY用暖色系テーマ（ダーク） === */
-body.dark.layout-cny {
-	--accent: #f7a072;
-	--cell-bg: #4e342e;
-	--display-bg: #3e2723;
-	--button-bg: #6d4c41;
-	--button-hover: #8d6e63;
-	--keypad-digit-bg: #795548;
-	--keypad-operator-bg: #d7a36e;
-	--keypad-special-bg: #8d6e63;
-	--keypad-clear-bg: #ef9a9a;
-	--keypad-enter-bg: #81c784;
-	--download-stripe: #5d4037;
-}
-/* === ベース === */
-body {
-	margin: 0;
-	font-family: sans-serif;
-	background: var(--bg-color);
-	color: var(--text-color);
+  /* ベースカラー */
+  --bg-color: #f0f0f0;
+  --text-color: #000;
+  --accent: #1976d2;
+
+  /* コンポーネントカラー */
+  --cell-bg: #e3f2fd;
+  --display-bg: #fff;
+  --button-bg: #cfd8dc;
+  --button-hover: #b0bec5;
+  --header-bg: var(--button-bg);
+  --action-clear-bg: #d2544b;
+  --action-clear-color: #fff;
+
+  /* ダウンロードエリアカラー */
+  --download-bg: #fff;
+  --download-text: #000;
+  --download-border: #ccc;
+  --download-stripe: #f5f5f5;
+
+  /* キーパッドカラー */
+  --keypad-digit-bg: #bbdefb;
+  --keypad-digit-color: #000;
+  --keypad-operator-bg: #ffe082;
+  --keypad-operator-color: #000;
+  --keypad-special-bg: #cfd8dc;
+  --keypad-special-color: #000;
+  --keypad-clear-bg: #f85c51;
+  --keypad-clear-color: #fff;
+  --keypad-enter-bg: #aed581;
+  --keypad-enter-color: #000;
+
+  /* 境界線・影・オーバーレイ */
+  --border-color: #ccc;
+  --shadow-light: rgba(0,0,0,0.1);
+  --shadow-dark: rgba(0,0,0,0.3);
+  --overlay-bg: rgba(0,0,0,0.4);
 }
 
-button,
-.btn {
-	border: 1px solid var(--border-color);
-	box-shadow: 0 2px 4px var(--shadow-light);
-	border-radius: 6px;
-	touch-action: manipulation;
+/* --- ダークテーマ --- */
+body.dark {
+  /* ベースカラー */
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --accent: #90caf9;
+
+  /* コンポーネントカラー */
+  --cell-bg: #37474f;
+  --display-bg: #263238;
+  --button-bg: #455a64;
+  --button-hover: #546e7a;
+  --header-bg: var(--button-bg);
+  --action-clear-bg: #ef5350; /* 暖色系テーマと合わせて調整 */
+  --action-clear-color: #fff;
+
+  /* ダウンロードエリアカラー */
+  --download-bg: #263238;
+  --download-text: #e0e0e0;
+  --download-border: #546e7a;
+  --download-stripe: #37474f;
+
+  /* キーパッドカラー */
+  --keypad-digit-bg: #455a64;
+  --keypad-digit-color: #fff;
+  --keypad-operator-bg: #25686dc9;
+  --keypad-operator-color: #fff;
+  --keypad-special-bg: #546e7a;
+  --keypad-special-color: #fff;
+  --keypad-clear-bg: #d32f2f;
+  --keypad-clear-color: #fff;
+  --keypad-enter-bg: #388e3c;
+  --keypad-enter-color: #fff;
+
+  /* 境界線・影 */
+  --border-color: #666;
+  --shadow-light: rgba(255,255,255,0.1);
+  --shadow-dark: rgba(0,0,0,0.5);
+}
+
+/* --- CNY用暖色系テーマ (ライト) --- */
+body.layout-cny:not(.dark) {
+  --accent: #d77a61;
+  --cell-bg: #fff3e0;
+  --button-bg: #ffe0b2;
+  --button-hover: #ffcc80;
+  --keypad-digit-bg: #ffe0b2;
+  --keypad-operator-bg: #ffb74d;
+  --keypad-special-bg: #ffccbc;
+  --keypad-clear-bg: #e57373;
+  --keypad-enter-bg: #a5d6a7;
+  --download-stripe: #fff8e1;
+}
+
+/* --- CNY用暖色系テーマ (ダーク) --- */
+body.dark.layout-cny {
+  --accent: #f7a072;
+  --cell-bg: #4e342e;
+  --display-bg: #3e2723;
+  --button-bg: #6d4c41;
+  --button-hover: #8d6e63;
+  --keypad-digit-bg: #795548;
+  --keypad-operator-bg: #d7a36e;
+  --keypad-special-bg: #8d6e63;
+  --keypad-clear-bg: #ef9a9a;
+  --keypad-enter-bg: #81c784;
+  --download-stripe: #5d4037;
+}
+
+
+/* ==========================================================================
+   ベーススタイル
+   ========================================================================== */
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+button, .btn {
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-light);
+  border-radius: 6px;
+  touch-action: manipulation;
 }
 
 button:focus {
-	outline: 2px solid var(--accent);
-	outline-offset: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 header {
-	background: var(--header-bg);
-	padding: 10px;
-	text-align: center;
-	font-weight: bold;
-	font-size: 1.2rem;
+  background: var(--header-bg);
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
+
+/* ==========================================================================
+   メインコンテンツ
+   ========================================================================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* --- 合計金額表示エリア --- */
 .summary {
-	display: flex;
-	justify-content: space-between;
-	text-align: center;
-	font-size: 14px;
-	font-weight: bold;
-	margin: 10px auto 20px auto;
-	max-width: 500px;
-	padding: 0 12px;
-	color: var(--accent);
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px auto 20px auto;
+  max-width: 500px;
+  padding: 0 12px;
+  color: var(--accent);
 }
 
 .summary .item {
-	flex: 1;
+  flex: 1;
 }
 
 .summary #total {
-	font-size: 28px;
-	font-weight: bold;
-	margin-bottom: 6px;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
 .summary span:not(#total) {
-	font-size: 16px;
-	white-space: nowrap;
-	margin: 0 2px;
+  font-size: 16px;
+  white-space: nowrap;
+  margin: 0 2px;
 }
 
-.container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 16px;
-	padding: 0 12px;
-	width: 100%;
-	max-width: 500px;
-	margin: 0 auto;
-	box-sizing: border-box;
+/* --- 紙幣・硬貨エリア --- */
+.bills, .coins {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 500px;
 }
 
-.bills,
-.coins {
-	display: grid;
-	gap: 10px;
-	width: 100%;
-	max-width: 500px;
-}
-
-.bills {
-	grid-template-columns: repeat(2, 1fr);
-}
-
-.coins {
-	grid-template-columns: repeat(3, 1fr);
-}
+.bills { grid-template-columns: repeat(2, 1fr); }
+.coins { grid-template-columns: repeat(3, 1fr); }
 
 .cell {
-	background: var(--cell-bg);
-	padding: 12px;
-	border-radius: 10px;
-	text-align: center;
-	cursor: pointer;
-	transition: transform 0.2s;
-	font-size: 0.9rem;
-	box-shadow: 0 2px 4px var(--shadow-light);
+  background: var(--cell-bg);
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px var(--shadow-light);
 }
 
-.cell:active {
-	transform: scale(0.95);
-}
-
-.cell.disabled {
-	opacity: 0.4;
-	pointer-events: none;
-}
+.cell:active { transform: scale(0.95); }
+.cell.disabled { opacity: 0.4; pointer-events: none; }
 
 .display {
-	margin-top: 6px;
-	padding: 8px;
-	background: var(--display-bg);
-	border-radius: 6px;
-	font-size: 18px;
-	font-weight: bold;
-	box-shadow: inset 0 1px 3px var(--shadow-light);
+  margin-top: 6px;
+  padding: 8px;
+  background: var(--display-bg);
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: inset 0 1px 3px var(--shadow-light);
 }
 
+/* --- アクションボタンエリア --- */
 .actions {
-	display: flex;
-	justify-content: space-between;
-	gap: 8px;
-	padding: 8px;
-	flex-wrap: wrap;
-	width: 100%;
-	max-width: 500px;
-	margin: 20px auto 0 auto;
-	box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto 0 auto;
+  box-sizing: border-box;
 }
 
 .actions button {
-	flex: 1;
-	min-width: 100px;
-	background: var(--button-bg);
-	color: var(--text-color);
-	padding: 8px 0;
-	font-size: 16px;
-	cursor: pointer;
-	white-space: nowrap;
-	text-align: center;
+  flex: 1;
+  min-width: 100px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  padding: 8px 0;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .actions button.clear-all {
-	background: var(--action-clear-bg);
-	color: var(--action-clear-color);
-	font-weight: bold;
+  background: var(--action-clear-bg);
+  color: var(--action-clear-color);
+  font-weight: bold;
 }
+
+
+/* ==========================================================================
+   キーパッド (モーダル)
+   ========================================================================== */
 
 #overlay {
-	position: fixed;
-	inset: 0;
-	display: none;
-	justify-content: center;
-	align-items: center;
-	background: var(--overlay-bg);
-	z-index: 1000;
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: var(--overlay-bg);
+  z-index: 1000;
 }
 
-#overlay.show {
-	display: flex;
-}
+#overlay.show { display: flex; }
 
 #keypadPanel {
-	background: var(--display-bg);
-	padding: 16px;
-	border-radius: 12px;
-	box-shadow: 0 4px 12px var(--shadow-dark);
-	min-width: 260px;
-	text-align: center;
-	transition: transform 0.2s ease;
-	transform: translatey(0);
-	touch-action: none;
+  background: var(--display-bg);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--shadow-dark);
+  min-width: 260px;
+  text-align: center;
+  transition: transform 0.2s ease;
+  transform: translateY(0);
+  touch-action: none;
 }
 
 #keypadLabel {
-	margin-bottom: 8px;
-	font-weight: bold;
-	font-size: 1.1rem;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
 #keypadInput {
-	width: 90%;
-	padding: 6px;
-	font-size: 1.2rem;
-	text-align: right;
-	border: 1px solid var(--border-color);
-	border-radius: 4px;
-	margin-bottom: 10px;
-	background: var(--display-bg);
-	color: var(--text-color);
+  width: 90%;
+  padding: 6px;
+  font-size: 1.2rem;
+  text-align: right;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background: var(--display-bg);
+  color: var(--text-color);
 }
 
 .keyrow {
-	display: flex;
-	justify-content: center;
-	gap: 6px;
-	margin: 4px 0;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0;
 }
 
 .keyrow button {
-	flex: 1;
-	flex-basis: 25%;
-	max-width: 80px;
-	height: 60px;
-	font-size: 20px;
-	background: var(--button-bg);
-	color: var(--text-color);
-	padding: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  flex: 1;
+  flex-basis: 25%;
+  max-width: 80px;
+  height: 60px;
+  font-size: 20px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .keyrow button.digit {
-	background: var(--keypad-digit-bg);
-	color: var(--keypad-digit-color);
+  background: var(--keypad-digit-bg);
+  color: var(--keypad-digit-color);
 }
 
 .keyrow button.operator {
-	background: var(--keypad-operator-bg);
-	color: var(--keypad-operator-color);
+  background: var(--keypad-operator-bg);
+  color: var(--keypad-operator-color);
 }
 
 .keyrow button.special {
-	background: var(--keypad-special-bg);
-	color: var(--keypad-special-color);
-	font-weight: bold;
-	font-size: 18px;
+  background: var(--keypad-special-bg);
+  color: var(--keypad-special-color);
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .keyrow button.clear {
-	background: var(--keypad-clear-bg);
-	color: var(--keypad-clear-color);
+  background: var(--keypad-clear-bg);
+  color: var(--keypad-clear-color);
 }
 
 .keyrow button.enter {
-	background: var(--keypad-enter-bg);
-	color: var(--keypad-enter-color);
+  background: var(--keypad-enter-bg);
+  color: var(--keypad-enter-color);
 }
 
+
+/* ==========================================================================
+   ダウンロード用キャプチャエリア
+   ========================================================================== */
+
 .download-capture {
-	display: block !important;
-	width: 360px;
-	height: 640px;
-	padding: 20px;
-	box-sizing: border-box;
-	background-color: #fff;
+  display: block !important;
+  width: 360px;
+  height: 640px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff; /* キャプチャ時の背景色を明示 */
 }
 
 #download-area:not(.download-capture) {
-	display: none;
+  display: none;
 }
 
 #download-area {
-	font-size: 16px;
-	line-height: 1.6;
-	padding: 16px;
-	background: var(--download-bg);
-	color: var(--download-text);
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 16px;
+  background: var(--download-bg);
+  color: var(--download-text);
 }
 
 #download-area .download-header {
-	margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 #download-area .datetime {
-	margin-bottom: 8px;
+  margin-bottom: 8px;
 }
 
 #download-area .total-amount {
-	font-size: 18px;
-	font-weight: bold;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 #download-area .summary-table {
-	width: 100%;
-	table-layout: fixed;
-	border-collapse: collapse;
-	margin: 16px 0;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 16px 0;
 }
 
 #download-area .summary-table thead th {
-	padding: 10px 6px;
-	border-bottom: 2px solid var(--download-border);
-	font-weight: bold;
-	background-color: var(--download-stripe);
+  padding: 10px 6px;
+  border-bottom: 2px solid var(--download-border);
+  font-weight: bold;
+  background-color: var(--download-stripe);
 }
 
 #download-area .summary-table tbody td {
-	padding: 8px 6px;
-	border-bottom: 1px solid var(--download-border);
-	font-size: 16px;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--download-border);
+  font-size: 16px;
 }
 
 #download-area .denomination-header,
 #download-area .denomination {
-	width: 40%;
-	text-align: left;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+  width: 40%;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #download-area .count-header,
 #download-area .count {
-	width: 15%;
-	text-align: center;
+  width: 15%;
+  text-align: center;
 }
 
 #download-area .amount-header,
 #download-area .amount {
-	width: 45%;
-	text-align: right;
-	white-space: nowrap;
+  width: 45%;
+  text-align: right;
+  white-space: nowrap;
 }
 
 #download-area .download-footer {
-	margin-top: 12px;
-	font-size: 16px;
-	text-align: center;
-	font-weight: bold;
+  margin-top: 12px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
 }
 
+
+/* ==========================================================================
+   設定モーダル
+   ========================================================================== */
+
 .modal-overlay {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.5);
-	z-index: 9998;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .settings-box {
-	background: #fff;
-	color: #000;
-	padding: 20px;
-	border-radius: 12px;
-	max-width: 300px;
-	width: 90%;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-	z-index: 9999;
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 300px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
 }
 
 body.dark .settings-box {
-	background: #30343A;
-	color: #FBFEFF;
+  background: #30343A;
+  color: #FBFEFF;
 }
