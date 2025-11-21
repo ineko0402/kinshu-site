@@ -14,50 +14,72 @@ export function renderCurrency() {
   const coinsEl = container.querySelector('.coins');
   if (!billsEl || !coinsEl) return;
 
-  billsEl.innerHTML = '';
-  coinsEl.innerHTML = '';
+  // billsEl.innerHTML = ''; // HTML直書きに変更したため削除
+  // coinsEl.innerHTML = ''; // HTML直書きに変更したため削除
 
-  const data = appState.currentCurrency === 'JPY' ? jpyData : cnyData;
+  // JPYとCNYのセルコンテナの表示/非表示を切り替える
+  const isJPY = appState.currentCurrency === 'JPY';
+  document.querySelectorAll('.container > .bills:not(.cny-cells), .container > .coins:not(.cny-cells)').forEach(el => {
+    el.style.display = isJPY ? 'grid' : 'none';
+  });
+  document.querySelectorAll('.cny-cells').forEach(el => {
+    el.style.display = isJPY ? 'none' : 'grid';
+  });
+
+  // 通貨切り替え時のクラス設定とデータ取得
   document.body.classList.toggle('layout-cny', appState.currentCurrency === 'CNY');
+  const data = isJPY ? jpyData : cnyData;
 
-  data.forEach(({ id, kind, label, isCoin }) => {
-    const coin = !!isCoin || kind < 1;
-    const bill = !coin;
-    const is2000 = kind === 2000;
+  // JPYの場合のみ、設定に基づいて無効化
+  if (isJPY) {
+    // JPYのセルのみを対象とする
+    document.querySelectorAll('.container > .bills:not(.cny-cells) .cell, .container > .coins:not(.cny-cells) .cell').forEach(cell => {
+      cell.classList.remove('disabled');
+      cell.style.opacity = '';
+      cell.style.pointerEvents = '';
 
-    let disabled = false;
-    if (appState.currentCurrency === 'JPY') {
+      const id = cell.dataset.id;
+      const item = data.find(d => d.id === id);
+      if (!item) return;
+
+      const { kind, isCoin } = item;
+      const bill = !isCoin && kind >= 1;
+      const coin = !!isCoin || kind < 1;
+      const is2000 = kind === 2000;
+
+      let disabled = false;
       if (is2000 && appState.hide2000) disabled = true;
       if (bill && appState.hideBills) disabled = true;
       if (coin && appState.hideCoins) disabled = true;
-    }
 
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.dataset.id = id;
-    cell.dataset.kind = kind;
-    cell.dataset.label = label;
-    cell.innerHTML = `${label}<div class="display" data-value="0">0</div>`;
-
-    if (disabled) {
-      cell.classList.add('disabled');
-      cell.style.opacity = '0.4';
-      cell.style.pointerEvents = 'none';
-    }
-
-    const target = coin ? coinsEl : billsEl;
-    target.appendChild(cell);
-  });
+      if (disabled) {
+        cell.classList.add('disabled');
+        cell.style.opacity = '0.4';
+        cell.style.pointerEvents = 'none';
+      }
+    });
+  } else {
+    // CNYの場合は無効化設定がないため、全てのセルを有効化
+    document.querySelectorAll('.cny-cells .cell').forEach(cell => {
+      cell.classList.remove('disabled');
+      cell.style.opacity = '';
+      cell.style.pointerEvents = '';
+    });
+  }
 
   // 保存値を復元
   const saved = JSON.parse(localStorage.getItem(`counts_${appState.currentCurrency}`) || '{}');
   document.querySelectorAll('.cell').forEach(cell => {
     const id = cell.dataset.id;
     const val = saved[id];
+    const d = cell.querySelector('.display');
     if (val !== undefined) {
-      const d = cell.querySelector('.display');
       d.dataset.value = val;
       d.textContent = val;
+    } else {
+      // 存在しない場合は初期値に戻す
+      d.dataset.value = '0';
+      d.textContent = '0';
     }
   });
 

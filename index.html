@@ -19,8 +19,36 @@
   </div>
 
   <div class="container">
-    <div class="bills"></div>
-    <div class="coins"></div>
+    <!-- JPY (日本円) の金種要素を静的に配置 -->
+    <div class="bills">
+      <div class="cell" data-id="jpy-10000" data-kind="10000" data-label="一万円札"><span class="label">一万円札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-5000" data-kind="5000" data-label="五千円札"><span class="label">五千円札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-2000" data-kind="2000" data-label="二千円札"><span class="label">二千円札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-1000" data-kind="1000" data-label="千円札"><span class="label">千円札</span><div class="display" data-value="0">0</div></div>
+    </div>
+    <div class="coins">
+      <div class="cell" data-id="jpy-500" data-kind="500" data-label="五百円玉"><span class="label">五百円玉</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-100" data-kind="100" data-label="百円玉"><span class="label">百円玉</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-50" data-kind="50" data-label="五十円玉"><span class="label">五十円玉</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-10" data-kind="10" data-label="十円玉"><span class="label">十円玉</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-5" data-kind="5" data-label="五円玉"><span class="label">五円玉</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-1" data-kind="1" data-label="一円玉"><span class="label">一円玉</span><div class="display" data-value="0">0</div></div>
+    </div>
+
+    <!-- CNY (中国元) の金種要素を静的に配置 (初期は非表示) -->
+    <div class="bills cny-cells" style="display: none;">
+      <div class="cell" data-id="cny-100" data-kind="100" data-label="100元札"><span class="label">100元札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-50" data-kind="50" data-label="50元札"><span class="label">50元札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-20" data-kind="20" data-label="20元札"><span class="label">20元札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-10" data-kind="10" data-label="10元札"><span class="label">10元札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-5" data-kind="5" data-label="5元札"><span class="label">5元札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-1b" data-kind="1" data-label="1元札"><span class="label">1元札</span><div class="display" data-value="0">0</div></div>
+    </div>
+    <div class="coins cny-cells" style="display: none;">
+      <div class="cell" data-id="cny-1c" data-kind="1" data-label="1元硬貨"><span class="label">1元硬貨</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-05" data-kind="0.5" data-label="5角硬貨"><span class="label">5角硬貨</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-01" data-kind="0.1" data-label="1角硬貨"><span class="label">1角硬貨</span><div class="display" data-value="0">0</div></div>
+    </div>
   </div>
 
   <div class="actions">
