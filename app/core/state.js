@@ -10,7 +10,7 @@ export const appState = {
   isFirstInput: true,
   // --- ノート管理用プロパティ ---
   currentNoteId: null,
-  notes: [] // { id, name, createdAt, updatedAt, currency, counts, settings } の配列
+  notes: [] // { id, name, createdAt, updatedAt, currency, counts, settings, savedPoints } の配列
 };
 
 // UUID生成関数
@@ -70,7 +70,8 @@ export function createNewNote(name, currency, settings = {}) {
       hide2000: settings.hide2000 || false,
       hideBills: settings.hideBills || false,
       hideCoins: settings.hideCoins || false
-    }
+    },
+    savedPoints: []
   };
   appState.notes.push(newNote);
   saveNotesData();
@@ -197,4 +198,50 @@ export function getCurrentNoteSettings() {
     hideBills: false,
     hideCoins: false
   };
+}
+
+// 保存ポイントを追加（最新30件まで保持）
+export function addSavedPoint(noteId, memo, countsData, total, billCount, coinCount) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note) return false;
+
+  const savedPoint = {
+    id: generateUUID(),
+    timestamp: new Date().toISOString(),
+    memo: memo,
+    counts: { ...countsData },
+    total: total,
+    billCount: billCount,
+    coinCount: coinCount
+  };
+
+  if (!note.savedPoints) {
+    note.savedPoints = [];
+  }
+
+  // 先頭に追加（新しいものが上）
+  note.savedPoints.unshift(savedPoint);
+
+  // 30件を超えたら古いものを削除
+  if (note.savedPoints.length > 30) {
+    note.savedPoints = note.savedPoints.slice(0, 30);
+  }
+
+  note.updatedAt = new Date().toISOString();
+  saveNotesData();
+  return savedPoint;
+}
+
+// 保存ポイントを削除
+export function deleteSavedPoint(noteId, savedPointId) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note || !note.savedPoints) return false;
+
+  const index = note.savedPoints.findIndex(sp => sp.id === savedPointId);
+  if (index === -1) return false;
+
+  note.savedPoints.splice(index, 1);
+  note.updatedAt = new Date().toISOString();
+  saveNotesData();
+  return true;
 }

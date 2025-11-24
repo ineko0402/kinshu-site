@@ -9,10 +9,15 @@
 </head>
 <body>
   <header>
-    <button id="noteSwitchBtn" class="header-button">
-      <span id="currentNoteName">レジ (JPY)</span> ▼
-    </button>
-    <span id="total">¥0</span>
+    <div class="header-left">
+      <button id="noteSwitchBtn" class="header-button">
+        <span id="currentNoteName">レジ (JPY)</span> ▼
+      </button>
+    </div>
+    <div class="header-center">
+      <span id="total">¥0</span>
+    </div>
+    <div class="header-right"></div>
   </header>
 
   <div class="summary">
@@ -56,7 +61,8 @@
 
   <div class="actions">
     <button id="clearAllBtn" class="clear-all">全クリア</button>
-    <button id="downloadBtn">ダウンロード</button>
+    <button id="saveBtn">💾 保存</button>
+    <button id="historyBtn">📋 履歴</button>
     <button id="settingsBtn">⚙️ 設定</button>
     <button id="backupBtn">💾 バックアップ</button>
   </div>
@@ -194,6 +200,52 @@
           <button id="createNoteBtn" class="modal-button modal-button-success">作成</button>
           <button id="closeNoteCreateBtn" class="modal-button modal-button-default">キャンセル</button>
         </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- savePointTemplate (保存ポイント作成) -->
+  <template id="savePointTemplate">
+    <div class="modal-overlay" id="savepoint-overlay">
+      <div id="savepoint-box" class="settings-box">
+        <h3>💾 保存</h3>
+        
+        <div id="savePointPreview" class="info-row">
+          <!-- 現在の集計情報が表示される -->
+        </div>
+
+        <label for="savePointMemoInput">メモ</label>
+        <input type="text" id="savePointMemoInput" class="text-input" placeholder="例: 午前レジ締め">
+
+        <div class="modal-buttons">
+          <button id="saveSavePointBtn" class="modal-button modal-button-success">保存</button>
+          <button id="closeSavePointBtn" class="modal-button modal-button-default">キャンセル</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- historyTemplate (履歴一覧) -->
+  <template id="historyTemplate">
+    <div class="modal-overlay" id="history-overlay">
+      <div id="history-box" class="settings-box settings-box-large">
+        <h3>📋 履歴</h3>
+        <ul id="historyList" class="history-list">
+          <!-- 履歴一覧がここに挿入される -->
+        </ul>
+        <button id="closeHistoryBtn" class="modal-button modal-button-default">閉じる</button>
+      </div>
+    </div>
+  </template>
+
+  <!-- historyDetailTemplate (履歴詳細) -->
+  <template id="historyDetailTemplate">
+    <div class="modal-overlay" id="history-detail-overlay">
+      <div id="history-detail-box" class="settings-box settings-box-large">
+        <div id="historyDetailContent">
+          <!-- 詳細内容がここに挿入される -->
+        </div>
+        <button id="closeHistoryDetailBtn" class="modal-button modal-button-default">閉じる</button>
       </div>
     </div>
   </template>

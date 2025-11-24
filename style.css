@@ -139,9 +139,39 @@ button:focus {
 header {
   background: var(--header-bg);
   padding: 10px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-weight: bold;
   font-size: 1.2rem;
+  position: relative;
+}
+
+.header-left,
+.header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.header-left {
+  justify-content: flex-start;
+}
+
+.header-right {
+  justify-content: flex-end;
+}
+
+.header-center {
+  flex: 0 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.header-center #total {
+  white-space: nowrap;
 }
 
 
@@ -198,6 +228,11 @@ header {
   max-width: 500px;
 }
 
+.bills.hidden,
+.coins.hidden {
+  display: none;
+}
+
 .bills { grid-template-columns: repeat(2, 1fr); }
 .coins { grid-template-columns: repeat(3, 1fr); }
 
@@ -213,7 +248,11 @@ header {
 }
 
 .cell:active { transform: scale(0.95); }
-.cell.disabled { opacity: 0.4; pointer-events: none; }
+
+.cell.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
 
 .display {
   margin-top: 6px;
@@ -444,9 +483,7 @@ header {
    ヘッダーボタン
    ========================================================================== */
 
-header .header-button {
-  float: left;
-  margin-left: 10px;
+.header-button {
   padding: 5px 10px;
   background: var(--button-bg);
   color: var(--text-color);
@@ -454,6 +491,11 @@ header .header-button {
   border-radius: 6px;
   cursor: pointer;
   box-shadow: 0 2px 4px var(--shadow-light);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 /* ==========================================================================
@@ -481,6 +523,10 @@ header .header-button {
   z-index: 9999;
   max-height: 80vh;
   overflow-y: auto;
+}
+
+.settings-box-large {
+  max-width: 500px;
 }
 
 body.dark .settings-box {
@@ -524,6 +570,11 @@ body.dark .settings-box {
 
 .note-settings-section {
   margin-top: 16px;
+  display: none;
+}
+
+.note-settings-section.visible {
+  display: block;
 }
 
 /* --- モーダル内ボタン --- */
@@ -645,4 +696,115 @@ body.dark .settings-box {
 
 .delete-note-btn:hover {
   background: #d32f2f;
+}
+
+/* --- 履歴一覧 --- */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.history-empty {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+}
+
+.history-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--cell-bg);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.history-item:last-child {
+  margin-bottom: 0;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.history-date {
+  font-size: 13px;
+  color: #666;
+}
+
+body.dark .history-date {
+  color: #aaa;
+}
+
+.history-summary {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.history-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.view-detail-btn,
+.copy-report-btn,
+.delete-history-btn {
+  flex: 1;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px var(--shadow-light);
+}
+
+.view-detail-btn:hover,
+.copy-report-btn:hover {
+  background: var(--button-hover);
+}
+
+.delete-history-btn {
+  background: #ef5350;
+  color: white;
+  border: none;
+}
+
+.delete-history-btn:hover {
+  background: #d32f2f;
+}
+
+/* --- 履歴詳細テーブル --- */
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.detail-table th,
+.detail-table td {
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.detail-table th {
+  background: var(--cell-bg);
+  font-weight: bold;
+}
+
+.detail-table td:nth-child(2),
+.detail-table td:nth-child(3) {
+  text-align: right;
 }

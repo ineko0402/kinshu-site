@@ -3,7 +3,7 @@
 // 通貨リスト描画と集計更新
 // ==============================
 
-import { appState, saveCounts } from '../core/state.js';
+import { appState, saveCounts, getCurrentNoteSettings } from '../core/state.js';
 import { jpyData, cnyData } from '../core/data.js';
 
 export function renderCurrency() {
@@ -16,25 +16,27 @@ export function renderCurrency() {
 
   // JPYとCNYのセルコンテナの表示/非表示を切り替える
   const isJPY = appState.currentCurrency === 'JPY';
+  
+  // JPYセルの表示/非表示
   document.querySelectorAll('.container > .bills:not(.cny-cells), .container > .coins:not(.cny-cells)').forEach(el => {
-    el.style.display = isJPY ? 'grid' : 'none';
+    el.classList.toggle('hidden', !isJPY);
   });
+  
+  // CNYセルの表示/非表示
   document.querySelectorAll('.cny-cells').forEach(el => {
-    el.style.display = isJPY ? 'none' : 'grid';
+    el.classList.toggle('hidden', isJPY);
   });
 
   // 通貨切り替え時のクラス設定とデータ取得
   document.body.classList.toggle('layout-cny', appState.currentCurrency === 'CNY');
   const data = isJPY ? jpyData : cnyData;
 
-  // JPYの場合のみ、設定に基づいて無効化
-  if (isJPY) {
-    // JPYのセルのみを対象とする
-    document.querySelectorAll('.container > .bills:not(.cny-cells) .cell, .container > .coins:not(.cny-cells) .cell').forEach(cell => {
-      cell.classList.remove('disabled');
-      cell.style.opacity = '';
-      cell.style.pointerEvents = '';
+  // 現在のノートの設定を取得
+  const settings = getCurrentNoteSettings();
 
+  // JPYの場合のみ、ノート設定に基づいて無効化
+  if (isJPY && settings) {
+    document.querySelectorAll('.container > .bills:not(.cny-cells) .cell, .container > .coins:not(.cny-cells) .cell').forEach(cell => {
       const id = cell.dataset.id;
       const item = data.find(d => d.id === id);
       if (!item) return;
@@ -45,22 +47,16 @@ export function renderCurrency() {
       const is2000 = kind === 2000;
 
       let disabled = false;
-      if (is2000 && appState.hide2000) disabled = true;
-      if (bill && appState.hideBills) disabled = true;
-      if (coin && appState.hideCoins) disabled = true;
+      if (is2000 && settings.hide2000) disabled = true;
+      if (bill && settings.hideBills) disabled = true;
+      if (coin && settings.hideCoins) disabled = true;
 
-      if (disabled) {
-        cell.classList.add('disabled');
-        cell.style.opacity = '0.4';
-        cell.style.pointerEvents = 'none';
-      }
+      cell.classList.toggle('disabled', disabled);
     });
   } else {
     // CNYの場合は無効化設定がないため、全てのセルを有効化
     document.querySelectorAll('.cny-cells .cell').forEach(cell => {
       cell.classList.remove('disabled');
-      cell.style.opacity = '';
-      cell.style.pointerEvents = '';
     });
   }
 

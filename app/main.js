@@ -3,12 +3,13 @@
 // アプリのエントリーポイント
 // ==============================
 
-import { initState, loadState, appState, switchNote, createNewNote, deleteNote, updateNoteSettings, updateNoteName } from './core/state.js';
+import { initState, loadState, appState, switchNote, createNewNote, deleteNote, updateNoteSettings, updateNoteName, addSavedPoint, deleteSavedPoint } from './core/state.js';
 import { renderCurrency } from './ui/renderer.js';
 import { bindKeypadEvents } from './ui/keypad.js';
 import { bindSettingsEvents, openSettings } from './ui/settings.js';
 import { bindExportEvents, downloadImage } from './export/imageExport.js';
 import { resetAll, updateSummary } from './ui/renderer.js';
+import { jpyData, cnyData } from './core/data.js';
 
 // ノート切り替えUIの表示/非表示を制御する関数
 export function updateNoteDisplay() {
@@ -20,7 +21,7 @@ export function updateNoteDisplay() {
 }
 
 // ノート編集モーダルを開く
-export function openNoteEditModal(noteId) {
+export function openNoteEditModal(noteId, onUpdate = null) {
   const note = appState.notes.find(n => n.id === noteId);
   if (!note) return;
 
@@ -41,13 +42,13 @@ export function openNoteEditModal(noteId) {
   // JPYの場合のみ金種制限設定を表示
   const settingsSection = overlay.querySelector('.note-settings-section');
   if (note.currency === 'JPY') {
-    settingsSection.style.display = 'block';
+    settingsSection.classList.add('visible');
     const settings = note.settings || {};
     overlay.querySelector('#noteHide2000').checked = settings.hide2000 || false;
     overlay.querySelector('#noteHideBills').checked = settings.hideBills || false;
     overlay.querySelector('#noteHideCoins').checked = settings.hideCoins || false;
   } else {
-    settingsSection.style.display = 'none';
+    settingsSection.classList.remove('visible');
   }
 
   // 保存処理
@@ -77,6 +78,9 @@ export function openNoteEditModal(noteId) {
       updateNoteDisplay();
     }
 
+    // コールバック実行（一覧更新など）
+    if (onUpdate) onUpdate();
+
     document.body.removeChild(overlay);
   });
 
@@ -85,8 +89,273 @@ export function openNoteEditModal(noteId) {
   });
 }
 
+// 保存ポイント作成モーダルを開く
+export function openSavePointModal() {
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (!currentNote) return;
+
+  const template = document.getElementById('savePointTemplate');
+  const clone = template.content.cloneNode(true);
+  document.body.appendChild(clone);
+
+  const overlay = document.getElementById('savepoint-overlay');
+  const closeBtn = document.getElementById('closeSavePointBtn');
+  const saveBtn = document.getElementById('saveSavePointBtn');
+  const memoInput = document.getElementById('savePointMemoInput');
+
+  // 現在の集計情報を表示
+  const data = currentNote.currency === 'JPY' ? jpyData : cnyData;
+  const settings = currentNote.settings || {};
+  let total = 0, bills = 0, coins = 0;
+
+  document.querySelectorAll('.cell').forEach(cell => {
+    const val = parseFloat(cell.querySelector('.display').dataset.value || '0');
+    if (isNaN(val)) return;
+
+    const id = cell.dataset.id;
+    const item = data.find(d => d.id === id);
+    if (!item) return;
+
+    const amt = item.kind * val;
+    if (item.isCoin || item.kind < 1) coins += val;
+    else bills += val;
+    total += amt;
+  });
+
+  const unit = currentNote.currency === 'JPY' ? '円' : '元';
+  document.getElementById('savePointPreview').innerHTML = `
+    <strong>合計:</strong> ${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${unit}<br>
+    <strong>紙幣:</strong> ${bills}枚 / <strong>硬貨:</strong> ${coins}枚
+  `;
+
+  // デフォルトのメモを設定
+  const now = new Date();
+  const hours = now.getHours();
+  let defaultMemo = '';
+  if (hours < 12) defaultMemo = '午前レジ締め';
+  else if (hours < 18) defaultMemo = '午後レジ締め';
+  else defaultMemo = '閉店レジ締め';
+  memoInput.value = defaultMemo;
+
+  // 保存処理
+  saveBtn.addEventListener('click', () => {
+    const memo = memoInput.value.trim();
+    if (!memo) {
+      alert('メモを入力してください。');
+      return;
+    }
+
+    // 現在のcountsデータを収集
+    const counts = {};
+    document.querySelectorAll('.cell').forEach(cell => {
+      const id = cell.dataset.id;
+      const val = cell.querySelector('.display').dataset.value || '0';
+      counts[id] = val;
+    });
+
+    addSavedPoint(appState.currentNoteId, memo, counts, total, bills, coins);
+    alert('保存しました。');
+    document.body.removeChild(overlay);
+  });
+
+  closeBtn.addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
+}
+
+// 履歴表示モーダルを開く
+export function openHistoryModal() {
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (!currentNote) return;
+
+  const template = document.getElementById('historyTemplate');
+  const clone = template.content.cloneNode(true);
+  document.body.appendChild(clone);
+
+  const overlay = document.getElementById('history-overlay');
+  const closeBtn = document.getElementById('closeHistoryBtn');
+  const historyListEl = document.getElementById('historyList');
+
+  // 履歴一覧の描画
+  function renderHistoryList() {
+    historyListEl.innerHTML = '';
+    
+    if (!currentNote.savedPoints || currentNote.savedPoints.length === 0) {
+      historyListEl.innerHTML = '<li class="history-empty">保存された履歴がありません</li>';
+      return;
+    }
+
+    currentNote.savedPoints.forEach(sp => {
+      const date = new Date(sp.timestamp);
+      const dateStr = `${date.getFullYear()}/${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+      const unit = currentNote.currency === 'JPY' ? '円' : '元';
+
+      const li = document.createElement('li');
+      li.className = 'history-item';
+      li.dataset.id = sp.id;
+      li.innerHTML = `
+        <div class="history-header">
+          <strong>${sp.memo}</strong>
+          <span class="history-date">${dateStr}</span>
+        </div>
+        <div class="history-summary">
+          合計: ${sp.total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${unit} (紙幣: ${sp.billCount}枚 / 硬貨: ${sp.coinCount}枚)
+        </div>
+        <div class="history-actions">
+          <button class="view-detail-btn">詳細</button>
+          <button class="copy-report-btn">レポート</button>
+          <button class="delete-history-btn">削除</button>
+        </div>
+      `;
+      historyListEl.appendChild(li);
+    });
+  }
+
+  renderHistoryList();
+
+  // イベント処理
+  historyListEl.addEventListener('click', (e) => {
+    const li = e.target.closest('.history-item');
+    if (!li) return;
+
+    const spId = li.dataset.id;
+    const savedPoint = currentNote.savedPoints.find(sp => sp.id === spId);
+    if (!savedPoint) return;
+
+    if (e.target.classList.contains('delete-history-btn')) {
+      // 削除
+      if (confirm('この履歴を削除しますか？')) {
+        deleteSavedPoint(appState.currentNoteId, spId);
+        renderHistoryList();
+      }
+    } else if (e.target.classList.contains('view-detail-btn')) {
+      // 詳細表示
+      showHistoryDetail(savedPoint);
+    } else if (e.target.classList.contains('copy-report-btn')) {
+      // レポートコピー
+      copyReport(savedPoint, currentNote);
+    }
+  });
+
+  closeBtn.addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
+}
+
+// 履歴詳細を表示
+function showHistoryDetail(savedPoint) {
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (!currentNote) return;
+
+  const template = document.getElementById('historyDetailTemplate');
+  const clone = template.content.cloneNode(true);
+  document.body.appendChild(clone);
+
+  const overlay = document.getElementById('history-detail-overlay');
+  const closeBtn = document.getElementById('closeHistoryDetailBtn');
+  const detailContent = document.getElementById('historyDetailContent');
+
+  const date = new Date(savedPoint.timestamp);
+  const dateStr = `${date.getFullYear()}/${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+  const unit = currentNote.currency === 'JPY' ? '円' : '元';
+  const data = currentNote.currency === 'JPY' ? jpyData : cnyData;
+  const settings = currentNote.settings || {};
+
+  let html = `
+    <h4>${savedPoint.memo}</h4>
+    <p><strong>日時:</strong> ${dateStr}</p>
+    <p><strong>合計:</strong> ${savedPoint.total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${unit}</p>
+    <p><strong>紙幣:</strong> ${savedPoint.billCount}枚 / <strong>硬貨:</strong> ${savedPoint.coinCount}枚</p>
+    <hr>
+    <h5>金種明細</h5>
+    <table class="detail-table">
+      <thead>
+        <tr>
+          <th>金種</th>
+          <th>枚数</th>
+          <th>金額</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  data.forEach(item => {
+    // 金種制限で無効化されている金種はスキップ
+    if (currentNote.currency === 'JPY') {
+      if (settings.hide2000 && item.kind === 2000) return;
+      if (settings.hideBills && !item.isCoin && item.kind >= 1) return;
+      if (settings.hideCoins && (item.isCoin || item.kind < 1)) return;
+    }
+
+    const count = parseFloat(savedPoint.counts[item.id] || '0');
+    const amount = count * item.kind;
+    const formattedAmount = currentNote.currency === 'CNY' && item.kind < 1
+      ? amount.toFixed(1)
+      : amount.toLocaleString();
+
+    html += `
+      <tr>
+        <td>${item.label}</td>
+        <td>${count}</td>
+        <td>${formattedAmount} ${unit}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  detailContent.innerHTML = html;
+
+  closeBtn.addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
+}
+
+// レポートをクリップボードにコピー
+function copyReport(savedPoint, note) {
+  const date = new Date(savedPoint.timestamp);
+  const dateStr = `${date.getFullYear()}/${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+  const unit = note.currency === 'JPY' ? '円' : '元';
+  const data = note.currency === 'JPY' ? jpyData : cnyData;
+  const settings = note.settings || {};
+
+  let report = `=== ${note.name}: ${savedPoint.memo} ===\n`;
+  report += `日時: ${dateStr}\n`;
+  report += `合計: ${savedPoint.total.toLocaleString(undefined, { maximumFractionDigits: 2 })}${unit}\n`;
+  report += `紙幣: ${savedPoint.billCount}枚 / 硬貨: ${savedPoint.coinCount}枚\n\n`;
+  report += `[金種明細]\n`;
+
+  data.forEach(item => {
+    // 金種制限で無効化されている金種はスキップ
+    if (note.currency === 'JPY') {
+      if (settings.hide2000 && item.kind === 2000) return;
+      if (settings.hideBills && !item.isCoin && item.kind >= 1) return;
+      if (settings.hideCoins && (item.isCoin || item.kind < 1)) return;
+    }
+
+    const count = parseFloat(savedPoint.counts[item.id] || '0');
+    const amount = count * item.kind;
+    const formattedAmount = note.currency === 'CNY' && item.kind < 1
+      ? amount.toFixed(1)
+      : amount.toLocaleString();
+
+    report += `${item.label}: ${count}枚 (${formattedAmount}${unit})\n`;
+  });
+
+  // クリップボードにコピー
+  navigator.clipboard.writeText(report).then(() => {
+    alert('レポートをクリップボードにコピーしました。');
+  }).catch(err => {
+    console.error('コピーに失敗しました:', err);
+    alert('コピーに失敗しました。');
+  });
+}
+
 // 新規ノート作成モーダルを開く
-export function openNoteCreateModal() {
+export function openNoteCreateModal(onUpdate = null) {
   const template = document.getElementById('noteCreateTemplate');
   const clone = template.content.cloneNode(true);
   document.body.appendChild(clone);
@@ -104,9 +373,9 @@ export function openNoteCreateModal() {
   const settingsSection = overlay.querySelector('.note-settings-section');
   currencySelect.addEventListener('change', (e) => {
     if (e.target.value === 'JPY') {
-      settingsSection.style.display = 'block';
+      settingsSection.classList.add('visible');
     } else {
-      settingsSection.style.display = 'none';
+      settingsSection.classList.remove('visible');
     }
   });
 
@@ -137,6 +406,9 @@ export function openNoteCreateModal() {
     renderCurrency();
     updateSummary();
     updateNoteDisplay();
+
+    // コールバック実行（一覧更新など）
+    if (onUpdate) onUpdate();
 
     document.body.removeChild(overlay);
   });
@@ -199,7 +471,10 @@ export function openNoteSwitchModal() {
       }
     } else if (e.target.classList.contains('edit-note-btn')) {
       // 編集ボタン
-      openNoteEditModal(noteId);
+      openNoteEditModal(noteId, () => {
+        renderNoteList();
+        updateNoteDisplay();
+      });
     } else {
       // ノート切り替え
       if (noteId !== appState.currentNoteId) {
@@ -216,7 +491,9 @@ export function openNoteSwitchModal() {
 
   // 新規ノート作成処理
   newNoteBtn.addEventListener('click', () => {
-    openNoteCreateModal();
+    openNoteCreateModal(() => {
+      renderNoteList();
+    });
   });
 
   closeBtn.addEventListener('click', () => {
@@ -307,7 +584,8 @@ window.addEventListener('DOMContentLoaded', () => {
   bindExportEvents();
 
   document.getElementById('clearAllBtn').addEventListener('click', resetAll);
-  document.getElementById('downloadBtn').addEventListener('click', downloadImage);
+  document.getElementById('saveBtn').addEventListener('click', openSavePointModal);
+  document.getElementById('historyBtn').addEventListener('click', openHistoryModal);
   document.getElementById('settingsBtn').addEventListener('click', openSettings);
   document.getElementById('noteSwitchBtn').addEventListener('click', openNoteSwitchModal);
   document.getElementById('backupBtn').addEventListener('click', openBackupModal);
