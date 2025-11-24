@@ -3,7 +3,7 @@
 // アプリのエントリーポイント
 // ==============================
 
-import { initState, loadState, appState, switchNote, createNewNote, deleteNote } from './core/state.js';
+import { initState, loadState, appState, switchNote, createNewNote, deleteNote, updateNoteSettings, updateNoteName } from './core/state.js';
 import { renderCurrency } from './ui/renderer.js';
 import { bindKeypadEvents } from './ui/keypad.js';
 import { bindSettingsEvents, openSettings } from './ui/settings.js';
@@ -17,6 +17,133 @@ export function updateNoteDisplay() {
   if (noteNameEl && currentNote) {
     noteNameEl.textContent = `${currentNote.name} (${currentNote.currency})`;
   }
+}
+
+// ノート編集モーダルを開く
+export function openNoteEditModal(noteId) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note) return;
+
+  const template = document.getElementById('noteEditTemplate');
+  const clone = template.content.cloneNode(true);
+  document.body.appendChild(clone);
+
+  const overlay = document.getElementById('note-edit-overlay');
+  const closeBtn = document.getElementById('closeNoteEditBtn');
+  const saveBtn = document.getElementById('saveNoteEditBtn');
+  const noteNameInput = document.getElementById('noteNameInput');
+  const currencyDisplay = document.getElementById('currencyDisplay');
+
+  // 現在の値を設定
+  noteNameInput.value = note.name;
+  currencyDisplay.textContent = note.currency;
+
+  // JPYの場合のみ金種制限設定を表示
+  const settingsSection = overlay.querySelector('.note-settings-section');
+  if (note.currency === 'JPY') {
+    settingsSection.style.display = 'block';
+    const settings = note.settings || {};
+    overlay.querySelector('#noteHide2000').checked = settings.hide2000 || false;
+    overlay.querySelector('#noteHideBills').checked = settings.hideBills || false;
+    overlay.querySelector('#noteHideCoins').checked = settings.hideCoins || false;
+  } else {
+    settingsSection.style.display = 'none';
+  }
+
+  // 保存処理
+  saveBtn.addEventListener('click', () => {
+    const newName = noteNameInput.value.trim();
+    if (!newName) {
+      alert('ノート名を入力してください。');
+      return;
+    }
+
+    // ノート名を更新
+    updateNoteName(noteId, newName);
+
+    // JPYの場合は設定も更新
+    if (note.currency === 'JPY') {
+      updateNoteSettings(noteId, {
+        hide2000: overlay.querySelector('#noteHide2000').checked,
+        hideBills: overlay.querySelector('#noteHideBills').checked,
+        hideCoins: overlay.querySelector('#noteHideCoins').checked
+      });
+    }
+
+    // 現在アクティブなノートの場合は再描画
+    if (noteId === appState.currentNoteId) {
+      renderCurrency();
+      updateSummary();
+      updateNoteDisplay();
+    }
+
+    document.body.removeChild(overlay);
+  });
+
+  closeBtn.addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
+}
+
+// 新規ノート作成モーダルを開く
+export function openNoteCreateModal() {
+  const template = document.getElementById('noteCreateTemplate');
+  const clone = template.content.cloneNode(true);
+  document.body.appendChild(clone);
+
+  const overlay = document.getElementById('note-create-overlay');
+  const closeBtn = document.getElementById('closeNoteCreateBtn');
+  const createBtn = document.getElementById('createNoteBtn');
+  const noteNameInput = document.getElementById('newNoteNameInput');
+  const currencySelect = document.getElementById('newNoteCurrencySelect');
+
+  // デフォルトのノート名を設定
+  noteNameInput.value = `新規ノート ${appState.notes.length + 1}`;
+
+  // 通貨選択時に金種制限設定の表示/非表示を切り替え
+  const settingsSection = overlay.querySelector('.note-settings-section');
+  currencySelect.addEventListener('change', (e) => {
+    if (e.target.value === 'JPY') {
+      settingsSection.style.display = 'block';
+    } else {
+      settingsSection.style.display = 'none';
+    }
+  });
+
+  // 作成処理
+  createBtn.addEventListener('click', () => {
+    const name = noteNameInput.value.trim();
+    if (!name) {
+      alert('ノート名を入力してください。');
+      return;
+    }
+
+    const currency = currencySelect.value;
+    const settings = {
+      hide2000: false,
+      hideBills: false,
+      hideCoins: false
+    };
+
+    // JPYの場合は設定を取得
+    if (currency === 'JPY') {
+      settings.hide2000 = overlay.querySelector('#newNoteHide2000').checked;
+      settings.hideBills = overlay.querySelector('#newNoteHideBills').checked;
+      settings.hideCoins = overlay.querySelector('#newNoteHideCoins').checked;
+    }
+
+    const newNote = createNewNote(name, currency, settings);
+    switchNote(newNote.id);
+    renderCurrency();
+    updateSummary();
+    updateNoteDisplay();
+
+    document.body.removeChild(overlay);
+  });
+
+  closeBtn.addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
 }
 
 // ノートモーダルを開く
@@ -39,7 +166,10 @@ export function openNoteSwitchModal() {
       li.dataset.id = note.id;
       li.innerHTML = `
         <span class="note-name ${note.id === appState.currentNoteId ? 'active' : ''}">${note.name} (${note.currency})</span>
-        <button class="delete-note-btn">削除</button>
+        <div class="note-actions">
+          <button class="edit-note-btn">編集</button>
+          <button class="delete-note-btn">削除</button>
+        </div>
       `;
       noteListEl.appendChild(li);
     });
@@ -47,7 +177,7 @@ export function openNoteSwitchModal() {
 
   renderNoteList();
 
-  // ノート切り替え処理
+  // ノート切り替え・編集・削除処理
   noteListEl.addEventListener('click', (e) => {
     const li = e.target.closest('.note-item');
     if (!li) return;
@@ -67,6 +197,9 @@ export function openNoteSwitchModal() {
         updateSummary();
         updateNoteDisplay();
       }
+    } else if (e.target.classList.contains('edit-note-btn')) {
+      // 編集ボタン
+      openNoteEditModal(noteId);
     } else {
       // ノート切り替え
       if (noteId !== appState.currentNoteId) {
@@ -83,17 +216,7 @@ export function openNoteSwitchModal() {
 
   // 新規ノート作成処理
   newNoteBtn.addEventListener('click', () => {
-    const name = prompt('新しいノートの名前を入力してください:', `新規ノート ${appState.notes.length + 1}`);
-    if (!name) return;
-
-    const currency = confirm('このノートの通貨をCNYにしますか？\n(「キャンセル」でJPYになります)') ? 'CNY' : 'JPY';
-
-    const newNote = createNewNote(name, currency);
-    switchNote(newNote.id);
-    renderNoteList();
-    renderCurrency();
-    updateSummary();
-    updateNoteDisplay();
+    openNoteCreateModal();
   });
 
   closeBtn.addEventListener('click', () => {
@@ -176,7 +299,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // 通貨レンダリング
   renderCurrency();
-  updateNoteDisplay(); // ノート名表示の初期化
+  updateNoteDisplay();
 
   // イベント登録
   bindKeypadEvents();

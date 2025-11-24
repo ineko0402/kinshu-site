@@ -77,25 +77,17 @@
   <!-- ダウンロード用HTML（非表示） -->
   <div id="download-area"></div>
 
-<script type="module">
-  import './app/main.js';
-</script>
+  <script type="module">
+    import './app/main.js';
+  </script>
 
-
-  <!-- settingsTemplate -->
+  <!-- settingsTemplate (グローバル設定 - ダークモードのみ) -->
   <template id="settingsTemplate">
     <div class="modal-overlay" id="settings-overlay">
       <div id="settings-box" class="settings-box">
         <h3>⚙️ 設定</h3>
 
-        <!-- チェックボックス群はそのまま -->
-        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label><br>
-        <label><input type="checkbox" id="currencyToggleCheckbox" disabled> 通貨をCNYに切り替える (ノートで管理)</label><br><hr>
-
-        <strong>使用金種の制限（JPYのみ）</strong><br>
-        <label><input type="checkbox" id="hide2000Checkbox"> 2千円を使わない</label><br>
-        <label><input type="checkbox" id="hideBillsCheckbox"> お札を使わない</label><br>
-        <label><input type="checkbox" id="hideCoinsCheckbox"> 小銭を使わない</label><br><hr>
+        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label><br><hr>
 
         <strong>📄 ライセンス情報</strong><br>
         <small>
@@ -146,6 +138,65 @@
     </div>
   </template>
 
+  <!-- noteEditTemplate -->
+  <template id="noteEditTemplate">
+    <div class="modal-overlay" id="note-edit-overlay">
+      <div id="note-edit-box" class="settings-box">
+        <h3>ノート編集</h3>
+        
+        <label for="noteNameInput">ノート名</label>
+        <input type="text" id="noteNameInput" class="text-input" placeholder="ノート名を入力">
+        
+        <div class="info-row">
+          <strong>通貨:</strong> <span id="currencyDisplay">JPY</span>
+        </div>
+
+        <div class="note-settings-section">
+          <hr>
+          <strong>金種制限（JPYのみ）</strong><br>
+          <label><input type="checkbox" id="noteHide2000"> 2千円を使わない</label><br>
+          <label><input type="checkbox" id="noteHideBills"> お札を使わない</label><br>
+          <label><input type="checkbox" id="noteHideCoins"> 小銭を使わない</label><br>
+        </div>
+
+        <div class="modal-buttons">
+          <button id="saveNoteEditBtn" class="modal-button modal-button-success">保存</button>
+          <button id="closeNoteEditBtn" class="modal-button modal-button-default">キャンセル</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- noteCreateTemplate (新規追加) -->
+  <template id="noteCreateTemplate">
+    <div class="modal-overlay" id="note-create-overlay">
+      <div id="note-create-box" class="settings-box">
+        <h3>新規ノート作成</h3>
+        
+        <label for="newNoteNameInput">ノート名</label>
+        <input type="text" id="newNoteNameInput" class="text-input" placeholder="ノート名を入力">
+        
+        <label for="newNoteCurrencySelect">通貨</label>
+        <select id="newNoteCurrencySelect" class="select-input">
+          <option value="JPY">JPY (日本円)</option>
+          <option value="CNY">CNY (中国元)</option>
+        </select>
+
+        <div class="note-settings-section" style="display: block;">
+          <hr>
+          <strong>金種制限（JPYのみ）</strong><br>
+          <label><input type="checkbox" id="newNoteHide2000"> 2千円を使わない</label><br>
+          <label><input type="checkbox" id="newNoteHideBills"> お札を使わない</label><br>
+          <label><input type="checkbox" id="newNoteHideCoins"> 小銭を使わない</label><br>
+        </div>
+
+        <div class="modal-buttons">
+          <button id="createNoteBtn" class="modal-button modal-button-success">作成</button>
+          <button id="closeNoteCreateBtn" class="modal-button modal-button-default">キャンセル</button>
+        </div>
+      </div>
+    </div>
+  </template>
 
 </body>
 </html>

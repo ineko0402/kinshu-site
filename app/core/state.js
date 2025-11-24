@@ -5,15 +5,12 @@
 
 export const appState = {
   currentCurrency: 'JPY',
-  hide2000: false,
-  hideBills: false,
-  hideCoins: false,
   currentInput: '',
   activeDisplay: null,
   isFirstInput: true,
   // --- ノート管理用プロパティ ---
   currentNoteId: null,
-  notes: [] // { id, name, createdAt, updatedAt, currency, counts } の配列
+  notes: [] // { id, name, createdAt, updatedAt, currency, counts, settings } の配列
 };
 
 // UUID生成関数
@@ -40,7 +37,11 @@ export function initNotes() {
 
   // ノートが存在しない場合はデフォルトノートを作成
   if (appState.notes.length === 0) {
-    const defaultNote = createNewNote('レジ', appState.currentCurrency);
+    const defaultNote = createNewNote('レジ', 'JPY', {
+      hide2000: false,
+      hideBills: false,
+      hideCoins: false
+    });
     appState.notes.push(defaultNote);
     appState.currentNoteId = defaultNote.id;
     saveNotesData();
@@ -56,7 +57,7 @@ export function initNotes() {
 }
 
 // 新しいノートを作成
-export function createNewNote(name, currency) {
+export function createNewNote(name, currency, settings = {}) {
   const now = new Date().toISOString();
   const newNote = {
     id: generateUUID(),
@@ -64,11 +65,41 @@ export function createNewNote(name, currency) {
     createdAt: now,
     updatedAt: now,
     currency: currency,
-    counts: {}
+    counts: {},
+    settings: {
+      hide2000: settings.hide2000 || false,
+      hideBills: settings.hideBills || false,
+      hideCoins: settings.hideCoins || false
+    }
   };
   appState.notes.push(newNote);
   saveNotesData();
   return newNote;
+}
+
+// ノートの設定を更新
+export function updateNoteSettings(noteId, settings) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note) return false;
+
+  note.settings = {
+    ...note.settings,
+    ...settings
+  };
+  note.updatedAt = new Date().toISOString();
+  saveNotesData();
+  return true;
+}
+
+// ノート名を更新
+export function updateNoteName(noteId, newName) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note) return false;
+
+  note.name = newName;
+  note.updatedAt = new Date().toISOString();
+  saveNotesData();
+  return true;
 }
 
 // ノートを切り替える
@@ -81,9 +112,6 @@ export function switchNote(noteId) {
 
   appState.currentNoteId = noteId;
   appState.currentCurrency = targetNote.currency;
-  
-  // 通貨設定をlocalStorageに保存（設定モーダルとの連携のため）
-  localStorage.setItem('currency', appState.currentCurrency);
 
   // 新しいノートのデータをロード
   loadState();
@@ -105,7 +133,11 @@ export function deleteNote(noteId) {
       switchNote(appState.currentNoteId);
     } else {
       // 全てのノートが削除された場合、デフォルトノートを作成
-      const defaultNote = createNewNote('レジ', 'JPY');
+      const defaultNote = createNewNote('レジ', 'JPY', {
+        hide2000: false,
+        hideBills: false,
+        hideCoins: false
+      });
       appState.currentNoteId = defaultNote.id;
       switchNote(defaultNote.id);
     }
@@ -118,10 +150,7 @@ export function initState() {
   // ノートの初期化を先に行う
   initNotes();
 
-  appState.hide2000 = localStorage.getItem('hide2000') === 'true';
-  appState.hideBills = localStorage.getItem('hideBills') === 'true';
-  appState.hideCoins = localStorage.getItem('hideCoins') === 'true';
-  // appState.currentCurrency は initNotes で設定される
+  // グローバル設定（ダークモードのみ）
   document.body.classList.toggle('dark', localStorage.getItem('darkMode') === 'true');
 }
 
@@ -133,7 +162,7 @@ export function loadState() {
   const saved = currentNote.counts || {};
   document.querySelectorAll('.cell').forEach(cell => {
     const id = cell.dataset.id;
-    const val = saved[id] || '0'; // ノートにデータがない場合は '0'
+    const val = saved[id] || '0';
     const el = cell.querySelector('.display');
     if (el) {
       el.dataset.value = val;
@@ -159,10 +188,13 @@ export function saveCounts() {
   saveNotesData();
 }
 
-// 既存のsyncSettingsを改修
-export function syncSettings() {
-  localStorage.setItem('hide2000', appState.hide2000);
-  localStorage.setItem('hideBills', appState.hideBills);
-  localStorage.setItem('hideCoins', appState.hideCoins);
-  // 通貨設定はノートに紐づくため、currencyキーはinitNotes/switchNoteで管理
+// 現在のノートの設定を取得
+export function getCurrentNoteSettings() {
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (!currentNote) return null;
+  return currentNote.settings || {
+    hide2000: false,
+    hideBills: false,
+    hideCoins: false
+  };
 }
