@@ -7,7 +7,7 @@ import { appState, syncSettings } from '../core/state.js';
 import { renderCurrency } from './renderer.js';
 
 export function bindSettingsEvents() {
-  const btn = document.getElementById('openSettingsBtn');
+  const btn = document.getElementById('settingsBtn');
   if (!btn) return;
   btn.addEventListener('click', openSettings);
 }
@@ -36,9 +36,9 @@ export function openSettings() {
           localStorage.setItem('darkMode', checked);
           break;
         case 'currencyToggleCheckbox':
-          appState.currentCurrency = checked ? 'CNY' : 'JPY';
-          localStorage.setItem('currency', appState.currentCurrency);
-          renderCurrency();
+          // ノート管理に移行したため、このUIからの直接の通貨変更は行わない
+          alert('通貨の切り替えは、ノートの作成・切り替え時に行われます。');
+          e.target.checked = appState.currentCurrency === 'CNY'; // 状態を元に戻す
           break;
         case 'hide2000Checkbox':
           appState.hide2000 = checked;

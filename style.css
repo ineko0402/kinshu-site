@@ -1,20 +1,30 @@
-/* === カラーテーマ（ライト） === */
+/* ==========================================================================
+   カラーテーマ (CSS Variables)
+   ========================================================================== */
+
+/* --- ライトテーマ (デフォルト) --- */
 :root {
+  /* ベースカラー */
   --bg-color: #f0f0f0;
   --text-color: #000;
   --accent: #1976d2;
 
+  /* コンポーネントカラー */
   --cell-bg: #e3f2fd;
   --display-bg: #fff;
   --button-bg: #cfd8dc;
   --button-hover: #b0bec5;
   --header-bg: var(--button-bg);
+  --action-clear-bg: #d2544b;
+  --action-clear-color: #fff;
 
-  --border-color: #ccc;
-  --shadow-light: rgba(0,0,0,0.1);
-  --shadow-dark: rgba(0,0,0,0.3);
-  --overlay-bg: rgba(0,0,0,0.4);
+  /* ダウンロードエリアカラー */
+  --download-bg: #fff;
+  --download-text: #000;
+  --download-border: #ccc;
+  --download-stripe: #f5f5f5;
 
+  /* キーパッドカラー */
   --keypad-digit-bg: #bbdefb;
   --keypad-digit-color: #000;
   --keypad-operator-bg: #ffe082;
@@ -26,31 +36,36 @@
   --keypad-enter-bg: #aed581;
   --keypad-enter-color: #000;
 
-  --action-clear-bg: #d2544b;
-  --action-clear-color: #fff;
-
-  --download-bg: #fff;
-  --download-text: #000;
-  --download-border: #ccc;
-  --download-stripe: #f5f5f5;
+  /* 境界線・影・オーバーレイ */
+  --border-color: #ccc;
+  --shadow-light: rgba(0,0,0,0.1);
+  --shadow-dark: rgba(0,0,0,0.3);
+  --overlay-bg: rgba(0,0,0,0.4);
 }
 
-/* === ダークテーマ === */
+/* --- ダークテーマ --- */
 body.dark {
+  /* ベースカラー */
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --accent: #90caf9;
 
+  /* コンポーネントカラー */
   --cell-bg: #37474f;
   --display-bg: #263238;
   --button-bg: #455a64;
   --button-hover: #546e7a;
   --header-bg: var(--button-bg);
+  --action-clear-bg: #ef5350; /* 暖色系テーマと合わせて調整 */
+  --action-clear-color: #fff;
 
-  --border-color: #666;
-  --shadow-light: rgba(255,255,255,0.1);
-  --shadow-dark: rgba(0,0,0,0.5);
+  /* ダウンロードエリアカラー */
+  --download-bg: #263238;
+  --download-text: #e0e0e0;
+  --download-border: #546e7a;
+  --download-stripe: #37474f;
 
+  /* キーパッドカラー */
   --keypad-digit-bg: #455a64;
   --keypad-digit-color: #fff;
   --keypad-operator-bg: #25686dc9;
@@ -62,16 +77,13 @@ body.dark {
   --keypad-enter-bg: #388e3c;
   --keypad-enter-color: #fff;
 
-  --action-clear-bg: #ef5350;
-  --action-clear-color: #fff;
-
-  --download-bg: #263238;
-  --download-text: #e0e0e0;
-  --download-border: #546e7a;
-  --download-stripe: #37474f;
+  /* 境界線・影 */
+  --border-color: #666;
+  --shadow-light: rgba(255,255,255,0.1);
+  --shadow-dark: rgba(0,0,0,0.5);
 }
 
-/* === CNY用暖色系テーマ（ライト） === */
+/* --- CNY用暖色系テーマ (ライト) --- */
 body.layout-cny:not(.dark) {
   --accent: #d77a61;
   --cell-bg: #fff3e0;
@@ -85,7 +97,7 @@ body.layout-cny:not(.dark) {
   --download-stripe: #fff8e1;
 }
 
-/* === CNY用暖色系テーマ（ダーク） === */
+/* --- CNY用暖色系テーマ (ダーク) --- */
 body.dark.layout-cny {
   --accent: #f7a072;
   --cell-bg: #4e342e;
@@ -100,7 +112,11 @@ body.dark.layout-cny {
   --download-stripe: #5d4037;
 }
 
-/* === ベース === */
+
+/* ==========================================================================
+   ベーススタイル
+   ========================================================================== */
+
 body {
   margin: 0;
   font-family: sans-serif;
@@ -128,6 +144,24 @@ header {
   font-size: 1.2rem;
 }
 
+
+/* ==========================================================================
+   メインコンテンツ
+   ========================================================================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* --- 合計金額表示エリア --- */
 .summary {
   display: flex;
   justify-content: space-between;
@@ -156,18 +190,7 @@ header {
   margin: 0 2px;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 0 12px;
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
+/* --- 紙幣・硬貨エリア --- */
 .bills, .coins {
   display: grid;
   gap: 10px;
@@ -202,6 +225,7 @@ header {
   box-shadow: inset 0 1px 3px var(--shadow-light);
 }
 
+/* --- アクションボタンエリア --- */
 .actions {
   display: flex;
   justify-content: space-between;
@@ -231,6 +255,11 @@ header {
   color: var(--action-clear-color);
   font-weight: bold;
 }
+
+
+/* ==========================================================================
+   キーパッド (モーダル)
+   ========================================================================== */
 
 #overlay {
   position: fixed;
@@ -322,13 +351,18 @@ header {
   color: var(--keypad-enter-color);
 }
 
+
+/* ==========================================================================
+   ダウンロード用キャプチャエリア
+   ========================================================================== */
+
 .download-capture {
   display: block !important;
   width: 360px;
   height: 640px;
   padding: 20px;
   box-sizing: border-box;
-  background-color: #fff;
+  background-color: #fff; /* キャプチャ時の背景色を明示 */
 }
 
 #download-area:not(.download-capture) {
@@ -405,6 +439,27 @@ header {
   font-weight: bold;
 }
 
+
+/* ==========================================================================
+   ヘッダーボタン
+   ========================================================================== */
+
+header .header-button {
+  float: left;
+  margin-left: 10px;
+  padding: 5px 10px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+/* ==========================================================================
+   設定モーダル
+   ========================================================================== */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -429,4 +484,97 @@ header {
 body.dark .settings-box {
   background: #30343A;
   color: #FBFEFF;
+}
+
+/* --- モーダル内ボタン --- */
+.modal-button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+.modal-button-default {
+  background: var(--button-bg);
+  color: var(--text-color);
+}
+
+.modal-button-accent {
+  background: var(--accent);
+  color: white;
+}
+
+.modal-button-primary {
+  background: #2196F3; /* 青 */
+  color: white;
+}
+
+.modal-button-success {
+  background: #4CAF50; /* 緑 */
+  color: white;
+}
+
+.hidden-input {
+  display: none;
+}
+
+/* --- ノート一覧 --- */
+.note-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  max-height: 200px; /* スクロール可能にする */
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.note-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  margin-bottom: 5px;
+  background: var(--cell-bg);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.note-item:last-child {
+  margin-bottom: 0;
+}
+
+.note-item:hover {
+  background: var(--button-hover);
+}
+
+.note-item .note-name {
+  flex-grow: 1;
+  padding-right: 10px;
+}
+
+.note-item .note-name.active {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.note-item .delete-note-btn {
+  background: #ef5350; /* 赤色 */
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px var(--shadow-light);
+}
+
+.note-item .delete-note-btn:hover {
+  background: #d32f2f;
 }

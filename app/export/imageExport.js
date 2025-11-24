@@ -3,8 +3,9 @@
 // 画面キャプチャ生成とダウンロード処理
 // ==============================
 
-import { appState } from '../core/state.js';
-import { jpyData, cnyData } from '../core/data.js';
+
+// import { appState } from '../core/state.js';
+// import { jpyData, cnyData } from '../core/data.js';
 
 export function bindExportEvents() {
   const btn = document.getElementById('downloadBtn');

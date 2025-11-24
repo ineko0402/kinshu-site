@@ -88,3 +88,4 @@ function hideKeypad() {
   appState.activeDisplay = null;
   appState.currentInput = '';
 }
+
