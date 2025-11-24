@@ -441,7 +441,23 @@ header {
 
 
 /* ==========================================================================
-   設定モーダル (既存のスタイル)
+   ヘッダーボタン
+   ========================================================================== */
+
+header .header-button {
+  float: left;
+  margin-left: 10px;
+  padding: 5px 10px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+/* ==========================================================================
+   設定モーダル
    ========================================================================== */
 
 .modal-overlay {
@@ -470,49 +486,85 @@ body.dark .settings-box {
   color: #FBFEFF;
 }
 
-/* ==========================================================================
-   ノート切り替えUI (追加スタイル)
-   ========================================================================== */
-
-/* ヘッダーのノート切り替えボタン */
-header #noteSwitchBtn {
-  /* index.htmlでインラインスタイルとして記述されていますが、
-     style.cssで定義する場合は以下のようになります */
-  float: left;
-  margin-left: 10px;
-  padding: 5px 10px;
-  background: var(--button-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+/* --- モーダル内ボタン --- */
+.modal-button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 4px var(--shadow-light);
 }
 
-/* ノート一覧の各アイテム */
-#noteList .note-item {
+.modal-button-default {
+  background: var(--button-bg);
+  color: var(--text-color);
+}
+
+.modal-button-accent {
+  background: var(--accent);
+  color: white;
+}
+
+.modal-button-primary {
+  background: #2196F3; /* 青 */
+  color: white;
+}
+
+.modal-button-success {
+  background: #4CAF50; /* 緑 */
+  color: white;
+}
+
+.hidden-input {
+  display: none;
+}
+
+/* --- ノート一覧 --- */
+.note-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  max-height: 200px; /* スクロール可能にする */
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.note-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 8px;
   margin-bottom: 5px;
-  background: var(--button-bg);
-  border-radius: 6px;
+  background: var(--cell-bg);
+  border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-#noteList .note-item:hover {
+.note-item:last-child {
+  margin-bottom: 0;
+}
+
+.note-item:hover {
   background: var(--button-hover);
 }
 
-/* アクティブなノート名 */
-#noteList .note-item .note-name.active {
+.note-item .note-name {
+  flex-grow: 1;
+  padding-right: 10px;
+}
+
+.note-item .note-name.active {
   font-weight: bold;
   color: var(--accent);
 }
 
-/* 削除ボタン */
-#noteList .note-item .delete-note-btn {
+.note-item .delete-note-btn {
   background: #ef5350; /* 赤色 */
   color: white;
   border: none;
@@ -520,9 +572,9 @@ header #noteSwitchBtn {
   border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
-  margin-left: 10px;
+  box-shadow: 0 1px 2px var(--shadow-light);
 }
 
-#noteList .note-item .delete-note-btn:hover {
+.note-item .delete-note-btn:hover {
   background: #d32f2f;
 }

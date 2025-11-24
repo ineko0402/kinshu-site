@@ -9,7 +9,7 @@
 </head>
 <body>
   <header>
-    <button id="noteSwitchBtn" style="float: left; margin-left: 10px; padding: 5px 10px; background: var(--button-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;">
+    <button id="noteSwitchBtn" class="header-button">
       <span id="currentNoteName">レジ (JPY)</span> ▼
     </button>
     <span id="total">¥0</span>
@@ -114,57 +114,37 @@
       <div id="backup-box" class="settings-box">
         <h3>💾 バックアップ</h3>
         <p>全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</p>
-        <button id="exportBtn" style="width: 100%; padding: 8px; margin-bottom: 10px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">
+        <button id="exportBtn" class="modal-button modal-button-success">
           エクスポート (JSON)
         </button>
-        <input type="file" id="importInput" accept=".json" style="display: none;">
-        <button id="importBtn" style="width: 100%; padding: 8px; margin-bottom: 10px; background: #2196F3; color: white; border: none; border-radius: 6px; cursor: pointer;">
+        <input type="file" id="importInput" accept=".json" class="hidden-input">
+        <button id="importBtn" class="modal-button modal-button-primary">
           インポート (JSON)
         </button>
-        <button id="closeBackupBtn" style="width: 100%; padding: 8px; background: var(--button-bg); color: var(--text-color); border: none; border-radius: 6px; cursor: pointer;">
+        <button id="closeBackupBtn" class="modal-button modal-button-default">
           閉じる
         </button>
       </div>
     </div>
   </template>
 
-<!-- noteSwitchTemplate -->
-<template id="noteSwitchTemplate">
-  <div class="modal-overlay" id="note-overlay">
-    <div id="note-box" class="settings-box">
-      <h3>ノート切り替え</h3>
-      <ul id="noteList" style="list-style: none; padding: 0; margin: 10px 0;">
-        <!-- ノート一覧がここに挿入される -->
-      </ul>
-      <button id="newNoteBtn" style="width: 100%; padding: 8px; margin-bottom: 10px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer;">
-        + 新しいノートを作成
-      </button>
-      <button id="closeNoteBtn" style="width: 100%; padding: 8px; background: var(--button-bg); color: var(--text-color); border: none; border-radius: 6px; cursor: pointer;">
-        閉じる
-      </button>
+  <!-- noteSwitchTemplate -->
+  <template id="noteSwitchTemplate">
+    <div class="modal-overlay" id="note-overlay">
+      <div id="note-box" class="settings-box">
+        <h3>ノート切り替え</h3>
+        <ul id="noteList" class="note-list">
+          <!-- ノート一覧がここに挿入される -->
+        </ul>
+        <button id="newNoteBtn" class="modal-button modal-button-accent">
+          + 新しいノートを作成
+        </button>
+        <button id="closeNoteBtn" class="modal-button modal-button-default">
+          閉じる
+        </button>
+      </div>
     </div>
-  </div>
-</template>
-
-<!-- backupTemplate -->
-<template id="backupTemplate">
-  <div class="modal-overlay" id="backup-overlay">
-    <div id="backup-box" class="settings-box">
-      <h3>💾 バックアップ</h3>
-      <p>全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</p>
-      <button id="exportBtn" style="width: 100%; padding: 8px; margin-bottom: 10px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">
-        エクスポート (JSON)
-      </button>
-      <input type="file" id="importInput" accept=".json" style="display: none;">
-      <button id="importBtn" style="width: 100%; padding: 8px; margin-bottom: 10px; background: #2196F3; color: white; border: none; border-radius: 6px; cursor: pointer;">
-        インポート (JSON)
-      </button>
-      <button id="closeBackupBtn" style="width: 100%; padding: 8px; background: var(--button-bg); color: var(--text-color); border: none; border-radius: 6px; cursor: pointer;">
-        閉じる
-      </button>
-    </div>
-  </div>
-</template>
+  </template>
 
 
 </body>
