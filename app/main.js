@@ -258,7 +258,7 @@ export function openHistoryModal() {
 
     if (e.target.classList.contains('delete-history-btn')) {
       // 削除
-      if (confirm('この履歴を削除しますか？')) {
+      if (confirm(`履歴「${savedPoint.memo}」を削除しますか？\n\nこの操作は取り消せません。`)) {
         deleteSavedPoint(appState.currentNoteId, spId);
         renderHistoryList();
       }
@@ -510,7 +510,8 @@ export function openNoteSwitchModal() {
         alert('最後のノートは削除できません。');
         return;
       }
-      if (confirm(`ノート「${appState.notes.find(n => n.id === noteId).name}」を削除しますか？`)) {
+      const noteToDelete = appState.notes.find(n => n.id === noteId);
+      if (confirm(`ノート「${noteToDelete.name}」を削除しますか？\n\nこの操作は取り消せません。`)) {
         deleteNote(noteId);
         renderNoteList();
         renderCurrency();
@@ -526,13 +527,17 @@ export function openNoteSwitchModal() {
     } else {
       // ノート切り替え
       if (noteId !== appState.currentNoteId) {
-        switchNote(noteId);
-        renderCurrency();
-        updateSummary();
-        updateNoteDisplay();
-        // アクティブなノートを更新
-        document.querySelectorAll('.note-name').forEach(el => el.classList.remove('active'));
-        li.querySelector('.note-name').classList.add('active');
+        const success = switchNote(noteId);
+        if (success) {
+          renderCurrency();
+          updateSummary();
+          updateNoteDisplay();
+          // アクティブなノートを更新
+          document.querySelectorAll('.note-name').forEach(el => el.classList.remove('active'));
+          li.querySelector('.note-name').classList.add('active');
+        } else {
+          alert('ノートの切り替えに失敗しました。');
+        }
       }
     }
   });
