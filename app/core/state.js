@@ -3,6 +3,14 @@
 // アプリ全体の状態管理とlocalStorage同期
 // ==============================
 
+// 定数定義
+const MAX_SAVED_POINTS = 30; // 履歴保存上限
+const DEFAULT_NOTE_SETTINGS = {
+  hide2000: false,
+  hideBills: false,
+  hideCoins: false
+};
+
 export const appState = {
   currentCurrency: 'JPY',
   currentInput: '',
@@ -23,36 +31,45 @@ function generateUUID() {
 
 // ノートデータをlocalStorageに保存
 function saveNotesData() {
-  const dataToSave = {
-    currentNoteId: appState.currentNoteId,
-    notes: appState.notes
-  };
-  localStorage.setItem('notes_data', JSON.stringify(dataToSave));
+  try {
+    const dataToSave = {
+      currentNoteId: appState.currentNoteId,
+      notes: appState.notes
+    };
+    localStorage.setItem('notes_data', JSON.stringify(dataToSave));
+  } catch (error) {
+    console.error('ノートデータの保存に失敗:', error);
+    alert('データの保存に失敗しました。ストレージの容量を確認してください。');
+  }
 }
 
 // ノートの初期化とロード
 export function initNotes() {
-  const savedData = JSON.parse(localStorage.getItem('notes_data') || '{}');
-  appState.notes = savedData.notes || [];
+  try {
+    const savedData = JSON.parse(localStorage.getItem('notes_data') || '{}');
+    appState.notes = savedData.notes || [];
 
-  // ノートが存在しない場合はデフォルトノートを作成
-  if (appState.notes.length === 0) {
-    const defaultNote = createNewNote('レジ', 'JPY', {
-      hide2000: false,
-      hideBills: false,
-      hideCoins: false
-    });
-    appState.notes.push(defaultNote);
+    // ノートが存在しない場合はデフォルトノートを作成
+    if (appState.notes.length === 0) {
+      const defaultNote = createNewNote('新規ノート 1', 'JPY', DEFAULT_NOTE_SETTINGS);
+      // createNewNote内でpushとsaveが実行されるので、ここでは不要
+      appState.currentNoteId = defaultNote.id;
+    } else {
+      appState.currentNoteId = savedData.currentNoteId || appState.notes[0].id;
+    }
+
+    // 現在のノートの通貨設定をappStateに反映
+    const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+    if (currentNote) {
+      appState.currentCurrency = currentNote.currency;
+    }
+  } catch (error) {
+    console.error('ノートデータの読み込みに失敗:', error);
+    // エラー時はデフォルトノートを作成
+    appState.notes = [];
+    const defaultNote = createNewNote('新規ノート 1', 'JPY', DEFAULT_NOTE_SETTINGS);
     appState.currentNoteId = defaultNote.id;
-    saveNotesData();
-  } else {
-    appState.currentNoteId = savedData.currentNoteId || appState.notes[0].id;
-  }
-
-  // 現在のノートの通貨設定をappStateに反映
-  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
-  if (currentNote) {
-    appState.currentCurrency = currentNote.currency;
+    appState.currentCurrency = defaultNote.currency;
   }
 }
 
@@ -67,9 +84,8 @@ export function createNewNote(name, currency, settings = {}) {
     currency: currency,
     counts: {},
     settings: {
-      hide2000: settings.hide2000 || false,
-      hideBills: settings.hideBills || false,
-      hideCoins: settings.hideCoins || false
+      ...DEFAULT_NOTE_SETTINGS,
+      ...settings
     },
     savedPoints: []
   };
@@ -84,7 +100,8 @@ export function updateNoteSettings(noteId, settings) {
   if (!note) return false;
 
   note.settings = {
-    ...note.settings,
+    ...DEFAULT_NOTE_SETTINGS,
+    ...(note.settings || {}),
     ...settings
   };
   note.updatedAt = new Date().toISOString();
@@ -134,11 +151,8 @@ export function deleteNote(noteId) {
       switchNote(appState.currentNoteId);
     } else {
       // 全てのノートが削除された場合、デフォルトノートを作成
-      const defaultNote = createNewNote('レジ', 'JPY', {
-        hide2000: false,
-        hideBills: false,
-        hideCoins: false
-      });
+      const defaultNote = createNewNote('新規ノート 1', 'JPY', DEFAULT_NOTE_SETTINGS);
+      // createNewNote内でpushとsaveが実行されるので、ここでは不要
       appState.currentNoteId = defaultNote.id;
       switchNote(defaultNote.id);
     }
@@ -192,11 +206,11 @@ export function saveCounts() {
 // 現在のノートの設定を取得
 export function getCurrentNoteSettings() {
   const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
-  if (!currentNote) return null;
-  return currentNote.settings || {
-    hide2000: false,
-    hideBills: false,
-    hideCoins: false
+  if (!currentNote) return { ...DEFAULT_NOTE_SETTINGS };
+  
+  return {
+    ...DEFAULT_NOTE_SETTINGS,
+    ...(currentNote.settings || {})
   };
 }
 
@@ -222,9 +236,9 @@ export function addSavedPoint(noteId, memo, countsData, total, billCount, coinCo
   // 先頭に追加（新しいものが上）
   note.savedPoints.unshift(savedPoint);
 
-  // 30件を超えたら古いものを削除
-  if (note.savedPoints.length > 30) {
-    note.savedPoints = note.savedPoints.slice(0, 30);
+  // MAX_SAVED_POINTSを超えたら古いものを削除
+  if (note.savedPoints.length > MAX_SAVED_POINTS) {
+    note.savedPoints = note.savedPoints.slice(0, MAX_SAVED_POINTS);
   }
 
   note.updatedAt = new Date().toISOString();
