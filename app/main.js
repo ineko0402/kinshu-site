@@ -34,6 +34,7 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   const saveBtn = document.getElementById('saveNoteEditBtn');
   const noteNameInput = document.getElementById('noteNameInput');
   const currencyDisplay = document.getElementById('currencyDisplay');
+  const messageBar = document.getElementById('noteEditMessage');
 
   // 現在の値を設定
   noteNameInput.value = note.name;
@@ -51,11 +52,24 @@ export function openNoteEditModal(noteId, onUpdate = null) {
     settingsSection.classList.remove('visible');
   }
 
+  // メッセージ表示関数
+  function showMessage(text, type = 'error') {
+    messageBar.textContent = text;
+    messageBar.className = `message-bar ${type}`;
+    messageBar.classList.add('visible');
+  }
+
+  function hideMessage() {
+    messageBar.classList.remove('visible');
+  }
+
+  noteNameInput.addEventListener('input', hideMessage);
+
   // 保存処理
   saveBtn.addEventListener('click', () => {
     const newName = noteNameInput.value.trim();
     if (!newName) {
-      alert('ノート名を入力してください。');
+      showMessage('ノート名を入力してください。', 'error');
       return;
     }
 
@@ -102,6 +116,7 @@ export function openSavePointModal() {
   const closeBtn = document.getElementById('closeSavePointBtn');
   const saveBtn = document.getElementById('saveSavePointBtn');
   const memoInput = document.getElementById('savePointMemoInput');
+  const messageBar = document.getElementById('savePointMessage');
 
   // 現在の集計情報を表示
   const data = currentNote.currency === 'JPY' ? jpyData : cnyData;
@@ -128,20 +143,36 @@ export function openSavePointModal() {
     <strong>紙幣:</strong> ${bills}枚 / <strong>硬貨:</strong> ${coins}枚
   `;
 
-  // デフォルトのメモを設定
-  const now = new Date();
-  const hours = now.getHours();
-  let defaultMemo = '';
-  if (hours < 12) defaultMemo = '午前レジ締め';
-  else if (hours < 18) defaultMemo = '午後レジ締め';
-  else defaultMemo = '閉店レジ締め';
-  memoInput.value = defaultMemo;
+  // デフォルトのメモはアクティブなノート名
+  memoInput.value = currentNote.name;
+
+  // メッセージ表示関数
+  function showMessage(text, type = 'error') {
+    messageBar.textContent = text;
+    messageBar.className = `message-bar ${type}`;
+    messageBar.classList.add('visible');
+    
+    // 成功メッセージは自動的に消える
+    if (type === 'success') {
+      setTimeout(() => {
+        messageBar.classList.remove('visible');
+      }, 2000);
+    }
+  }
+
+  // メッセージを非表示
+  function hideMessage() {
+    messageBar.classList.remove('visible');
+  }
+
+  // 入力時にメッセージを非表示
+  memoInput.addEventListener('input', hideMessage);
 
   // 保存処理
   saveBtn.addEventListener('click', () => {
     const memo = memoInput.value.trim();
     if (!memo) {
-      alert('メモを入力してください。');
+      showMessage('メモを入力してください。', 'error');
       return;
     }
 
@@ -154,8 +185,11 @@ export function openSavePointModal() {
     });
 
     addSavedPoint(appState.currentNoteId, memo, counts, total, bills, coins);
-    alert('保存しました。');
-    document.body.removeChild(overlay);
+    showMessage('保存しました。', 'success');
+    
+    setTimeout(() => {
+      document.body.removeChild(overlay);
+    }, 1500);
   });
 
   closeBtn.addEventListener('click', () => {
@@ -365,6 +399,7 @@ export function openNoteCreateModal(onUpdate = null) {
   const createBtn = document.getElementById('createNoteBtn');
   const noteNameInput = document.getElementById('newNoteNameInput');
   const currencySelect = document.getElementById('newNoteCurrencySelect');
+  const messageBar = document.getElementById('noteCreateMessage');
 
   // デフォルトのノート名を設定
   noteNameInput.value = `新規ノート ${appState.notes.length + 1}`;
@@ -379,11 +414,24 @@ export function openNoteCreateModal(onUpdate = null) {
     }
   });
 
+  // メッセージ表示関数
+  function showMessage(text, type = 'error') {
+    messageBar.textContent = text;
+    messageBar.className = `message-bar ${type}`;
+    messageBar.classList.add('visible');
+  }
+
+  function hideMessage() {
+    messageBar.classList.remove('visible');
+  }
+
+  noteNameInput.addEventListener('input', hideMessage);
+
   // 作成処理
   createBtn.addEventListener('click', () => {
     const name = noteNameInput.value.trim();
     if (!name) {
-      alert('ノート名を入力してください。');
+      showMessage('ノート名を入力してください。', 'error');
       return;
     }
 
