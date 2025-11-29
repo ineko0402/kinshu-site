@@ -4,13 +4,13 @@
     "display": "standalone",
     "background_color": "#b1dff6",
     "theme_color": "#4f9ed9",
+    "start_url": "/kinshu-site/index.html",
+    "scope": "/kinshu-site/",
     "icons": [
         {
-            "src": "/favicon_io/android-icon-192x192.png",
+            "src": "/kinshu-site/favicon_io/android-icon-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         }
-    ],
-    "start_url": "/index.html",
-    "scope": "/"
+    ]
 }
