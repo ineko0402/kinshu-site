@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>金種入力アプリ</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- ファビコン -->
+  <link rel="icon" type="image/x-icon" href="/favicon_io/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon_io/apple-icon-152x152.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon_io/android-icon-192x192.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1976d2">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
+
 <body>
   <header>
     <div class="header-left">
@@ -29,33 +40,71 @@
   <div class="container">
     <!-- JPY (日本円) の金種要素を静的に配置 -->
     <div class="bills">
-      <div class="cell" data-id="jpy-10000" data-kind="10000" data-label="一万円札"><span class="label">一万円札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-5000" data-kind="5000" data-label="五千円札"><span class="label">五千円札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-2000" data-kind="2000" data-label="二千円札"><span class="label">二千円札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-1000" data-kind="1000" data-label="千円札"><span class="label">千円札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-10000" data-kind="10000" data-label="一万円札"><span class="label">一万円札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-5000" data-kind="5000" data-label="五千円札"><span class="label">五千円札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-2000" data-kind="2000" data-label="二千円札"><span class="label">二千円札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-1000" data-kind="1000" data-label="千円札"><span class="label">千円札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
     </div>
     <div class="coins">
-      <div class="cell" data-id="jpy-500" data-kind="500" data-label="五百円玉"><span class="label">五百円玉</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-100" data-kind="100" data-label="百円玉"><span class="label">百円玉</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-50" data-kind="50" data-label="五十円玉"><span class="label">五十円玉</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-10" data-kind="10" data-label="十円玉"><span class="label">十円玉</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-5" data-kind="5" data-label="五円玉"><span class="label">五円玉</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="jpy-1" data-kind="1" data-label="一円玉"><span class="label">一円玉</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="jpy-500" data-kind="500" data-label="五百円玉"><span class="label">五百円玉</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-100" data-kind="100" data-label="百円玉"><span class="label">百円玉</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-50" data-kind="50" data-label="五十円玉"><span class="label">五十円玉</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-10" data-kind="10" data-label="十円玉"><span class="label">十円玉</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-5" data-kind="5" data-label="五円玉"><span class="label">五円玉</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="jpy-1" data-kind="1" data-label="一円玉"><span class="label">一円玉</span>
+        <div class="display" data-value="0">0</div>
+      </div>
     </div>
 
     <!-- CNY (中国元) の金種要素を静的に配置 (初期は非表示) -->
     <div class="bills cny-cells" style="display: none;">
-      <div class="cell" data-id="cny-100" data-kind="100" data-label="100元札"><span class="label">100元札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="cny-50" data-kind="50" data-label="50元札"><span class="label">50元札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="cny-20" data-kind="20" data-label="20元札"><span class="label">20元札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="cny-10" data-kind="10" data-label="10元札"><span class="label">10元札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="cny-5" data-kind="5" data-label="5元札"><span class="label">5元札</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="cny-1b" data-kind="1" data-label="1元札"><span class="label">1元札</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-100" data-kind="100" data-label="100元札"><span class="label">100元札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="cny-50" data-kind="50" data-label="50元札"><span class="label">50元札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="cny-20" data-kind="20" data-label="20元札"><span class="label">20元札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="cny-10" data-kind="10" data-label="10元札"><span class="label">10元札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="cny-5" data-kind="5" data-label="5元札"><span class="label">5元札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="cny-1b" data-kind="1" data-label="1元札"><span class="label">1元札</span>
+        <div class="display" data-value="0">0</div>
+      </div>
     </div>
     <div class="coins cny-cells" style="display: none;">
-      <div class="cell" data-id="cny-1c" data-kind="1" data-label="1元硬貨"><span class="label">1元硬貨</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="cny-05" data-kind="0.5" data-label="5角硬貨"><span class="label">5角硬貨</span><div class="display" data-value="0">0</div></div>
-      <div class="cell" data-id="cny-01" data-kind="0.1" data-label="1角硬貨"><span class="label">1角硬貨</span><div class="display" data-value="0">0</div></div>
+      <div class="cell" data-id="cny-1c" data-kind="1" data-label="1元硬貨"><span class="label">1元硬貨</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="cny-05" data-kind="0.5" data-label="5角硬貨"><span class="label">5角硬貨</span>
+        <div class="display" data-value="0">0</div>
+      </div>
+      <div class="cell" data-id="cny-01" data-kind="0.1" data-label="1角硬貨"><span class="label">1角硬貨</span>
+        <div class="display" data-value="0">0</div>
+      </div>
     </div>
   </div>
 
@@ -72,11 +121,16 @@
     <div id="keypadPanel">
       <div id="keypadLabel">金種名</div>
       <input id="keypadInput" type="text" readonly value="0" />
-      <div class="keyrow"><button class="operator">+</button><button class="operator">-</button><button class="operator">×</button><button class="operator">÷</button></div>
-      <div class="keyrow"><button class="digit">7</button><button class="digit">8</button><button class="digit">9</button><button class="special clear">AC</button></div>
-      <div class="keyrow"><button class="digit">4</button><button class="digit">5</button><button class="digit">6</button><button class="special">⇐</button></div>
-      <div class="keyrow"><button class="digit">1</button><button class="digit">2</button><button class="digit">3</button><button class="operator">=</button></div>
-      <div class="keyrow"><button class="digit">0</button><button class="digit">00</button><button class="digit">.</button><button class="special enter">Enter</button></div>
+      <div class="keyrow"><button class="operator">+</button><button class="operator">-</button><button
+          class="operator">×</button><button class="operator">÷</button></div>
+      <div class="keyrow"><button class="digit">7</button><button class="digit">8</button><button
+          class="digit">9</button><button class="special clear">AC</button></div>
+      <div class="keyrow"><button class="digit">4</button><button class="digit">5</button><button
+          class="digit">6</button><button class="special">⇐</button></div>
+      <div class="keyrow"><button class="digit">1</button><button class="digit">2</button><button
+          class="digit">3</button><button class="operator">=</button></div>
+      <div class="keyrow"><button class="digit">0</button><button class="digit">00</button><button
+          class="digit">.</button><button class="special enter">Enter</button></div>
     </div>
   </div>
 
@@ -93,7 +147,8 @@
       <div id="settings-box" class="settings-box">
         <h3>⚙️ 設定</h3>
 
-        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label><br><hr>
+        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label><br>
+        <hr>
 
         <strong>📄 ライセンス情報</strong><br>
         <small>
@@ -149,10 +204,12 @@
     <div class="modal-overlay" id="note-edit-overlay">
       <div id="note-edit-box" class="settings-box">
         <h3>ノート編集</h3>
-        
+
+        <div id="noteEditMessage" class="message-bar"></div>
+
         <label for="noteNameInput">ノート名</label>
         <input type="text" id="noteNameInput" class="text-input" placeholder="ノート名を入力">
-        
+
         <div class="info-row">
           <strong>通貨:</strong> <span id="currencyDisplay">JPY</span>
         </div>
@@ -178,10 +235,10 @@
     <div class="modal-overlay" id="note-create-overlay">
       <div id="note-create-box" class="settings-box">
         <h3>新規ノート作成</h3>
-        
+
         <label for="newNoteNameInput">ノート名</label>
         <input type="text" id="newNoteNameInput" class="text-input" placeholder="ノート名を入力">
-        
+
         <label for="newNoteCurrencySelect">通貨</label>
         <select id="newNoteCurrencySelect" class="select-input">
           <option value="JPY">JPY (日本円)</option>
@@ -209,7 +266,9 @@
     <div class="modal-overlay" id="savepoint-overlay">
       <div id="savepoint-box" class="settings-box">
         <h3>💾 保存</h3>
-        
+
+        <div id="savePointMessage" class="message-bar"></div>
+
         <div id="savePointPreview" class="info-row">
           <!-- 現在の集計情報が表示される -->
         </div>
@@ -251,4 +310,5 @@
   </template>
 
 </body>
+
 </html>

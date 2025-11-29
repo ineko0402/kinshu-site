@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'CalcApp-cache-v20251124';
+const CACHE_NAME = 'CalcApp-cache-v20251125';
 const urlsToCache = [
   './',
   './index.html',
