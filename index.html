@@ -114,7 +114,6 @@
     <button id="saveBtn">💾 保存</button>
     <button id="historyBtn">📋 履歴</button>
     <button id="settingsBtn">⚙️ 設定</button>
-    <button id="backupBtn">💾 バックアップ</button>
   </div>
 
   <!-- オーバーレイテンキー -->
@@ -151,23 +150,8 @@
         <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label><br>
         <hr>
 
-        <strong>📄 ライセンス情報</strong><br>
-        <small>
-          このアプリは <a href="https://github.com/niklasvh/html2canvas" target="_blank">html2canvas</a> を使用しています<br>
-          © 2012 Niklas von Hertzen (MIT License)
-        </small><br><br>
-
-        <button id="closeSettingsBtn">閉じる</button>
-      </div>
-    </div>
-  </template>
-
-  <!-- backupTemplate -->
-  <template id="backupTemplate">
-    <div class="modal-overlay" id="backup-overlay">
-      <div id="backup-box" class="settings-box">
-        <h3>💾 バックアップ</h3>
-        <p>全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</p>
+        <strong>💾 バックアップ</strong><br>
+        <small>全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</small><br><br>
         <button id="exportBtn" class="modal-button modal-button-success">
           エクスポート (JSON)
         </button>
@@ -175,9 +159,15 @@
         <button id="importBtn" class="modal-button modal-button-primary">
           インポート (JSON)
         </button>
-        <button id="closeBackupBtn" class="modal-button modal-button-default">
-          閉じる
-        </button>
+        <hr>
+
+        <strong>📄 ライセンス情報</strong><br>
+        <small>
+          このアプリは <a href="https://github.com/niklasvh/html2canvas" target="_blank">html2canvas</a> を使用しています<br>
+          © 2012 Niklas von Hertzen (MIT License)
+        </small><br><br>
+
+        <button id="closeSettingsBtn">閉じる</button>
       </div>
     </div>
   </template>

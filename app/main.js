@@ -1,4 +1,4 @@
-// app/main.js
+﻿// app/main.js
 // ==============================
 // アプリのエントリーポイント
 // ==============================
@@ -151,7 +151,7 @@ export function openSavePointModal() {
     messageBar.textContent = text;
     messageBar.className = `message-bar ${type}`;
     messageBar.classList.add('visible');
-    
+
     // 成功メッセージは自動的に消える
     if (type === 'success') {
       setTimeout(() => {
@@ -186,7 +186,7 @@ export function openSavePointModal() {
 
     addSavedPoint(appState.currentNoteId, memo, counts, total, bills, coins);
     showMessage('保存しました。', 'success');
-    
+
     setTimeout(() => {
       document.body.removeChild(overlay);
     }, 1500);
@@ -213,7 +213,7 @@ export function openHistoryModal() {
   // 履歴一覧の描画
   function renderHistoryList() {
     historyListEl.innerHTML = '';
-    
+
     if (!currentNote.savedPoints || currentNote.savedPoints.length === 0) {
       historyListEl.innerHTML = '<li class="history-empty">保存された履歴がありません</li>';
       return;
@@ -221,7 +221,7 @@ export function openHistoryModal() {
 
     currentNote.savedPoints.forEach(sp => {
       const date = new Date(sp.timestamp);
-      const dateStr = `${date.getFullYear()}/${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+      const dateStr = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
       const unit = currentNote.currency === 'JPY' ? '円' : '元';
 
       const li = document.createElement('li');
@@ -290,7 +290,7 @@ function showHistoryDetail(savedPoint) {
   const detailContent = document.getElementById('historyDetailContent');
 
   const date = new Date(savedPoint.timestamp);
-  const dateStr = `${date.getFullYear()}/${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+  const dateStr = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   const unit = currentNote.currency === 'JPY' ? '円' : '元';
   const data = currentNote.currency === 'JPY' ? jpyData : cnyData;
   const settings = currentNote.settings || {};
@@ -351,7 +351,7 @@ function showHistoryDetail(savedPoint) {
 // レポートをクリップボードにコピー
 function copyReport(savedPoint, note) {
   const date = new Date(savedPoint.timestamp);
-  const dateStr = `${date.getFullYear()}/${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+  const dateStr = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   const unit = note.currency === 'JPY' ? '円' : '元';
   const data = note.currency === 'JPY' ? jpyData : cnyData;
   const settings = note.settings || {};
@@ -641,6 +641,5 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('historyBtn').addEventListener('click', openHistoryModal);
   document.getElementById('settingsBtn').addEventListener('click', openSettings);
   document.getElementById('noteSwitchBtn').addEventListener('click', openNoteSwitchModal);
-  document.getElementById('backupBtn').addEventListener('click', openBackupModal);
   console.log('[INIT] アプリが初期化されました。');
 });
