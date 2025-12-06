@@ -1,15 +1,13 @@
-/* ==========================================================================
-   カラーテーマ (CSS Variables)
-   ========================================================================== */
 
-/* --- ライトテーマ (デフォルト) --- */
+
+
 :root {
-  /* ベースカラー */
+  
   --bg-color: #f0f0f0;
   --text-color: #000;
   --accent: #1976d2;
 
-  /* コンポーネントカラー */
+  
   --cell-bg: #e3f2fd;
   --display-bg: #fff;
   --button-bg: #cfd8dc;
@@ -18,13 +16,13 @@
   --action-clear-bg: #d2544b;
   --action-clear-color: #fff;
 
-  /* ダウンロードエリアカラー */
+  
   --download-bg: #fff;
   --download-text: #000;
   --download-border: #ccc;
   --download-stripe: #f5f5f5;
 
-  /* キーパッドカラー */
+  
   --keypad-digit-bg: #bbdefb;
   --keypad-digit-color: #000;
   --keypad-operator-bg: #ffe082;
@@ -36,21 +34,21 @@
   --keypad-enter-bg: #aed581;
   --keypad-enter-color: #000;
 
-  /* 境界線・影・オーバーレイ */
+  
   --border-color: #ccc;
   --shadow-light: rgba(0,0,0,0.1);
   --shadow-dark: rgba(0,0,0,0.3);
   --overlay-bg: rgba(0,0,0,0.4);
 }
 
-/* --- ダークテーマ --- */
+
 body.dark {
-  /* ベースカラー */
+  
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --accent: #90caf9;
 
-  /* コンポーネントカラー */
+  
   --cell-bg: #37474f;
   --display-bg: #263238;
   --button-bg: #455a64;
@@ -59,13 +57,13 @@ body.dark {
   --action-clear-bg: #ef5350;
   --action-clear-color: #fff;
 
-  /* ダウンロードエリアカラー */
+  
   --download-bg: #263238;
   --download-text: #e0e0e0;
   --download-border: #546e7a;
   --download-stripe: #37474f;
 
-  /* キーパッドカラー */
+  
   --keypad-digit-bg: #455a64;
   --keypad-digit-color: #fff;
   --keypad-operator-bg: #25686dc9;
@@ -77,13 +75,13 @@ body.dark {
   --keypad-enter-bg: #388e3c;
   --keypad-enter-color: #fff;
 
-  /* 境界線・影 */
+  
   --border-color: #666;
   --shadow-light: rgba(255,255,255,0.1);
   --shadow-dark: rgba(0,0,0,0.5);
 }
 
-/* --- CNY用暖色系テーマ (ライト) --- */
+
 body.layout-cny:not(.dark) {
   --accent: #d77a61;
   --cell-bg: #fff3e0;
@@ -97,7 +95,7 @@ body.layout-cny:not(.dark) {
   --download-stripe: #fff8e1;
 }
 
-/* --- CNY用暖色系テーマ (ダーク) --- */
+
 body.dark.layout-cny {
   --accent: #f7a072;
   --cell-bg: #4e342e;
@@ -113,9 +111,7 @@ body.dark.layout-cny {
 }
 
 
-/* ==========================================================================
-   ベーススタイル
-   ========================================================================== */
+
 
 body {
   margin: 0;
@@ -175,9 +171,7 @@ header {
 }
 
 
-/* ==========================================================================
-   メインコンテンツ
-   ========================================================================== */
+
 
 .container {
   display: flex;
@@ -191,7 +185,7 @@ header {
   box-sizing: border-box;
 }
 
-/* --- 合計金額表示エリア --- */
+
 .summary {
   display: flex;
   justify-content: space-between;
@@ -220,7 +214,7 @@ header {
   margin: 0 2px;
 }
 
-/* --- 紙幣・硬貨エリア --- */
+
 .bills, .coins {
   display: grid;
   gap: 10px;
@@ -264,7 +258,7 @@ header {
   box-shadow: inset 0 1px 3px var(--shadow-light);
 }
 
-/* --- アクションボタンエリア --- */
+
 .actions {
   display: flex;
   justify-content: space-between;
@@ -296,9 +290,7 @@ header {
 }
 
 
-/* ==========================================================================
-   キーパッド (モーダル)
-   ========================================================================== */
+
 
 #overlay {
   position: fixed;
@@ -391,9 +383,7 @@ header {
 }
 
 
-/* ==========================================================================
-   ダウンロード用キャプチャエリア
-   ========================================================================== */
+
 
 .download-capture {
   display: block !important;
@@ -479,9 +469,7 @@ header {
 }
 
 
-/* ==========================================================================
-   ヘッダーボタン
-   ========================================================================== */
+
 
 .header-button {
   padding: 5px 10px;
@@ -498,9 +486,7 @@ header {
   max-width: 200px;
 }
 
-/* ==========================================================================
-   設定モーダル
-   ========================================================================== */
+
 
 .modal-overlay {
   position: fixed;
@@ -534,7 +520,7 @@ body.dark .settings-box {
   color: #FBFEFF;
 }
 
-/* --- メッセージバー --- */
+
 .message-bar {
   padding: 10px;
   margin-bottom: 16px;
@@ -574,7 +560,7 @@ body.dark .message-bar.success {
   border: 1px solid #388e3c;
 }
 
-/* --- テキスト入力 --- */
+
 .text-input {
   width: 100%;
   padding: 8px;
@@ -587,7 +573,7 @@ body.dark .message-bar.success {
   color: var(--text-color);
 }
 
-/* --- セレクトボックス --- */
+
 .select-input {
   width: 100%;
   padding: 8px;
@@ -617,7 +603,7 @@ body.dark .message-bar.success {
   display: block;
 }
 
-/* --- モーダル内ボタン --- */
+
 .modal-button {
   width: 100%;
   padding: 10px;
@@ -664,7 +650,7 @@ body.dark .message-bar.success {
   display: none;
 }
 
-/* --- ノート一覧 --- */
+
 .note-list {
   list-style: none;
   padding: 0;
@@ -738,7 +724,7 @@ body.dark .message-bar.success {
   background: #d32f2f;
 }
 
-/* --- 履歴一覧 --- */
+
 .history-list {
   list-style: none;
   padding: 0;
@@ -825,7 +811,7 @@ body.dark .history-date {
   background: #d32f2f;
 }
 
-/* --- 履歴詳細テーブル --- */
+
 .detail-table {
   width: 100%;
   border-collapse: collapse;

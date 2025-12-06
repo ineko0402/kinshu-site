@@ -81,11 +81,31 @@ function showKeypad(cell) {
   document.getElementById('keypadInput').value = appState.currentInput;
   document.getElementById('overlay').classList.add('show');
   appState.isFirstInput = true;
+
+  // モバイル最適化: bodyのスクロールを無効化
+  if (isMobileDevice()) {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  }
 }
 
 function hideKeypad() {
   document.getElementById('overlay').classList.remove('show');
   appState.activeDisplay = null;
   appState.currentInput = '';
+
+  // モバイル最適化: bodyのスクロールを復元
+  if (isMobileDevice()) {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+  }
+}
+
+// モバイルデバイス判定
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
 }
 

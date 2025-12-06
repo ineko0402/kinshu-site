@@ -22,17 +22,9 @@ export const appState = {
   notes: [] // { id, name, createdAt, updatedAt, currency, counts, settings, savedPoints } の配列
 };
 
-/**
- * UUID生成関数（RFC4122 version 4準拠）
- * @returns {string} 生成されたUUID
- */
-
-/**
- * UUID生成関数（RFC4122 version 4準拠）
- * @returns {string} 生成されたUUID
- */
+// UUID生成関数（RFC4122 version 4準拠）
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
@@ -246,7 +238,7 @@ export function saveCounts() {
     const val = cell.querySelector('.display').dataset.value || '0';
     values[id] = val;
   });
-  
+
   currentNote.counts = values;
   currentNote.updatedAt = new Date().toISOString();
   saveNotesData();
@@ -259,7 +251,7 @@ export function saveCounts() {
 export function getCurrentNoteSettings() {
   const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
   if (!currentNote) return { ...DEFAULT_NOTE_SETTINGS };
-  
+
   return {
     ...DEFAULT_NOTE_SETTINGS,
     ...(currentNote.settings || {})
