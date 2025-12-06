@@ -1,13 +1,15 @@
+/* ==========================================================================
+   カラーテーマ (CSS Variables)
+   ========================================================================== */
 
-
-
+/* --- ライトテーマ (デフォルト) --- */
 :root {
-  
+  /* ベースカラー */
   --bg-color: #f0f0f0;
   --text-color: #000;
   --accent: #1976d2;
 
-  
+  /* コンポーネントカラー */
   --cell-bg: #e3f2fd;
   --display-bg: #fff;
   --button-bg: #cfd8dc;
@@ -16,13 +18,13 @@
   --action-clear-bg: #d2544b;
   --action-clear-color: #fff;
 
-  
+  /* ダウンロードエリアカラー */
   --download-bg: #fff;
   --download-text: #000;
   --download-border: #ccc;
   --download-stripe: #f5f5f5;
 
-  
+  /* キーパッドカラー */
   --keypad-digit-bg: #bbdefb;
   --keypad-digit-color: #000;
   --keypad-operator-bg: #ffe082;
@@ -34,21 +36,21 @@
   --keypad-enter-bg: #aed581;
   --keypad-enter-color: #000;
 
-  
+  /* 境界線・影・オーバーレイ */
   --border-color: #ccc;
-  --shadow-light: rgba(0,0,0,0.1);
-  --shadow-dark: rgba(0,0,0,0.3);
-  --overlay-bg: rgba(0,0,0,0.4);
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-dark: rgba(0, 0, 0, 0.3);
+  --overlay-bg: rgba(0, 0, 0, 0.4);
 }
 
-
+/* --- ダークテーマ --- */
 body.dark {
-  
+  /* ベースカラー */
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --accent: #90caf9;
 
-  
+  /* コンポーネントカラー */
   --cell-bg: #37474f;
   --display-bg: #263238;
   --button-bg: #455a64;
@@ -57,13 +59,13 @@ body.dark {
   --action-clear-bg: #ef5350;
   --action-clear-color: #fff;
 
-  
+  /* ダウンロードエリアカラー */
   --download-bg: #263238;
   --download-text: #e0e0e0;
   --download-border: #546e7a;
   --download-stripe: #37474f;
 
-  
+  /* キーパッドカラー */
   --keypad-digit-bg: #455a64;
   --keypad-digit-color: #fff;
   --keypad-operator-bg: #25686dc9;
@@ -75,13 +77,13 @@ body.dark {
   --keypad-enter-bg: #388e3c;
   --keypad-enter-color: #fff;
 
-  
+  /* 境界線・影 */
   --border-color: #666;
-  --shadow-light: rgba(255,255,255,0.1);
-  --shadow-dark: rgba(0,0,0,0.5);
+  --shadow-light: rgba(255, 255, 255, 0.1);
+  --shadow-dark: rgba(0, 0, 0, 0.5);
 }
 
-
+/* --- CNY用暖色系テーマ (ライト) --- */
 body.layout-cny:not(.dark) {
   --accent: #d77a61;
   --cell-bg: #fff3e0;
@@ -95,7 +97,7 @@ body.layout-cny:not(.dark) {
   --download-stripe: #fff8e1;
 }
 
-
+/* --- CNY用暖色系テーマ (ダーク) --- */
 body.dark.layout-cny {
   --accent: #f7a072;
   --cell-bg: #4e342e;
@@ -111,16 +113,28 @@ body.dark.layout-cny {
 }
 
 
+/* ==========================================================================
+   ベーススタイル
+   ========================================================================== */
 
+/* モバイル最適化 - タッチ操作対応 */
+* {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
 
 body {
   margin: 0;
   font-family: sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
 }
 
-button, .btn {
+button,
+.btn {
   border: 1px solid var(--border-color);
   box-shadow: 0 2px 4px var(--shadow-light);
   border-radius: 6px;
@@ -131,6 +145,11 @@ button:focus {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+
+/* ==========================================================================
+   ヘッダー
+   ========================================================================== */
 
 header {
   background: var(--header-bg);
@@ -171,7 +190,9 @@ header {
 }
 
 
-
+/* ==========================================================================
+   メインコンテンツ
+   ========================================================================== */
 
 .container {
   display: flex;
@@ -185,7 +206,7 @@ header {
   box-sizing: border-box;
 }
 
-
+/* --- 合計金額表示エリア --- */
 .summary {
   display: flex;
   justify-content: space-between;
@@ -214,8 +235,9 @@ header {
   margin: 0 2px;
 }
 
-
-.bills, .coins {
+/* --- 紙幣・硬貨エリア --- */
+.bills,
+.coins {
   display: grid;
   gap: 10px;
   width: 100%;
@@ -227,8 +249,13 @@ header {
   display: none;
 }
 
-.bills { grid-template-columns: repeat(2, 1fr); }
-.coins { grid-template-columns: repeat(3, 1fr); }
+.bills {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.coins {
+  grid-template-columns: repeat(3, 1fr);
+}
 
 .cell {
   background: var(--cell-bg);
@@ -241,7 +268,9 @@ header {
   box-shadow: 0 2px 4px var(--shadow-light);
 }
 
-.cell:active { transform: scale(0.95); }
+.cell:active {
+  transform: scale(0.95);
+}
 
 .cell.disabled {
   opacity: 0.4;
@@ -258,7 +287,7 @@ header {
   box-shadow: inset 0 1px 3px var(--shadow-light);
 }
 
-
+/* --- アクションボタンエリア --- */
 .actions {
   display: flex;
   justify-content: space-between;
@@ -290,7 +319,9 @@ header {
 }
 
 
-
+/* ==========================================================================
+   キーパッド (モーダル)
+   ========================================================================== */
 
 #overlay {
   position: fixed;
@@ -302,7 +333,9 @@ header {
   z-index: 1000;
 }
 
-#overlay.show { display: flex; }
+#overlay.show {
+  display: flex;
+}
 
 #keypadPanel {
   background: var(--display-bg);
@@ -383,7 +416,9 @@ header {
 }
 
 
-
+/* ==========================================================================
+   ダウンロード用キャプチャエリア
+   ========================================================================== */
 
 .download-capture {
   display: block !important;
@@ -469,7 +504,9 @@ header {
 }
 
 
-
+/* ==========================================================================
+   ヘッダーボタン
+   ========================================================================== */
 
 .header-button {
   padding: 5px 10px;
@@ -487,6 +524,9 @@ header {
 }
 
 
+/* ==========================================================================
+   設定モーダル
+   ========================================================================== */
 
 .modal-overlay {
   position: fixed;
@@ -505,7 +545,7 @@ header {
   border-radius: 12px;
   max-width: 350px;
   width: 90%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 9999;
   max-height: 80vh;
   overflow-y: auto;
@@ -520,7 +560,7 @@ body.dark .settings-box {
   color: #FBFEFF;
 }
 
-
+/* --- メッセージバー --- */
 .message-bar {
   padding: 10px;
   margin-bottom: 16px;
@@ -560,7 +600,7 @@ body.dark .message-bar.success {
   border: 1px solid #388e3c;
 }
 
-
+/* --- テキスト入力 --- */
 .text-input {
   width: 100%;
   padding: 8px;
@@ -573,7 +613,7 @@ body.dark .message-bar.success {
   color: var(--text-color);
 }
 
-
+/* --- セレクトボックス --- */
 .select-input {
   width: 100%;
   padding: 8px;
@@ -603,7 +643,7 @@ body.dark .message-bar.success {
   display: block;
 }
 
-
+/* --- モーダル内ボタン --- */
 .modal-button {
   width: 100%;
   padding: 10px;
@@ -650,7 +690,7 @@ body.dark .message-bar.success {
   display: none;
 }
 
-
+/* --- ノート一覧 --- */
 .note-list {
   list-style: none;
   padding: 0;
@@ -724,7 +764,7 @@ body.dark .message-bar.success {
   background: #d32f2f;
 }
 
-
+/* --- 履歴一覧 --- */
 .history-list {
   list-style: none;
   padding: 0;
@@ -811,7 +851,7 @@ body.dark .history-date {
   background: #d32f2f;
 }
 
-
+/* --- 履歴詳細テーブル --- */
 .detail-table {
   width: 100%;
   border-collapse: collapse;
@@ -833,4 +873,156 @@ body.dark .history-date {
 .detail-table td:nth-child(2),
 .detail-table td:nth-child(3) {
   text-align: right;
+}
+
+
+/* ==========================================================================
+   モバイル最適化 - レスポンシブデザイン
+   ========================================================================== */
+
+/* セーフエリア対応 (iPhone ノッチ対応) */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  header {
+    padding-top: calc(10px + env(safe-area-inset-top));
+  }
+}
+
+/* 極小画面 (< 375px) */
+@media (max-width: 374px) {
+  .coins {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .actions button {
+    font-size: 14px;
+    min-width: 80px;
+    padding: 6px 4px;
+  }
+
+  header {
+    font-size: 1rem;
+  }
+
+  .header-button {
+    max-width: 150px;
+    font-size: 0.8rem;
+  }
+
+  .summary {
+    font-size: 12px;
+  }
+
+  .summary span:not(#total) {
+    font-size: 14px;
+  }
+}
+
+/* 横向き表示 (高さが低い場合) */
+@media (max-height: 500px) and (orientation: landscape) {
+  header {
+    padding: 5px 10px;
+    font-size: 1rem;
+  }
+
+  .summary {
+    margin: 5px auto 10px auto;
+    font-size: 12px;
+  }
+
+  .summary #total {
+    font-size: 20px;
+  }
+
+  .container {
+    gap: 8px;
+  }
+
+  .cell {
+    padding: 8px;
+  }
+
+  .display {
+    margin-top: 4px;
+    padding: 6px;
+    font-size: 16px;
+  }
+
+  .actions {
+    margin-top: 10px;
+    padding: 4px 8px;
+  }
+
+  .actions button {
+    padding: 6px 0;
+    font-size: 14px;
+  }
+
+  #keypadPanel {
+    padding: 12px;
+    min-width: 220px;
+  }
+
+  .keyrow button {
+    height: 50px;
+    font-size: 18px;
+  }
+}
+
+/* タブレット・デスクトップ最適化 */
+@media (min-width: 600px) {
+  .container,
+  .bills,
+  .coins,
+  .actions {
+    max-width: 600px;
+  }
+
+  .bills {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 769px) {
+  .container,
+  .bills,
+  .coins,
+  .actions {
+    max-width: 700px;
+  }
+
+  .bills {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-light);
+  }
+
+  button:hover {
+    background: var(--button-hover);
+  }
+}
+
+/* モバイル専用 - パフォーマンス最適化 */
+@media (max-width: 768px) {
+  .cell,
+  button,
+  .modal-overlay {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .note-list,
+  .history-list {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
 }
