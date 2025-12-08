@@ -152,11 +152,11 @@ export function openSavePointModal() {
     messageBar.className = `message-bar ${type}`;
     messageBar.classList.add('visible');
 
-    // 成功メッセージは自動的に消える
+    // 成功メッセージは自動的に消える（1秒）
     if (type === 'success') {
       setTimeout(() => {
         messageBar.classList.remove('visible');
-      }, 2000);
+      }, 1000);
     }
   }
 
@@ -176,7 +176,11 @@ export function openSavePointModal() {
       return;
     }
 
-    // 現在のcountsデータを収集
+    // ボタンを無効化してダブルクリック防止
+    saveBtn.disabled = true;
+    saveBtn.textContent = '保存中...';
+
+    // 現在のcountsデータを収集（既に計算済みのデータを再利用）
     const counts = {};
     document.querySelectorAll('.cell').forEach(cell => {
       const id = cell.dataset.id;
@@ -184,12 +188,25 @@ export function openSavePointModal() {
       counts[id] = val;
     });
 
-    addSavedPoint(appState.currentNoteId, memo, counts, total, bills, coins);
-    showMessage('保存しました。', 'success');
+    // 非同期で保存処理を実行
+    requestAnimationFrame(() => {
+      try {
+        addSavedPoint(appState.currentNoteId, memo, counts, total, bills, coins);
+        showMessage('保存しました。', 'success');
 
-    setTimeout(() => {
-      document.body.removeChild(overlay);
-    }, 1500);
+        // 短い待機時間でモーダルを閉じる（500ms）
+        setTimeout(() => {
+          if (overlay && overlay.parentNode) {
+            document.body.removeChild(overlay);
+          }
+        }, 500);
+      } catch (error) {
+        console.error('保存エラー:', error);
+        showMessage('保存に失敗しました。', 'error');
+        saveBtn.disabled = false;
+        saveBtn.textContent = '保存';
+      }
+    });
   });
 
   closeBtn.addEventListener('click', () => {

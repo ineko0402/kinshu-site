@@ -30,11 +30,33 @@ function generateUUID() {
   });
 }
 
+// デバウンス用のタイマー
+let saveTimeout = null;
+
 /**
- * ノートデータをlocalStorageに保存
+ * ノートデータをlocalStorageに保存（デバウンス付き）
+ * @param {boolean} immediate - 即座に保存する場合true（デフォルト: false）
  * @throws {Error} ストレージ容量不足などの場合
  */
-function saveNotesData() {
+function saveNotesData(immediate = false) {
+  // 即座に保存する場合
+  if (immediate) {
+    clearTimeout(saveTimeout);
+    performSave();
+    return;
+  }
+
+  // デバウンス処理（100ms以内の連続呼び出しをまとめる）
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    performSave();
+  }, 100);
+}
+
+/**
+ * 実際の保存処理
+ */
+function performSave() {
   try {
     const dataToSave = {
       currentNoteId: appState.currentNoteId,
@@ -44,6 +66,7 @@ function saveNotesData() {
   } catch (error) {
     console.error('ノートデータの保存に失敗:', error);
     alert('データの保存に失敗しました。ストレージの容量を確認してください。');
+    throw error; // エラーを再スロー
   }
 }
 
@@ -295,7 +318,7 @@ export function addSavedPoint(noteId, memo, countsData, total, billCount, coinCo
   }
 
   note.updatedAt = new Date().toISOString();
-  saveNotesData();
+  saveNotesData(true); // 即座に保存
   return savedPoint;
 }
 
