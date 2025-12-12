@@ -83,34 +83,6 @@ body.dark {
     --shadow-dark: rgba(0, 0, 0, 0.5);
 }
 
-/* --- CNY用暖色系テーマ (ライト) --- */
-body.layout-cny:not(.dark) {
-    --accent: #d77a61;
-    --cell-bg: #fff3e0;
-    --button-bg: #ffe0b2;
-    --button-hover: #ffcc80;
-    --keypad-digit-bg: #ffe0b2;
-    --keypad-operator-bg: #ffb74d;
-    --keypad-special-bg: #ffccbc;
-    --keypad-clear-bg: #e57373;
-    --keypad-enter-bg: #a5d6a7;
-    --download-stripe: #fff8e1;
-}
-
-/* --- CNY用暖色系テーマ (ダーク) --- */
-body.dark.layout-cny {
-    --accent: #f7a072;
-    --cell-bg: #4e342e;
-    --display-bg: #3e2723;
-    --button-bg: #6d4c41;
-    --button-hover: #8d6e63;
-    --keypad-digit-bg: #795548;
-    --keypad-operator-bg: #d7a36e;
-    --keypad-special-bg: #8d6e63;
-    --keypad-clear-bg: #ef9a9a;
-    --keypad-enter-bg: #81c784;
-    --download-stripe: #5d4037;
-}
 
 /* --- ページ構造 --- */
 
