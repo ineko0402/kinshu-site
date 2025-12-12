@@ -44,6 +44,7 @@
     --space-sm: 8px;
     --space-md: 16px;
     --space-lg: 24px;
+    --space-xl: 32px;
 
     /* 4. Radius変数 */
     --radius-sm: 4px;
@@ -94,56 +95,64 @@
 }
 
 /* --- ダークテーマ (モノトーン) --- */
+/* --- ダークテーマ (モノトーン - 高コントラスト) --- */
 body.dark {
     /* 1. カラーパレット */
-    --bg-color: #121212;
-    --surface-primary: #1e1e1e;
-    --surface-secondary: #2d2d2d;
-    --surface-tertiary: #404040;
+    --bg-color: #000000;
+    /* 背景を完全な黒に */
+    --surface-primary: #1a1a1a;
+    /* カード背景をわずかに明るく */
+    --surface-secondary: #333333;
+    /* ボタンなど */
+    --surface-tertiary: #4d4d4d;
 
-    --text-primary: #e0e0e0;
-    --text-secondary: #aaaaaa;
+    --text-primary: #ffffff;
+    /* 文字を完全な白に */
+    --text-secondary: #d1d1d1;
+    /* サブテキストもかなり明るく */
 
     --accent: #ffffff;
     --accent-fg: #000000;
 
     --danger: #ff6b6b;
-    /* ダークモードでの視認性のため少し赤みを入れるか悩むがガイドに従いモノトーン維持なら明るいグレーだが、エラーは色相があったほうが良いので一旦例外的に赤みのあるグレーにするか、ガイド通りにするか。ガイドの#495057は暗すぎるので調整 */
-    --danger: #cf6679;
-    /* 以前の赤に戻して視認性確保 (ユーザー要望はパレットの無彩色化だが機能色は例外と解釈も可能だが、ガイドを優先しグレースケールにするなら #9e9e9e とかだが、エラーはわかるようにしたい) -> Guides says #495057 is Error. In dark mode this is invisible. I will adjust to a lighter grey or keep red. Let's use a visible grey scale for now as requested "Achromatic". */
-    --danger: #b0b0b0;
-    /* Light Gray for Error in Dark Mode */
-    --danger-fg: #121212;
+    /* エラーは少し明るい赤で視認性確保 */
+    --danger-fg: #000000;
+
+    /* マッピング再定義 (念のため) */
+    --text-color: var(--text-primary);
+    --border-color: var(--surface-tertiary);
 
     /* コンポーネントオーバーライド */
-    --display-bg: #000000;
+    --display-bg: #121212;
+    /* 入力エリア */
+    --cell-bg: var(--surface-primary);
+    /* 明示的に再定義 */
     --button-bg: var(--surface-secondary);
     --button-hover: var(--surface-tertiary);
     --header-bg: var(--surface-primary);
 
     --action-clear-bg: var(--surface-secondary);
-    --action-clear-color: var(--danger);
+    --action-clear-color: #ff6b6b;
+    /* 文字色でエラー表現 */
 
-    /* キーパッド */
-    --keypad-digit-bg: var(--surface-secondary);
-    /* Dark mode digit keys */
-    --keypad-digit-color: var(--text-primary);
+    /* キーパッド (Dark Mode) */
+    --keypad-digit-bg: #222222;
+    --keypad-digit-color: #ffffff;
 
-    --keypad-operator-bg: var(--surface-tertiary);
-    --keypad-operator-color: var(--text-primary);
+    --keypad-operator-bg: #333333;
+    --keypad-operator-color: #ffffff;
 
-    --keypad-special-bg: #505050;
-    --keypad-special-color: var(--text-primary);
+    --keypad-special-bg: #444444;
+    --keypad-special-color: #ffffff;
 
-    --keypad-clear-bg: var(--surface-tertiary);
-    /* use grey for delete */
-    --keypad-clear-color: #ffcccc;
-    /* text color hint */
+    --keypad-clear-bg: #555555;
+    --keypad-clear-color: #ffffff;
+    /* 白文字で視認性最優先 */
 
-    --keypad-enter-bg: var(--accent);
-    --keypad-enter-color: var(--accent-fg);
+    --keypad-enter-bg: #ffffff;
+    --keypad-enter-color: #000000;
 
-    --download-stripe: #1a1a1a;
+    --download-stripe: #111111;
 }
 
 /* --- ページ構造 --- */
@@ -239,7 +248,8 @@ header {
 
 .actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    /* Center the buttons */
     gap: var(--space-sm);
     padding: var(--space-sm);
     flex-wrap: wrap;

@@ -311,15 +311,14 @@ button:active {
 
 body.dark .message-bar.error {
     background: var(--surface-tertiary);
-    color: #ff8a80;
-    border: 1px solid #c62828;
+    color: #ffffff;
+    border: 1px solid #999;
 }
 
 body.dark .message-bar.success {
     background: var(--surface-tertiary);
-    color: #a5d6a7;
-    /* Monotone preferred but keep functional colors slightly visible */
-    border: 1px solid #388e3c;
+    color: #ffffff;
+    border: 1px solid #fff;
 }
 
 .text-input {
