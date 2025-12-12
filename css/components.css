@@ -1,5 +1,6 @@
 /* ==========================================================================
    コンポーネント (components.css)
+   変数を使用したスタイル管理
    ========================================================================== */
 
 /* --- ボタン基本 --- */
@@ -7,8 +8,9 @@ button,
 .btn {
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 4px var(--shadow-light);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     touch-action: manipulation;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
 button:focus {
@@ -16,14 +18,18 @@ button:focus {
     outline-offset: 2px;
 }
 
+button:active {
+    transform: scale(0.98);
+}
+
 /* --- セル (Cell) --- */
 .cell {
     background: var(--cell-bg);
     padding: 12px;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 2px 4px var(--shadow-light);
 }
 
@@ -39,9 +45,9 @@ button:focus {
 /* --- ディスプレイ (Display) --- */
 .display {
     margin-top: 6px;
-    padding: 8px;
+    padding: var(--space-sm);
     background: var(--display-bg);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     box-shadow: inset 0 1px 3px var(--shadow-light);
 }
 
@@ -51,7 +57,7 @@ button:focus {
     min-width: 100px;
     background: var(--button-bg);
     color: var(--text-color);
-    padding: 8px 0;
+    padding: var(--space-sm) 0;
     cursor: pointer;
     white-space: nowrap;
     text-align: center;
@@ -69,7 +75,7 @@ button:focus {
     background: var(--button-bg);
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     box-shadow: 0 2px 4px var(--shadow-light);
     white-space: nowrap;
@@ -94,9 +100,9 @@ button:focus {
 }
 
 #keypadPanel {
-    background: var(--display-bg);
-    padding: 16px;
-    border-radius: 12px;
+    background: var(--surface-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
     box-shadow: 0 4px 12px var(--shadow-dark);
     min-width: 260px;
     text-align: center;
@@ -106,7 +112,7 @@ button:focus {
 }
 
 #keypadLabel {
-    margin-bottom: 8px;
+    margin-bottom: var(--space-sm);
 }
 
 #keypadInput {
@@ -114,7 +120,7 @@ button:focus {
     padding: 6px;
     text-align: right;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     margin-bottom: 10px;
     background: var(--display-bg);
     color: var(--text-color);
@@ -138,6 +144,7 @@ button:focus {
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: none;
 }
 
 .keyrow button.digit {
@@ -253,7 +260,7 @@ button:focus {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--overlay-bg);
     z-index: 9998;
     display: flex;
     justify-content: center;
@@ -261,13 +268,13 @@ button:focus {
 }
 
 .settings-box {
-    background: #fff;
-    color: #000;
-    padding: 20px;
-    border-radius: 12px;
+    background: var(--surface-primary);
+    color: var(--text-color);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
     max-width: 350px;
     width: 90%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--shadow-dark);
     z-index: 9999;
     max-height: 80vh;
     overflow-y: auto;
@@ -277,15 +284,10 @@ button:focus {
     max-width: 500px;
 }
 
-body.dark .settings-box {
-    background: #30343A;
-    color: #FBFEFF;
-}
-
 .message-bar {
-    padding: 10px;
-    margin-bottom: 16px;
-    border-radius: 6px;
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-md);
     text-align: center;
     display: none;
     transition: opacity 0.3s ease;
@@ -296,35 +298,36 @@ body.dark .settings-box {
 }
 
 .message-bar.error {
-    background: #ffebee;
+    background: var(--surface-secondary);
     color: #c62828;
     border: 1px solid #ef9a9a;
 }
 
 .message-bar.success {
-    background: #e8f5e9;
+    background: var(--surface-secondary);
     color: #2e7d32;
     border: 1px solid #a5d6a7;
 }
 
 body.dark .message-bar.error {
-    background: #5d1f1f;
-    color: #ef9a9a;
+    background: var(--surface-tertiary);
+    color: #ff8a80;
     border: 1px solid #c62828;
 }
 
 body.dark .message-bar.success {
-    background: #1b5e20;
+    background: var(--surface-tertiary);
     color: #a5d6a7;
+    /* Monotone preferred but keep functional colors slightly visible */
     border: 1px solid #388e3c;
 }
 
 .text-input {
     width: 100%;
-    padding: 8px;
-    margin: 8px 0 16px 0;
+    padding: var(--space-sm);
+    margin: var(--space-sm) 0 var(--space-md) 0;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     box-sizing: border-box;
     background: var(--display-bg);
     color: var(--text-color);
@@ -332,10 +335,10 @@ body.dark .message-bar.success {
 
 .select-input {
     width: 100%;
-    padding: 8px;
-    margin: 8px 0 16px 0;
+    padding: var(--space-sm);
+    margin: var(--space-sm) 0 var(--space-md) 0;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     box-sizing: border-box;
     background: var(--display-bg);
     color: var(--text-color);
@@ -344,13 +347,13 @@ body.dark .message-bar.success {
 
 .info-row {
     margin: 12px 0;
-    padding: 8px;
+    padding: var(--space-sm);
     background: var(--cell-bg);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
 }
 
 .note-settings-section {
-    margin-top: 16px;
+    margin-top: var(--space-md);
     display: none;
 }
 
@@ -363,15 +366,15 @@ body.dark .message-bar.success {
     padding: 10px;
     margin-bottom: 10px;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     box-shadow: 0 2px 4px var(--shadow-light);
 }
 
 .modal-buttons {
     display: flex;
-    gap: 8px;
-    margin-top: 16px;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
 }
 
 .modal-buttons .modal-button {
@@ -384,19 +387,11 @@ body.dark .message-bar.success {
     color: var(--text-color);
 }
 
-.modal-button-accent {
-    background: var(--accent);
-    color: white;
-}
-
-.modal-button-primary {
-    background: #2196F3;
-    color: white;
-}
-
+.modal-button-accent,
+.modal-button-primary,
 .modal-button-success {
-    background: #4CAF50;
-    color: white;
+    background: var(--accent);
+    color: var(--accent-fg);
 }
 
 .hidden-input {
@@ -411,7 +406,7 @@ body.dark .message-bar.success {
     max-height: 300px;
     overflow-y: auto;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     padding: 5px;
 }
 
@@ -422,7 +417,7 @@ body.dark .message-bar.success {
     padding: 10px;
     margin-bottom: 8px;
     background: var(--cell-bg);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -443,7 +438,10 @@ body.dark .message-bar.success {
 
 .note-item .note-name.active {
     font-weight: bold;
-    color: var(--accent);
+    color: var(--text-color);
+    /* Removed accent color from text for monochrome feel */
+    text-decoration: underline;
+    /* underline for active state */
 }
 
 .note-actions {
@@ -457,7 +455,7 @@ body.dark .message-bar.success {
     color: var(--text-color);
     border: 1px solid var(--border-color);
     padding: 4px 10px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     box-shadow: 0 1px 2px var(--shadow-light);
 }
@@ -467,13 +465,13 @@ body.dark .message-bar.success {
 }
 
 .delete-note-btn {
-    background: #ef5350;
-    color: white;
+    background: var(--danger);
+    color: var(--danger-fg);
     border: none;
 }
 
 .delete-note-btn:hover {
-    background: #d32f2f;
+    opacity: 0.8;
 }
 
 /* --- 履歴一覧 --- */
@@ -484,21 +482,21 @@ body.dark .message-bar.success {
     max-height: 400px;
     overflow-y: auto;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     padding: 5px;
 }
 
 .history-empty {
     padding: 20px;
     text-align: center;
-    color: #999;
+    color: var(--text-secondary);
 }
 
 .history-item {
     padding: 12px;
     margin-bottom: 10px;
     background: var(--cell-bg);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
 }
 
@@ -514,11 +512,11 @@ body.dark .message-bar.success {
 }
 
 .history-date {
-    color: #666;
+    color: var(--text-secondary);
 }
 
 body.dark .history-date {
-    color: #aaa;
+    color: var(--text-secondary);
 }
 
 .history-summary {
@@ -540,7 +538,7 @@ body.dark .history-date {
     color: var(--text-color);
     border: 1px solid var(--border-color);
     padding: 6px 8px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     box-shadow: 0 1px 2px var(--shadow-light);
 }
@@ -551,13 +549,13 @@ body.dark .history-date {
 }
 
 .delete-history-btn {
-    background: #ef5350;
-    color: white;
+    background: var(--danger);
+    color: var(--danger-fg);
     border: none;
 }
 
 .delete-history-btn:hover {
-    background: #d32f2f;
+    opacity: 0.8;
 }
 
 /* --- 履歴詳細テーブル --- */
@@ -627,7 +625,6 @@ body.dark .history-date {
 @media (min-width: 769px) {
     .cell:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px var(--shadow-light);
     }
 
     button:hover {

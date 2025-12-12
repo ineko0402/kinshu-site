@@ -1,6 +1,6 @@
 /* ==========================================================================
    タイポグラフィ (typography.css)
-   フォント、文字サイズ、見出し
+   変数を使用したサイズ管理
    ========================================================================== */
 
 body {
@@ -9,82 +9,82 @@ body {
 
 header {
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: var(--font-size-xl);
 }
 
 .summary {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: bold;
 }
 
 .summary #total {
-    font-size: 28px;
+    font-size: var(--font-size-xxl);
     font-weight: bold;
 }
 
 .summary span:not(#total) {
-    font-size: 16px;
+    font-size: var(--font-size-base);
 }
 
 .display {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: bold;
 }
 
 .actions button {
-    font-size: 16px;
+    font-size: var(--font-size-base);
 }
 
 .header-button {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
 }
 
 #keypadLabel {
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: var(--font-size-lg);
 }
 
 #keypadInput {
-    font-size: 1.2rem;
+    font-size: var(--font-size-xl);
 }
 
 .keyrow button {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
 }
 
 .keyrow button.special {
     font-weight: bold;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
 }
 
 .message-bar {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
 }
 
 .text-input,
 .select-input,
 .modal-button {
-    font-size: 16px;
+    font-size: var(--font-size-base);
 }
 
 .edit-note-btn,
 .delete-note-btn {
-    font-size: 13px;
+    font-size: var(--font-size-xs);
 }
 
 .history-date {
-    font-size: 13px;
+    font-size: var(--font-size-xs);
 }
 
 .history-summary {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
 }
 
 .view-detail-btn,
 .copy-report-btn,
 .delete-history-btn {
-    font-size: 13px;
+    font-size: var(--font-size-xs);
 }
 
 /* --- レスポンシブ (タイポグラフィ関連) --- */
@@ -92,49 +92,49 @@ header {
 /* 極小画面 */
 @media (max-width: 374px) {
     .actions button {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
     }
 
     header {
-        font-size: 1rem;
+        font-size: var(--font-size-base);
     }
 
     .header-button {
-        font-size: 0.8rem;
+        font-size: var(--font-size-xs);
     }
 
     .summary {
-        font-size: 12px;
+        font-size: var(--font-size-xs);
     }
 
     .summary span:not(#total) {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
     }
 }
 
 /* 横向き */
 @media (max-height: 500px) and (orientation: landscape) {
     header {
-        font-size: 1rem;
+        font-size: var(--font-size-base);
     }
 
     .summary {
-        font-size: 12px;
+        font-size: var(--font-size-xs);
     }
 
     .summary #total {
-        font-size: 20px;
+        font-size: var(--font-size-xl);
     }
 
     .display {
-        font-size: 16px;
+        font-size: var(--font-size-base);
     }
 
     .actions button {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
     }
 
     .keyrow button {
-        font-size: 18px;
+        font-size: var(--font-size-lg);
     }
 }
