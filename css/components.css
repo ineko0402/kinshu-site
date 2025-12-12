@@ -1,0 +1,653 @@
+/* ==========================================================================
+   コンポーネント (components.css)
+   ========================================================================== */
+
+/* --- ボタン基本 --- */
+button,
+.btn {
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px var(--shadow-light);
+    border-radius: 6px;
+    touch-action: manipulation;
+}
+
+button:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* --- セル (Cell) --- */
+.cell {
+    background: var(--cell-bg);
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+.cell:active {
+    transform: scale(0.95);
+}
+
+.cell.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* --- ディスプレイ (Display) --- */
+.display {
+    margin-top: 6px;
+    padding: 8px;
+    background: var(--display-bg);
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px var(--shadow-light);
+}
+
+/* --- アクションボタン --- */
+.actions button {
+    flex: 1;
+    min-width: 100px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    padding: 8px 0;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.actions button.clear-all {
+    background: var(--action-clear-bg);
+    color: var(--action-clear-color);
+    font-weight: bold;
+}
+
+/* --- ヘッダーボタン --- */
+.header-button {
+    padding: 5px 10px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px var(--shadow-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+/* --- キーパッド (モーダル) --- */
+#overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: var(--overlay-bg);
+    z-index: 1000;
+}
+
+#overlay.show {
+    display: flex;
+}
+
+#keypadPanel {
+    background: var(--display-bg);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow-dark);
+    min-width: 260px;
+    text-align: center;
+    transition: transform 0.2s ease;
+    transform: translateY(0);
+    touch-action: none;
+}
+
+#keypadLabel {
+    margin-bottom: 8px;
+}
+
+#keypadInput {
+    width: 90%;
+    padding: 6px;
+    text-align: right;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: var(--display-bg);
+    color: var(--text-color);
+}
+
+.keyrow {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.keyrow button {
+    flex: 1;
+    flex-basis: 25%;
+    max-width: 80px;
+    height: 60px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.keyrow button.digit {
+    background: var(--keypad-digit-bg);
+    color: var(--keypad-digit-color);
+}
+
+.keyrow button.operator {
+    background: var(--keypad-operator-bg);
+    color: var(--keypad-operator-color);
+}
+
+.keyrow button.special {
+    background: var(--keypad-special-bg);
+    color: var(--keypad-special-color);
+}
+
+.keyrow button.clear {
+    background: var(--keypad-clear-bg);
+    color: var(--keypad-clear-color);
+}
+
+.keyrow button.enter {
+    background: var(--keypad-enter-bg);
+    color: var(--keypad-enter-color);
+}
+
+/* --- ダウンロード用エリア --- */
+.download-capture {
+    display: block !important;
+    width: 360px;
+    height: 640px;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+#download-area:not(.download-capture) {
+    display: none;
+}
+
+#download-area {
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 16px;
+    background: var(--download-bg);
+    color: var(--download-text);
+}
+
+#download-area .download-header {
+    margin-bottom: 16px;
+}
+
+#download-area .datetime {
+    margin-bottom: 8px;
+}
+
+#download-area .total-amount {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#download-area .summary-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+#download-area .summary-table thead th {
+    padding: 10px 6px;
+    border-bottom: 2px solid var(--download-border);
+    font-weight: bold;
+    background-color: var(--download-stripe);
+}
+
+#download-area .summary-table tbody td {
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--download-border);
+    font-size: 16px;
+}
+
+#download-area .denomination-header,
+#download-area .denomination {
+    width: 40%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#download-area .count-header,
+#download-area .count {
+    width: 15%;
+    text-align: center;
+}
+
+#download-area .amount-header,
+#download-area .amount {
+    width: 45%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+#download-area .download-footer {
+    margin-top: 12px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* --- 設定・モーダル --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.settings-box {
+    background: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 350px;
+    width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.settings-box-large {
+    max-width: 500px;
+}
+
+body.dark .settings-box {
+    background: #30343A;
+    color: #FBFEFF;
+}
+
+.message-bar {
+    padding: 10px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    text-align: center;
+    display: none;
+    transition: opacity 0.3s ease;
+}
+
+.message-bar.visible {
+    display: block;
+}
+
+.message-bar.error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.message-bar.success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+body.dark .message-bar.error {
+    background: #5d1f1f;
+    color: #ef9a9a;
+    border: 1px solid #c62828;
+}
+
+body.dark .message-bar.success {
+    background: #1b5e20;
+    color: #a5d6a7;
+    border: 1px solid #388e3c;
+}
+
+.text-input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0 16px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+    background: var(--display-bg);
+    color: var(--text-color);
+}
+
+.select-input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0 16px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+    background: var(--display-bg);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.info-row {
+    margin: 12px 0;
+    padding: 8px;
+    background: var(--cell-bg);
+    border-radius: 6px;
+}
+
+.note-settings-section {
+    margin-top: 16px;
+    display: none;
+}
+
+.note-settings-section.visible {
+    display: block;
+}
+
+.modal-button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.modal-buttons .modal-button {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.modal-button-default {
+    background: var(--button-bg);
+    color: var(--text-color);
+}
+
+.modal-button-accent {
+    background: var(--accent);
+    color: white;
+}
+
+.modal-button-primary {
+    background: #2196F3;
+    color: white;
+}
+
+.modal-button-success {
+    background: #4CAF50;
+    color: white;
+}
+
+.hidden-input {
+    display: none;
+}
+
+/* --- ノート一覧 --- */
+.note-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 5px;
+}
+
+.note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: var(--cell-bg);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.note-item:last-child {
+    margin-bottom: 0;
+}
+
+.note-item:hover {
+    background: var(--button-hover);
+}
+
+.note-item .note-name {
+    flex-grow: 1;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.note-item .note-name.active {
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.note-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.edit-note-btn,
+.delete-note-btn {
+    background: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px var(--shadow-light);
+}
+
+.edit-note-btn:hover {
+    background: var(--button-hover);
+}
+
+.delete-note-btn {
+    background: #ef5350;
+    color: white;
+    border: none;
+}
+
+.delete-note-btn:hover {
+    background: #d32f2f;
+}
+
+/* --- 履歴一覧 --- */
+.history-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 5px;
+}
+
+.history-empty {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+}
+
+.history-item {
+    padding: 12px;
+    margin-bottom: 10px;
+    background: var(--cell-bg);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.history-item:last-child {
+    margin-bottom: 0;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.history-date {
+    color: #666;
+}
+
+body.dark .history-date {
+    color: #aaa;
+}
+
+.history-summary {
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.history-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.view-detail-btn,
+.copy-report-btn,
+.delete-history-btn {
+    flex: 1;
+    background: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px var(--shadow-light);
+}
+
+.view-detail-btn:hover,
+.copy-report-btn:hover {
+    background: var(--button-hover);
+}
+
+.delete-history-btn {
+    background: #ef5350;
+    color: white;
+    border: none;
+}
+
+.delete-history-btn:hover {
+    background: #d32f2f;
+}
+
+/* --- 履歴詳細テーブル --- */
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.detail-table th,
+.detail-table td {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.detail-table th {
+    background: var(--cell-bg);
+    font-weight: bold;
+}
+
+.detail-table td:nth-child(2),
+.detail-table td:nth-child(3) {
+    text-align: right;
+}
+
+/* --- レスポンシブ (コンポーネント関連) --- */
+
+/* 極小画面 */
+@media (max-width: 374px) {
+    .actions button {
+        min-width: 80px;
+        padding: 6px 4px;
+    }
+
+    .header-button {
+        max-width: 150px;
+    }
+}
+
+/* 横向き表示 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .cell {
+        padding: 8px;
+    }
+
+    .display {
+        margin-top: 4px;
+        padding: 6px;
+    }
+
+    .actions button {
+        padding: 6px 0;
+    }
+
+    #keypadPanel {
+        padding: 12px;
+        min-width: 220px;
+    }
+
+    .keyrow button {
+        height: 50px;
+    }
+}
+
+/* デスクトップ用ホバー効果 */
+@media (min-width: 769px) {
+    .cell:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px var(--shadow-light);
+    }
+
+    button:hover {
+        background: var(--button-hover);
+    }
+}
+
+/* モバイルパフォーマンス最適化 */
+@media (max-width: 768px) {
+
+    .cell,
+    button,
+    .modal-overlay {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    .note-list,
+    .history-list {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+}

@@ -1,0 +1,284 @@
+/* ==========================================================================
+   レイアウト・テーマ変数 (layout.css)
+   ========================================================================== */
+
+/* --- ライトテーマ (デフォルト) --- */
+:root {
+    /* ベースカラー */
+    --bg-color: #f0f0f0;
+    --text-color: #000;
+    --accent: #1976d2;
+
+    /* コンポーネントカラー */
+    --cell-bg: #e3f2fd;
+    --display-bg: #fff;
+    --button-bg: #cfd8dc;
+    --button-hover: #b0bec5;
+    --header-bg: var(--button-bg);
+    --action-clear-bg: #d2544b;
+    --action-clear-color: #fff;
+
+    /* ダウンロードエリアカラー */
+    --download-bg: #fff;
+    --download-text: #000;
+    --download-border: #ccc;
+    --download-stripe: #f5f5f5;
+
+    /* キーパッドカラー */
+    --keypad-digit-bg: #bbdefb;
+    --keypad-digit-color: #000;
+    --keypad-operator-bg: #ffe082;
+    --keypad-operator-color: #000;
+    --keypad-special-bg: #cfd8dc;
+    --keypad-special-color: #000;
+    --keypad-clear-bg: #f85c51;
+    --keypad-clear-color: #fff;
+    --keypad-enter-bg: #aed581;
+    --keypad-enter-color: #000;
+
+    /* 境界線・影・オーバーレイ */
+    --border-color: #ccc;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.3);
+    --overlay-bg: rgba(0, 0, 0, 0.4);
+}
+
+/* --- ダークテーマ --- */
+body.dark {
+    /* ベースカラー */
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --accent: #90caf9;
+
+    /* コンポーネントカラー */
+    --cell-bg: #37474f;
+    --display-bg: #263238;
+    --button-bg: #455a64;
+    --button-hover: #546e7a;
+    --header-bg: var(--button-bg);
+    --action-clear-bg: #ef5350;
+    --action-clear-color: #fff;
+
+    /* ダウンロードエリアカラー */
+    --download-bg: #263238;
+    --download-text: #e0e0e0;
+    --download-border: #546e7a;
+    --download-stripe: #37474f;
+
+    /* キーパッドカラー */
+    --keypad-digit-bg: #455a64;
+    --keypad-digit-color: #fff;
+    --keypad-operator-bg: #25686dc9;
+    --keypad-operator-color: #fff;
+    --keypad-special-bg: #546e7a;
+    --keypad-special-color: #fff;
+    --keypad-clear-bg: #d32f2f;
+    --keypad-clear-color: #fff;
+    --keypad-enter-bg: #388e3c;
+    --keypad-enter-color: #fff;
+
+    /* 境界線・影 */
+    --border-color: #666;
+    --shadow-light: rgba(255, 255, 255, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+/* --- CNY用暖色系テーマ (ライト) --- */
+body.layout-cny:not(.dark) {
+    --accent: #d77a61;
+    --cell-bg: #fff3e0;
+    --button-bg: #ffe0b2;
+    --button-hover: #ffcc80;
+    --keypad-digit-bg: #ffe0b2;
+    --keypad-operator-bg: #ffb74d;
+    --keypad-special-bg: #ffccbc;
+    --keypad-clear-bg: #e57373;
+    --keypad-enter-bg: #a5d6a7;
+    --download-stripe: #fff8e1;
+}
+
+/* --- CNY用暖色系テーマ (ダーク) --- */
+body.dark.layout-cny {
+    --accent: #f7a072;
+    --cell-bg: #4e342e;
+    --display-bg: #3e2723;
+    --button-bg: #6d4c41;
+    --button-hover: #8d6e63;
+    --keypad-digit-bg: #795548;
+    --keypad-operator-bg: #d7a36e;
+    --keypad-special-bg: #8d6e63;
+    --keypad-clear-bg: #ef9a9a;
+    --keypad-enter-bg: #81c784;
+    --download-stripe: #5d4037;
+}
+
+/* --- ページ構造 --- */
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+header {
+    background: var(--header-bg);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.header-left,
+.header-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.header-left {
+    justify-content: flex-start;
+}
+
+.header-right {
+    justify-content: flex-end;
+}
+
+.header-center {
+    flex: 0 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 0 12px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin: 10px auto 20px auto;
+    max-width: 500px;
+    padding: 0 12px;
+    color: var(--accent);
+}
+
+.summary .item {
+    flex: 1;
+}
+
+/* --- グリッドレイアウト --- */
+.bills,
+.coins {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.bills.hidden,
+.coins.hidden {
+    display: none;
+}
+
+.bills {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.coins {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto 0 auto;
+    box-sizing: border-box;
+}
+
+/* --- レスポンシブ (レイアウト関連) --- */
+
+/* セーフエリア対応 */
+@supports (padding: env(safe-area-inset-top)) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+
+    header {
+        padding-top: calc(10px + env(safe-area-inset-top));
+    }
+}
+
+/* 極小画面 */
+@media (max-width: 374px) {
+    .coins {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 横向き表示 */
+@media (max-height: 500px) and (orientation: landscape) {
+    header {
+        padding: 5px 10px;
+    }
+
+    .summary {
+        margin: 5px auto 10px auto;
+    }
+
+    .container {
+        gap: 8px;
+    }
+
+    .actions {
+        margin-top: 10px;
+        padding: 4px 8px;
+    }
+}
+
+/* タブレット・デスクトップ */
+@media (min-width: 600px) {
+
+    .container,
+    .bills,
+    .coins,
+    .actions {
+        max-width: 600px;
+    }
+
+    .bills {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 769px) {
+
+    .container,
+    .bills,
+    .coins,
+    .actions {
+        max-width: 700px;
+    }
+
+    .bills {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

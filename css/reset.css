@@ -1,0 +1,14 @@
+/* ==========================================================================
+   リセットスタイル (reset.css)
+   ========================================================================== */
+* {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    margin: 0;
+    touch-action: pan-y;
+    overscroll-behavior-y: contain;
+}

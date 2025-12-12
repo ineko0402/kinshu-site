@@ -1,0 +1,140 @@
+/* ==========================================================================
+   タイポグラフィ (typography.css)
+   フォント、文字サイズ、見出し
+   ========================================================================== */
+
+body {
+    font-family: sans-serif;
+}
+
+header {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.summary {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.summary #total {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.summary span:not(#total) {
+    font-size: 16px;
+}
+
+.display {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.actions button {
+    font-size: 16px;
+}
+
+.header-button {
+    font-size: 0.9rem;
+}
+
+#keypadLabel {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+#keypadInput {
+    font-size: 1.2rem;
+}
+
+.keyrow button {
+    font-size: 20px;
+}
+
+.keyrow button.special {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.message-bar {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.text-input,
+.select-input,
+.modal-button {
+    font-size: 16px;
+}
+
+.edit-note-btn,
+.delete-note-btn {
+    font-size: 13px;
+}
+
+.history-date {
+    font-size: 13px;
+}
+
+.history-summary {
+    font-size: 14px;
+}
+
+.view-detail-btn,
+.copy-report-btn,
+.delete-history-btn {
+    font-size: 13px;
+}
+
+/* --- レスポンシブ (タイポグラフィ関連) --- */
+
+/* 極小画面 */
+@media (max-width: 374px) {
+    .actions button {
+        font-size: 14px;
+    }
+
+    header {
+        font-size: 1rem;
+    }
+
+    .header-button {
+        font-size: 0.8rem;
+    }
+
+    .summary {
+        font-size: 12px;
+    }
+
+    .summary span:not(#total) {
+        font-size: 14px;
+    }
+}
+
+/* 横向き */
+@media (max-height: 500px) and (orientation: landscape) {
+    header {
+        font-size: 1rem;
+    }
+
+    .summary {
+        font-size: 12px;
+    }
+
+    .summary #total {
+        font-size: 20px;
+    }
+
+    .display {
+        font-size: 16px;
+    }
+
+    .actions button {
+        font-size: 14px;
+    }
+
+    .keyrow button {
+        font-size: 18px;
+    }
+}
