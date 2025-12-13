@@ -317,24 +317,65 @@ button:active {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: var(--overlay-bg);
+    background: rgba(0, 0, 0, 0.5);
+    /* グレーアウト */
     z-index: 9998;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    /* 下寄せ (ボトムシート) */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    /* 非表示時はクリック無効 */
+}
+
+/* 表示時 */
+.modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .settings-box {
     background: var(--surface-primary);
     color: var(--text-color);
     padding: var(--space-lg);
-    border-radius: var(--radius-lg);
-    max-width: 350px;
-    width: 90%;
-    box-shadow: 0 4px 12px var(--shadow-dark);
+    border-radius: 20px 20px 0 0;
+    /* 上側のみ丸く */
+    max-width: 100%;
+    width: 100%;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     z-index: 9999;
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
+    margin: 0;
+    transform: translateY(100%);
+    /* 初期状態は下隠し */
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* スムーズなアニメーション */
+}
+
+.modal-overlay.show .settings-box {
+    transform: translateY(0);
+    /* スライドイン */
+}
+
+/* --- トップシート (ノート切り替え等) --- */
+.modal-overlay.top-sheet {
+    align-items: flex-start;
+    /* 上寄せ */
+}
+
+.settings-box.top-sheet {
+    border-radius: 0 0 20px 20px;
+    /* 下側のみ丸く */
+    transform: translateY(-100%);
+    /* 初期状態は上隠し */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-overlay.show .settings-box.top-sheet {
+    transform: translateY(0);
 }
 
 .settings-box-large {
@@ -647,7 +688,26 @@ body.dark .history-date {
     }
 
     .header-button {
-        max-width: 150px;
+        max-width: 100%;
+    }
+
+    /* PCではボトムシートではなく中央配置に戻す */
+    .modal-overlay {
+        align-items: center;
+    }
+
+    .settings-box {
+        max-width: 500px;
+        width: 90%;
+        border-radius: 16px;
+        /* 全周丸く */
+        margin-bottom: 20px;
+        transform: translateY(20px);
+        /* 少し下からフェードイン */
+    }
+
+    .modal-overlay.show .settings-box {
+        transform: translateY(0);
     }
 }
 

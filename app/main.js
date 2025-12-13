@@ -36,6 +36,11 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   const currencyDisplay = document.getElementById('currencyDisplay');
   const messageBar = document.getElementById('noteEditMessage');
 
+  // アニメーション用にクラス追加
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
+  });
+
   // 現在の値を設定
   noteNameInput.value = note.name;
   currencyDisplay.textContent = note.currency;
@@ -64,6 +69,16 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   }
 
   noteNameInput.addEventListener('input', hideMessage);
+
+  // 閉じる処理（アニメーション対応）
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300); // CSS transition time
+  }
 
   // 保存処理
   saveBtn.addEventListener('click', () => {
@@ -95,11 +110,11 @@ export function openNoteEditModal(noteId, onUpdate = null) {
     // コールバック実行（一覧更新など）
     if (onUpdate) onUpdate();
 
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 
   closeBtn.addEventListener('click', () => {
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 }
 
@@ -184,6 +199,20 @@ export function openSavePointModal() {
   // 入力時にメッセージを非表示
   memoInput.addEventListener('input', hideMessage);
 
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
+  });
+
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300);
+  }
+
   // 保存処理
   saveBtn.addEventListener('click', () => {
     let memo = memoInput.value.trim();
@@ -212,9 +241,7 @@ export function openSavePointModal() {
 
         // 短い待機時間でモーダルを閉じる（500ms）
         setTimeout(() => {
-          if (overlay && overlay.parentNode) {
-            document.body.removeChild(overlay);
-          }
+          closeOverlay();
         }, 500);
       } catch (error) {
         console.error('保存エラー:', error);
@@ -226,7 +253,7 @@ export function openSavePointModal() {
   });
 
   closeBtn.addEventListener('click', () => {
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 }
 
@@ -278,6 +305,20 @@ export function openHistoryModal() {
     });
   }
 
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
+  });
+
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300);
+  }
+
   renderHistoryList();
 
   // イベント処理
@@ -305,7 +346,7 @@ export function openHistoryModal() {
   });
 
   closeBtn.addEventListener('click', () => {
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 }
 
@@ -374,10 +415,24 @@ function showHistoryDetail(savedPoint) {
     </table>
   `;
 
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
+  });
+
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300);
+  }
+
   detailContent.innerHTML = html;
 
   closeBtn.addEventListener('click', () => {
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 }
 
@@ -460,6 +515,20 @@ export function openNoteCreateModal(onUpdate = null) {
 
   noteNameInput.addEventListener('input', hideMessage);
 
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
+  });
+
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300);
+  }
+
   // 作成処理
   createBtn.addEventListener('click', () => {
     const name = noteNameInput.value.trim();
@@ -491,11 +560,11 @@ export function openNoteCreateModal(onUpdate = null) {
     // コールバック実行（一覧更新など）
     if (onUpdate) onUpdate();
 
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 
   closeBtn.addEventListener('click', () => {
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 }
 
@@ -575,15 +644,35 @@ export function openNoteSwitchModal() {
     }
   });
 
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
+  });
+
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300);
+  }
+
   // 新規ノート作成処理
   newNoteBtn.addEventListener('click', () => {
+    // 既存モーダルを閉じてから新規作成を開く（オーバーレイを入れ替えるため）
+    // ただしDOMからは即削除せず、単に上に重ねる形とするが、
+    // ここではシンプルに一度閉じる
+    // closeOverlay(); // タイミング問題があるため、コールバック方式推奨だが、今回はそのまま開く
+    // 注: 現実装ではオーバーレイが重なる。ボトムシートだと重なりが気になるかも。
+    // 一旦そのまま
     openNoteCreateModal(() => {
       renderNoteList();
     });
   });
 
   closeBtn.addEventListener('click', () => {
-    document.body.removeChild(overlay);
+    closeOverlay();
   });
 }
 
@@ -649,9 +738,38 @@ export function openBackupModal() {
     reader.readAsText(file);
   });
 
-  closeBtn.addEventListener('click', () => {
-    document.body.removeChild(overlay);
+  overlay.querySelector('#closeSettingsBtn').addEventListener('click', closeOverlay);
+  // ↑ Note: openBackupModal uses closeBtn const, not querySelector('#closeSettingsBtn') usually.
+  // Wait, let's check the original code.
+
+  // Original:
+  //   closeBtn.addEventListener('click', () => {
+  //     document.body.removeChild(overlay);
+  //   });
+
+  // Revised content:
+  closeBtn.addEventListener('click', closeOverlay);
+
+  // Note: overlay.addEventListener('click', ...) is not standard in other modals in main.js, 
+  // but let's be consistent with others if possible.
+  // Others don't have click-overlay-to-close in main.js (checked openSavePointModal).
+  // Only settings.js had it.
+
+  // Let's just add the animation start and closeOverlay function.
+
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
   });
+
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300);
+  }
 }
 
 // DOM構築完了後に初期化

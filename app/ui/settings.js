@@ -79,10 +79,23 @@ export function openSettings() {
     reader.readAsText(file);
   });
 
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.remove();
+  overlay.querySelector('#closeSettingsBtn').addEventListener('click', closeOverlay);
+  document.body.appendChild(overlay);
+
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    overlay.classList.add('show');
   });
 
-  overlay.querySelector('#closeSettingsBtn').addEventListener('click', () => overlay.remove());
-  document.body.appendChild(overlay);
+  // 閉じる処理
+  function closeOverlay() {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      overlay.remove();
+    }, 300);
+  }
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeOverlay();
+  });
 }
