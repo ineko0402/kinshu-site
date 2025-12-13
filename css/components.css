@@ -313,6 +313,28 @@ button:active {
     /* アイコンサイズ調整 */
 }
 
+.settings-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    margin-top: 4px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.settings-section-title .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--text-secondary);
+}
+
+.modal-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
 /* --- 設定・モーダル --- */
 .modal-overlay {
     position: fixed;

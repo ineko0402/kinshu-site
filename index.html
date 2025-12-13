@@ -161,27 +161,31 @@
       <div id="settings-box" class="settings-box">
         <h3><span class="material-symbols-outlined">settings</span> 設定</h3>
 
-        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label><br>
+        <div class="settings-section-title"><span class="material-symbols-outlined">tune</span> 一般</div>
+        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label>
         <hr>
 
-        <strong>💾 バックアップ</strong><br>
-        <small>全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</small><br><br>
-        <button id="exportBtn" class="modal-button modal-button-success">
-          エクスポート (JSON)
-        </button>
-        <input type="file" id="importInput" accept=".json" class="hidden-input">
-        <button id="importBtn" class="modal-button modal-button-primary">
-          インポート (JSON)
-        </button>
+        <div class="settings-section-title"><span class="material-symbols-outlined">cloud_sync</span> バックアップ</div>
+        <small>全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</small>
+        <div class="modal-buttons" style="flex-direction: column; margin-top: 10px;">
+          <button id="exportBtn" class="modal-button modal-button-success">
+            <span class="material-symbols-outlined">download</span> エクスポート (JSON)
+          </button>
+          <input type="file" id="importInput" accept=".json" class="hidden-input">
+          <button id="importBtn" class="modal-button modal-button-primary">
+            <span class="material-symbols-outlined">upload</span> インポート (JSON)
+          </button>
+        </div>
         <hr>
 
-        <strong>📄 ライセンス情報</strong><br>
+        <div class="settings-section-title"><span class="material-symbols-outlined">description</span> ライセンス情報</div>
         <small>
           このアプリは <a href="https://github.com/niklasvh/html2canvas" target="_blank">html2canvas</a> を使用しています<br>
           © 2012 Niklas von Hertzen (MIT License)
-        </small><br><br>
+        </small>
+        <hr>
 
-        <button id="closeSettingsBtn">閉じる</button>
+        <button id="closeSettingsBtn" class="modal-button modal-button-default">閉じる</button>
       </div>
     </div>
   </template>
@@ -190,15 +194,15 @@
   <template id="noteSwitchTemplate">
     <div class="modal-overlay top-sheet" id="note-overlay">
       <div id="note-box" class="settings-box top-sheet">
-        <h3>ノート切り替え</h3>
+        <h3><span class="material-symbols-outlined">swap_horiz</span> ノート切り替え</h3>
         <ul id="noteList" class="note-list">
           <!-- ノート一覧がここに挿入される -->
         </ul>
         <button id="newNoteBtn" class="modal-button modal-button-accent">
-          + 新しいノートを作成
+          <span class="material-symbols-outlined">add_circle</span> 新しいノートを作成
         </button>
         <button id="closeNoteBtn" class="modal-button modal-button-default">
-          閉じる
+          <span class="material-symbols-outlined">close</span> 閉じる
         </button>
       </div>
     </div>
@@ -208,10 +212,11 @@
   <template id="noteEditTemplate">
     <div class="modal-overlay top-sheet" id="note-edit-overlay">
       <div id="note-edit-box" class="settings-box top-sheet">
-        <h3>ノート編集</h3>
+        <h3><span class="material-symbols-outlined">edit_note</span> ノート編集</h3>
 
         <div id="noteEditMessage" class="message-bar"></div>
 
+        <div class="settings-section-title"><span class="material-symbols-outlined">info</span> 基本情報</div>
         <label for="noteNameInput">ノート名</label>
         <input type="text" id="noteNameInput" class="text-input" placeholder="ノート名を入力">
 
@@ -221,15 +226,19 @@
 
         <div class="note-settings-section">
           <hr>
-          <strong>金種制限（JPYのみ）</strong><br>
+          <div class="settings-section-title"><span class="material-symbols-outlined">money_off</span> 金種制限（JPYのみ）</div>
           <label><input type="checkbox" id="noteHide2000"> 2千円を使わない</label><br>
           <label><input type="checkbox" id="noteHideBills"> お札を使わない</label><br>
           <label><input type="checkbox" id="noteHideCoins"> 小銭を使わない</label><br>
         </div>
 
         <div class="modal-buttons">
-          <button id="saveNoteEditBtn" class="modal-button modal-button-success">保存</button>
-          <button id="closeNoteEditBtn" class="modal-button modal-button-default">キャンセル</button>
+          <button id="saveNoteEditBtn" class="modal-button modal-button-success">
+            <span class="material-symbols-outlined">check</span> 保存
+          </button>
+          <button id="closeNoteEditBtn" class="modal-button modal-button-default">
+            <span class="material-symbols-outlined">close</span> キャンセル
+          </button>
         </div>
       </div>
     </div>
@@ -239,8 +248,9 @@
   <template id="noteCreateTemplate">
     <div class="modal-overlay top-sheet" id="note-create-overlay">
       <div id="note-create-box" class="settings-box top-sheet">
-        <h3>新規ノート作成</h3>
+        <h3><span class="material-symbols-outlined">note_add</span> 新規ノート作成</h3>
 
+        <div class="settings-section-title"><span class="material-symbols-outlined">info</span> 基本情報</div>
         <label for="newNoteNameInput">ノート名</label>
         <input type="text" id="newNoteNameInput" class="text-input" placeholder="ノート名を入力">
 
@@ -252,15 +262,19 @@
 
         <div class="note-settings-section" style="display: block;">
           <hr>
-          <strong>金種制限（JPYのみ）</strong><br>
+          <div class="settings-section-title"><span class="material-symbols-outlined">money_off</span> 金種制限（JPYのみ）</div>
           <label><input type="checkbox" id="newNoteHide2000"> 2千円を使わない</label><br>
           <label><input type="checkbox" id="newNoteHideBills"> お札を使わない</label><br>
           <label><input type="checkbox" id="newNoteHideCoins"> 小銭を使わない</label><br>
         </div>
 
         <div class="modal-buttons">
-          <button id="createNoteBtn" class="modal-button modal-button-success">作成</button>
-          <button id="closeNoteCreateBtn" class="modal-button modal-button-default">キャンセル</button>
+          <button id="createNoteBtn" class="modal-button modal-button-success">
+            <span class="material-symbols-outlined">check</span> 作成
+          </button>
+          <button id="closeNoteCreateBtn" class="modal-button modal-button-default">
+            <span class="material-symbols-outlined">close</span> キャンセル
+          </button>
         </div>
       </div>
     </div>
@@ -282,8 +296,12 @@
         <input type="text" id="savePointMemoInput" class="text-input">
 
         <div class="modal-buttons">
-          <button id="saveSavePointBtn" class="modal-button modal-button-success">保存</button>
-          <button id="closeSavePointBtn" class="modal-button modal-button-default">キャンセル</button>
+          <button id="saveSavePointBtn" class="modal-button modal-button-success">
+            <span class="material-symbols-outlined">save</span> 保存
+          </button>
+          <button id="closeSavePointBtn" class="modal-button modal-button-default">
+            <span class="material-symbols-outlined">close</span> キャンセル
+          </button>
         </div>
       </div>
     </div>
@@ -297,7 +315,9 @@
         <ul id="historyList" class="history-list">
           <!-- 履歴一覧がここに挿入される -->
         </ul>
-        <button id="closeHistoryBtn" class="modal-button modal-button-default">閉じる</button>
+        <button id="closeHistoryBtn" class="modal-button modal-button-default">
+          <span class="material-symbols-outlined">close</span> 閉じる
+        </button>
       </div>
     </div>
   </template>
