@@ -140,6 +140,7 @@ body.dark {
     --keypad-digit-color: #ffffff;
 
     --keypad-operator-bg: #333333;
+    --keypad-key-shadow: transparent;
     --keypad-operator-color: #ffffff;
 
     --keypad-special-bg: #444444;
@@ -151,6 +152,12 @@ body.dark {
 
     --keypad-enter-bg: #ffffff;
     --keypad-enter-color: #000000;
+
+    /* ボトムナビゲーション (Dark) */
+    --nav-bg: #1e1e1e;
+    --nav-border-top: #333;
+    --nav-item-color: #888;
+    --nav-item-active: #fff;
 
     --download-stripe: #111111;
 }
@@ -206,7 +213,10 @@ header {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
-    box-sizing: border-box;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 80px;
+    /* ナビゲーションバーの分確保 */
 }
 
 .summary {
@@ -246,18 +256,7 @@ header {
     grid-template-columns: repeat(3, 1fr);
 }
 
-.actions {
-    display: flex;
-    justify-content: center;
-    /* Center the buttons */
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 500px;
-    margin: var(--space-xl) auto 0 auto;
-    box-sizing: border-box;
-}
+
 
 /* --- レスポンシブ (レイアウト関連) --- */
 
@@ -290,8 +289,7 @@ header {
 
     .container,
     .bills,
-    .coins,
-    .actions {
+    .coins {
         max-width: 720px;
         /* タブレット用コンテナ幅 */
     }
@@ -313,8 +311,7 @@ header {
 
     .container,
     .bills,
-    .coins,
-    .actions {
+    .coins {
         max-width: 960px;
         /* PC用コンテナ幅 */
     }
@@ -349,7 +346,5 @@ header {
         margin: 5px auto 10px auto;
     }
 
-    .actions {
-        margin-top: 10px;
-    }
+
 }
