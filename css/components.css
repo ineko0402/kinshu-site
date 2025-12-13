@@ -104,17 +104,28 @@ button:active {
 
 /* --- ヘッダーボタン --- */
 .header-button {
-    padding: 5px 10px;
-    background: var(--button-bg);
+    padding: 5px 0;
+    background: transparent;
     color: var(--text-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border: none;
+    border-radius: 0;
     cursor: pointer;
-    box-shadow: 0 2px 4px var(--shadow-light);
+    box-shadow: none;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
+    max-width: 35vw;
+    /* 画面幅の35%に制限 (中央の合計金額との重なり防止) */
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.header-button:hover {
+    background: transparent;
+    text-decoration: underline;
 }
 
 /* --- キーパッド (モーダル) --- */
@@ -669,6 +680,10 @@ body.dark .history-date {
 
 /* モバイルパフォーマンス最適化 */
 @media (max-width: 768px) {
+
+    .header-button {
+        max-width: 300px;
+    }
 
     .cell,
     button,
