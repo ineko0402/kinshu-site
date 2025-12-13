@@ -300,6 +300,19 @@ button:active {
     font-weight: bold;
 }
 
+.settings-box h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* アイコンとテキストの間隔 */
+    margin-top: 0;
+}
+
+.settings-box h3 .material-symbols-outlined {
+    font-size: 24px;
+    /* アイコンサイズ調整 */
+}
+
 /* --- 設定・モーダル --- */
 .modal-overlay {
     position: fixed;
