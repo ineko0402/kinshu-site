@@ -143,8 +143,24 @@ export function openSavePointModal() {
     <strong>紙幣:</strong> ${bills}枚 / <strong>硬貨:</strong> ${coins}枚
   `;
 
-  // デフォルトのメモはアクティブなノート名
-  memoInput.value = currentNote.name;
+  // デフォルトのメモは空欄
+  memoInput.value = '';
+
+  // メモフォーマット関数
+  function formatTotalToMemo(amount, currency) {
+    if (currency === 'CNY') {
+      return `${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}元`;
+    }
+
+    // JPY logic
+    const man = Math.floor(amount / 10000);
+    const sen = Math.floor((amount % 10000) / 1000);
+
+    if (man > 0 && sen > 0) return `${man}万${sen}千`;
+    if (man > 0) return `${man}万`;
+    if (sen > 0) return `${sen}千`;
+    return `${amount}円`;
+  }
 
   // メッセージ表示関数
   function showMessage(text, type = 'error') {
@@ -170,10 +186,10 @@ export function openSavePointModal() {
 
   // 保存処理
   saveBtn.addEventListener('click', () => {
-    const memo = memoInput.value.trim();
+    let memo = memoInput.value.trim();
     if (!memo) {
-      showMessage('メモを入力してください。', 'error');
-      return;
+      // 空欄の場合は自動生成
+      memo = formatTotalToMemo(total, currentNote.currency);
     }
 
     // ボタンを無効化してダブルクリック防止
@@ -246,7 +262,7 @@ export function openHistoryModal() {
       li.dataset.id = sp.id;
       li.innerHTML = `
         <div class="history-header">
-          <strong>${sp.memo}</strong>
+          <strong>${currentNote.name} ${sp.memo}</strong>
           <span class="history-date">${dateStr}</span>
         </div>
         <div class="history-summary">
