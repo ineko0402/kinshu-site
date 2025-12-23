@@ -255,7 +255,6 @@ header {
     font-size: var(--font-size-sm);
     /* 少し小さめにして確実に収める */
 }
-}
 
 .summary .item {
     flex: 1;
