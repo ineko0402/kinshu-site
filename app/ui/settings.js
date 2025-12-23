@@ -85,11 +85,13 @@ export function openSettings() {
   // アニメーション開始
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   // 閉じる処理
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       overlay.remove();
     }, 300);

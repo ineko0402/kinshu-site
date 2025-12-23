@@ -169,6 +169,18 @@ body {
     color: var(--text-color);
     font-family: sans-serif;
     /* Fallback */
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* モーダル表示時のスクロールロック (背景用だが、100dvh固定時は主に安全策) */
+body.modal-open {
+    overflow: hidden;
+    overflow: clip;
+    /* clip if supported */
 }
 
 header {
@@ -177,8 +189,8 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
+    flex-shrink: 0;
+    /* ヘッダーは縮まない */
     z-index: 90;
     box-shadow: 0 1px 2px var(--shadow-light);
 }
@@ -215,21 +227,27 @@ header {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
-    min-height: 100vh;
+    flex: 1;
+    /* メインエリアを伸長させる */
+    overflow-y: auto;
+    /* ここだけスクロールを許可 */
     overflow-x: hidden;
-    padding-bottom: 80px;
-    /* ナビゲーションバーの分確保 */
+    padding-bottom: 20px;
+    /* ナビとの余白を最小限に */
+    -webkit-overflow-scrolling: touch;
 }
 
 .summary {
     display: flex;
     justify-content: space-between;
     text-align: center;
-    margin: 10px auto 20px auto;
+    margin: 5px auto 10px auto;
+    /* マージン削減 */
     max-width: 500px;
     padding: 0 var(--space-lg);
     color: var(--text-primary);
-    /* AccentではなくText Primaryを使用 */
+    flex-shrink: 0;
+    /* 縮まない */
 }
 
 .summary .item {
@@ -347,6 +365,26 @@ header {
     .summary {
         margin: 5px auto 10px auto;
     }
+}
 
+/* 小型デバイス (iPhone SE等) 向けの高さ調整 */
+@media (max-height: 700px) {
+    :root {
+        --space-md: 10px;
+        --space-lg: 16px;
+    }
 
+    .summary {
+        margin: 2px auto 8px auto;
+        font-size: var(--font-size-sm);
+    }
+
+    .container {
+        gap: 8px;
+    }
+
+    .bills,
+    .coins {
+        gap: 8px;
+    }
 }

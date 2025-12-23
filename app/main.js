@@ -39,6 +39,7 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   // アニメーション用にクラス追加
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   // 現在の値を設定
@@ -73,6 +74,7 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   // 閉じる処理（アニメーション対応）
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
@@ -202,10 +204,12 @@ export function openSavePointModal() {
   // アニメーション開始
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
@@ -308,10 +312,12 @@ export function openHistoryModal() {
   // アニメーション開始
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
@@ -418,10 +424,12 @@ function showHistoryDetail(savedPoint) {
   // アニメーション開始
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
@@ -518,10 +526,12 @@ export function openNoteCreateModal(onUpdate = null) {
   // アニメーション開始
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
@@ -647,10 +657,12 @@ export function openNoteSwitchModal() {
   // アニメーション開始
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
@@ -760,10 +772,12 @@ export function openBackupModal() {
   // アニメーション開始
   requestAnimationFrame(() => {
     overlay.classList.add('show');
+    document.body.classList.add('modal-open');
   });
 
   function closeOverlay() {
     overlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);

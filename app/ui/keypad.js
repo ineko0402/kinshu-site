@@ -80,27 +80,19 @@ function showKeypad(cell) {
   document.getElementById('keypadLabel').textContent = label;
   document.getElementById('keypadInput').value = appState.currentInput;
   document.getElementById('overlay').classList.add('show');
+  document.body.classList.add('modal-open');
   appState.isFirstInput = true;
 
-  // モバイル最適化: bodyのスクロールを無効化
-  if (isMobileDevice()) {
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-  }
+  // モバイル最適化: bodyのスクロールを無効化 (現在はクラスで制御)
 }
 
 function hideKeypad() {
   document.getElementById('overlay').classList.remove('show');
+  document.body.classList.remove('modal-open');
   appState.activeDisplay = null;
   appState.currentInput = '';
 
-  // モバイル最適化: bodyのスクロールを復元
-  if (isMobileDevice()) {
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.width = '';
-  }
+  // モバイル最適化: bodyのスクロールを復元 (現在はクラスで制御)
 }
 
 // モバイルデバイス判定

@@ -53,10 +53,8 @@ button:active {
 
 /* --- ボトムナビゲーション --- */
 .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    flex-shrink: 0;
+    /* 縮まない */
     height: 60px;
     background: var(--nav-bg);
     border-top: 1px solid var(--nav-border-top);
@@ -767,6 +765,31 @@ body.dark .history-date {
     }
 
     .keyrow button {
+        height: 50px;
+    }
+}
+
+/* 小型デバイス向けのコンポーネント調整 */
+@media (max-height: 700px) {
+    .cell {
+        padding: 8px 6px;
+    }
+
+    .display {
+        padding: 4px;
+        margin-top: 4px;
+        font-size: var(--font-size-sm);
+    }
+
+    .nav-item .material-symbols-outlined {
+        font-size: 20px;
+    }
+
+    .nav-item .nav-label {
+        font-size: 9px;
+    }
+
+    .bottom-nav {
         height: 50px;
     }
 }
