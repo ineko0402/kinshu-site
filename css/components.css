@@ -769,31 +769,6 @@ body.dark .history-date {
     }
 }
 
-/* 小型デバイス向けのコンポーネント調整 */
-@media (max-height: 700px) {
-    .cell {
-        padding: 8px 6px;
-    }
-
-    .display {
-        padding: 4px;
-        margin-top: 4px;
-        font-size: var(--font-size-sm);
-    }
-
-    .nav-item .material-symbols-outlined {
-        font-size: 20px;
-    }
-
-    .nav-item .nav-label {
-        font-size: 9px;
-    }
-
-    .bottom-nav {
-        height: 50px;
-    }
-}
-
 /* デスクトップ用ホバー効果 */
 @media (min-width: 769px) {
     .cell:hover {
