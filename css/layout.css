@@ -88,6 +88,12 @@
     --keypad-enter-bg: var(--accent);
     --keypad-enter-color: var(--accent-fg);
 
+    /* ボトムナビゲーション (Light) */
+    --nav-bg: var(--surface-primary);
+    --nav-border-top: var(--surface-tertiary);
+    --nav-item-color: var(--text-secondary);
+    --nav-item-active: var(--accent);
+
     /* 影 */
     --shadow-light: rgba(0, 0, 0, 0.05);
     --shadow-dark: rgba(0, 0, 0, 0.15);
@@ -157,6 +163,10 @@ body.dark {
     --nav-item-active: #fff;
 
     --download-stripe: #111111;
+
+    /* アクセント基本 (Dark) - 視認性最優先 */
+    --accent: #ffffff;
+    --accent-fg: #000000;
 }
 
 /* グローエフェクト (共通) */

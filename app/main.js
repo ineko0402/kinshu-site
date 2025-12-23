@@ -12,24 +12,26 @@ import { resetAll, updateSummary } from './ui/renderer.js';
 import { jpyData, cnyData } from './core/data.js';
 
 /**
- * ノートの色をCSS変数に適用する
+ * ノートの色をCSS変数に適用する (グローエフェクトのみ)
  */
 export function applyNoteColor(color) {
-  if (!color) return;
   const root = document.documentElement;
-  root.style.setProperty('--accent', color);
+  const isDark = document.body.classList.contains('dark');
 
-  // ネオン効果用の光彩カラーを生成 (RGBA)
+  if (!color || color === 'default') {
+    root.style.setProperty('--accent-glow', 'transparent');
+    return;
+  }
+  
   // hex to rgb
   const hex = color.replace('#', '');
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
-  root.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
 
-  // 文字色の判定 (明るい色なら黒、暗い色なら白)
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  root.style.setProperty('--accent-fg', brightness > 128 ? '#000000' : '#ffffff');
+  // ダークモードならより強く発光、ライトモードなら控えめに
+  const alpha = isDark ? 0.4 : 0.15;
+  root.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, ${alpha})`);
 }
 
 // ノート切り替えUIの表示/非表示を制御する関数
