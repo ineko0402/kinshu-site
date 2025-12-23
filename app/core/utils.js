@@ -4,16 +4,20 @@
 // ==============================
 
 export function safeEval(expr) {
-  if (typeof expr !== 'string') return '0';
-  expr = expr.replace(/×/g, '*').replace(/÷/g, '/');
+  if (typeof expr !== 'string' || !expr.trim()) return '0';
 
-  // 数字・演算子・括弧・小数点のみ許可
-  if (!/^[0-9+\-*/().\s]+$/.test(expr)) return '0';
+  // 表示用演算子を評価用演算子に変換
+  let cleanedExpr = expr.replace(/×/g, '*').replace(/÷/g, '/');
+
+  // 末尾が演算子（+ - * / .）で終わっている場合、評価可能な部分まで切り詰める
+  cleanedExpr = cleanedExpr.replace(/[+\-*/.]+$/, '');
+
+  // 数字・演算子・括弧・小数点のみ許可（念のためパース後もチェック）
+  if (!/^[0-9+\-*/().\s]+$/.test(cleanedExpr)) return '0';
 
   try {
-    // Functionの代わりに安全な演算パーサを利用
-    // 四則演算のみ許可
-    const result = new Function(`"use strict"; return (${expr})`)();
+    // 四則演算のみ実行（安全のため Strict Mode で実行）
+    const result = new Function(`"use strict"; return (${cleanedExpr})`)();
     return Number.isFinite(result) ? result.toString() : '0';
   } catch {
     return '0';

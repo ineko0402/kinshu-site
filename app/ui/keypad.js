@@ -22,7 +22,9 @@ export function bindKeypadEvents() {
 
     const key = e.target.textContent;
     const inputEl = document.getElementById('keypadInput');
-    const isNumber = /^[0-9]$/.test(key);
+    const isNumber = /^[0-9]$/.test(key) || key === '00';
+    const isOperator = /^[+\-×÷]$/.test(key);
+    const isDecimal = key === '.';
 
     switch (key) {
       case 'AC':
@@ -31,6 +33,7 @@ export function bindKeypadEvents() {
         break;
       case '⇐':
         appState.currentInput = appState.currentInput.slice(0, -1) || '0';
+        if (appState.currentInput === '0') appState.isFirstInput = true;
         break;
       case '=':
       case 'Enter':
@@ -45,15 +48,48 @@ export function bindKeypadEvents() {
           hideKeypad();
           return;
         }
+        appState.isFirstInput = true;
         break;
       default:
+        // 現在の文字列
+        let current = appState.currentInput;
+
+        // 1. 先頭の0の扱い
         if (appState.isFirstInput && isNumber) {
-          appState.currentInput = key;
-        } else {
-          if (appState.currentInput === '0' && !isNumber) appState.currentInput = '';
-          appState.currentInput += key;
+          appState.currentInput = (key === '00') ? '0' : key;
+          appState.isFirstInput = false;
+        } else if (isNumber) {
+          // '0' だけが表示されている時に数字(0以外)を打ったら置換
+          if (current === '0' && key !== '0' && key !== '00') {
+            appState.currentInput = key;
+          } else if (current === '0' && (key === '0' || key === '00')) {
+            // '0' の時に '0' や '00' を打っても '0' のまま
+          } else {
+            appState.currentInput += key;
+          }
         }
-        appState.isFirstInput = false;
+
+        // 2. 演算子の制限
+        else if (isOperator) {
+          const lastChar = current.slice(-1);
+          if (/[+\-×÷.]$/.test(lastChar)) {
+            // 末尾が演算子や小数点なら置換
+            appState.currentInput = current.slice(0, -1) + key;
+          } else {
+            appState.currentInput += key;
+          }
+          appState.isFirstInput = false;
+        }
+
+        // 3. 小数点の制限
+        else if (isDecimal) {
+          const segments = current.split(/[+\-×÷]/);
+          const lastSegment = segments[segments.length - 1];
+          if (!lastSegment.includes('.')) {
+            appState.currentInput += key;
+            appState.isFirstInput = false;
+          }
+        }
     }
 
     inputEl.value = appState.currentInput;
