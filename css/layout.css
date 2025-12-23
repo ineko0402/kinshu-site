@@ -240,14 +240,21 @@ header {
 .summary {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     text-align: center;
     margin: 5px auto 10px auto;
     /* マージン削減 */
+    width: 100%;
     max-width: 500px;
-    padding: 0 var(--space-lg);
+    padding: 0;
+    /* Containerのパディングと重複するため削除 */
     color: var(--text-primary);
     flex-shrink: 0;
-    /* 縮まない */
+    white-space: nowrap;
+    /* 改行防止 */
+    font-size: var(--font-size-sm);
+    /* 少し小さめにして確実に収める */
+}
 }
 
 .summary .item {
