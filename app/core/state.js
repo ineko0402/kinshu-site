@@ -19,7 +19,7 @@ export const appState = {
   isFirstInput: true,
   // --- ノート管理用プロパティ ---
   currentNoteId: null,
-  notes: [] // { id, name, createdAt, updatedAt, currency, counts, settings, savedPoints } の配列
+  notes: [] // { id, name, createdAt, updatedAt, currency, counts, settings, color, savedPoints } の配列
 };
 
 // UUID生成関数（RFC4122 version 4準拠）
@@ -119,6 +119,7 @@ export function createNewNote(name, currency, settings = {}) {
     updatedAt: now,
     currency: currency,
     counts: {},
+    color: 'default', // デフォルトカラー
     settings: {
       ...DEFAULT_NOTE_SETTINGS,
       ...settings
@@ -356,3 +357,20 @@ export function restoreCounts(noteId, counts) {
   saveNotesData(true); // 即座に保存
   return true;
 }
+
+/**
+ * ノートのテーマカラーを更新
+ * @param {string} noteId - ノートID
+ * @param {string} color - HEXカラーコード
+ * @returns {boolean} 成功した場合true
+ */
+export function updateNoteColor(noteId, color) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note) return false;
+
+  note.color = color;
+  note.updatedAt = new Date().toISOString();
+  saveNotesData(true);
+  return true;
+}
+

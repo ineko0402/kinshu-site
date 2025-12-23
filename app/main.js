@@ -3,13 +3,34 @@
 // アプリのエントリーポイント
 // ==============================
 
-import { initState, loadState, appState, switchNote, createNewNote, deleteNote, updateNoteSettings, updateNoteName, addSavedPoint, deleteSavedPoint, restoreCounts } from './core/state.js';
+import { initState, loadState, appState, switchNote, createNewNote, deleteNote, updateNoteSettings, updateNoteName, addSavedPoint, deleteSavedPoint, restoreCounts, updateNoteColor } from './core/state.js';
 import { renderCurrency } from './ui/renderer.js';
 import { bindKeypadEvents } from './ui/keypad.js';
 import { bindSettingsEvents, openSettings } from './ui/settings.js';
 import { bindExportEvents, downloadImage } from './export/imageExport.js';
 import { resetAll, updateSummary } from './ui/renderer.js';
 import { jpyData, cnyData } from './core/data.js';
+
+/**
+ * ノートの色をCSS変数に適用する
+ */
+export function applyNoteColor(color) {
+  if (!color) return;
+  const root = document.documentElement;
+  root.style.setProperty('--accent', color);
+
+  // ネオン効果用の光彩カラーを生成 (RGBA)
+  // hex to rgb
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  root.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
+
+  // 文字色の判定 (明るい色なら黒、暗い色なら白)
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  root.style.setProperty('--accent-fg', brightness > 128 ? '#000000' : '#ffffff');
+}
 
 // ノート切り替えUIの表示/非表示を制御する関数
 export function updateNoteDisplay() {
@@ -42,9 +63,22 @@ export function openNoteEditModal(noteId, onUpdate = null) {
     document.body.classList.add('modal-open');
   });
 
-  // 現在の値を設定
   noteNameInput.value = note.name;
   currencyDisplay.textContent = note.currency;
+
+  // カラープリセットの初期化
+  const colorInput = overlay.querySelector('#editNoteColorInput');
+  colorInput.value = note.color || 'default';
+  const colorBtns = overlay.querySelectorAll('.color-preset-btn');
+
+  colorBtns.forEach(btn => {
+    if (btn.dataset.color === colorInput.value) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      colorBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      colorInput.value = btn.dataset.color;
+    });
+  });
 
   // JPYの場合のみ金種制限設定を表示
   const settingsSection = overlay.querySelector('.note-settings-section');
@@ -93,6 +127,9 @@ export function openNoteEditModal(noteId, onUpdate = null) {
     // ノート名を更新
     updateNoteName(noteId, newName);
 
+    // 色を更新
+    updateNoteColor(noteId, colorInput.value);
+
     // JPYの場合は設定も更新
     if (note.currency === 'JPY') {
       updateNoteSettings(noteId, {
@@ -104,6 +141,7 @@ export function openNoteEditModal(noteId, onUpdate = null) {
 
     // 現在アクティブなノートの場合は再描画
     if (noteId === appState.currentNoteId) {
+      applyNoteColor(colorInput.value);
       renderCurrency();
       updateSummary();
       updateNoteDisplay();
@@ -552,6 +590,20 @@ export function openNoteCreateModal(onUpdate = null) {
   }
 
   // 作成処理
+  const now = new Date().toISOString();
+
+  // カラープリセット
+  const colorInput = overlay.querySelector('#createNoteColorInput');
+  const colorBtns = overlay.querySelectorAll('.color-preset-btn');
+  colorBtns.forEach(btn => {
+    if (btn.dataset.color === colorInput.value) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      colorBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      colorInput.value = btn.dataset.color;
+    });
+  });
+
   createBtn.addEventListener('click', () => {
     const name = noteNameInput.value.trim();
     if (!name) {
@@ -653,6 +705,9 @@ export function openNoteSwitchModal() {
       if (noteId !== appState.currentNoteId) {
         const success = switchNote(noteId);
         if (success) {
+          const note = appState.notes.find(n => n.id === noteId);
+          applyNoteColor(note.color);
+
           renderCurrency();
           updateSummary();
           updateNoteDisplay();
@@ -803,6 +858,12 @@ window.addEventListener('DOMContentLoaded', () => {
   // 状態初期化・読込
   initState();
   loadState();
+
+  // 現在のノートの色を適用
+  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  if (currentNote) {
+    applyNoteColor(currentNote.color);
+  }
 
   // 通貨レンダリング
   renderCurrency();

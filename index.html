@@ -232,6 +232,17 @@
           <label><input type="checkbox" id="noteHideCoins"> 小銭を使わない</label><br>
         </div>
 
+        <div class="settings-section-title"><span class="material-symbols-outlined">auto_awesome</span> グローエフェクト</div>
+        <div class="color-presets" id="editNoteColorPresets">
+          <button class="color-preset-btn default" data-color="default" title="デフォルト (無色)"></button>
+          <button class="color-preset-btn" data-color="#ff6b6b" style="background: #ff6b6b;"></button>
+          <button class="color-preset-btn" data-color="#4dabf7" style="background: #4dabf7;"></button>
+          <button class="color-preset-btn" data-color="#51cf66" style="background: #51cf66;"></button>
+          <button class="color-preset-btn" data-color="#fcc419" style="background: #fcc419;"></button>
+          <button class="color-preset-btn" data-color="#b197fc" style="background: #b197fc;"></button>
+        </div>
+        <input type="hidden" id="editNoteColorInput">
+
         <div class="modal-buttons">
           <button id="saveNoteEditBtn" class="modal-button modal-button-success">
             <span class="material-symbols-outlined">check</span> 保存
@@ -267,6 +278,17 @@
           <label><input type="checkbox" id="newNoteHideBills"> お札を使わない</label><br>
           <label><input type="checkbox" id="newNoteHideCoins"> 小銭を使わない</label><br>
         </div>
+
+        <div class="settings-section-title"><span class="material-symbols-outlined">auto_awesome</span> グローエフェクト</div>
+        <div class="color-presets" id="createNoteColorPresets">
+          <button class="color-preset-btn default active" data-color="default" title="デフォルト (無色)"></button>
+          <button class="color-preset-btn" data-color="#ff6b6b" style="background: #ff6b6b;"></button>
+          <button class="color-preset-btn" data-color="#4dabf7" style="background: #4dabf7;"></button>
+          <button class="color-preset-btn" data-color="#51cf66" style="background: #51cf66;"></button>
+          <button class="color-preset-btn" data-color="#fcc419" style="background: #fcc419;"></button>
+          <button class="color-preset-btn" data-color="#b197fc" style="background: #b197fc;"></button>
+        </div>
+        <input type="hidden" id="createNoteColorInput" value="default">
 
         <div class="modal-buttons">
           <button id="createNoteBtn" class="modal-button modal-button-success">

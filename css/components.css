@@ -800,3 +800,41 @@ body.dark .history-date {
         scroll-behavior: smooth;
     }
 }
+
+/* --- カラープリセット選択 --- */
+.color-presets {
+    display: flex;
+    gap: 12px;
+    margin: 10px 0 20px 0;
+    justify-content: flex-start;
+}
+
+.color-preset-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-preset-btn:hover {
+    transform: scale(1.1);
+}
+
+.color-preset-btn.active {
+    border-color: var(--text-color);
+    transform: scale(1.15);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+
+.color-preset-btn.default {
+    background: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),
+        linear-gradient(45deg, #ccc 25%, #eee 25%, #eee 75%, #ccc 75%, #ccc);
+    background-size: 8px 8px;
+    background-position: 0 0, 4px 4px;
+    border: 1px solid var(--border-color);
+}
