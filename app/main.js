@@ -3,7 +3,7 @@
 // アプリのエントリーポイント
 // ==============================
 
-import { initState, loadState, appState, switchNote, createNewNote, deleteNote, updateNoteSettings, updateNoteName, addSavedPoint, deleteSavedPoint } from './core/state.js';
+import { initState, loadState, appState, switchNote, createNewNote, deleteNote, updateNoteSettings, updateNoteName, addSavedPoint, deleteSavedPoint, restoreCounts } from './core/state.js';
 import { renderCurrency } from './ui/renderer.js';
 import { bindKeypadEvents } from './ui/keypad.js';
 import { bindSettingsEvents, openSettings } from './ui/settings.js';
@@ -300,6 +300,7 @@ export function openHistoryModal() {
           合計: ${sp.total.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${unit} (紙幣: ${sp.billCount}枚 / 硬貨: ${sp.coinCount}枚)
         </div>
         <div class="history-actions">
+          <button class="restore-history-btn">復元</button>
           <button class="view-detail-btn">詳細</button>
           <button class="copy-report-btn">レポート</button>
           <button class="delete-history-btn">削除</button>
@@ -341,6 +342,17 @@ export function openHistoryModal() {
       if (confirm(`履歴「${savedPoint.memo}」を削除しますか？\n\nこの操作は取り消せません。`)) {
         deleteSavedPoint(appState.currentNoteId, spId);
         renderHistoryList();
+      }
+    } else if (e.target.classList.contains('restore-history-btn')) {
+      // 復元
+      if (confirm(`履歴「${savedPoint.memo}」の内容を現在の入力に上書き復元しますか？\n\n現在の入力内容は失われます。`)) {
+        restoreCounts(appState.currentNoteId, savedPoint.counts);
+        loadState();
+        updateSummary();
+        renderCurrency(); // セルの無効化状態なども反映するため
+
+        alert('データを復元しました。');
+        closeOverlay();
       }
     } else if (e.target.classList.contains('view-detail-btn')) {
       // 詳細表示

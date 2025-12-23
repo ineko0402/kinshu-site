@@ -340,3 +340,19 @@ export function deleteSavedPoint(noteId, savedPointId) {
   saveNotesData();
   return true;
 }
+
+/**
+ * ノートの金種データを復元（上書き）
+ * @param {string} noteId - ノートID
+ * @param {Object} counts - 復元する金種データ
+ * @returns {boolean} 成功した場合true
+ */
+export function restoreCounts(noteId, counts) {
+  const note = appState.notes.find(n => n.id === noteId);
+  if (!note) return false;
+
+  note.counts = { ...counts };
+  note.updatedAt = new Date().toISOString();
+  saveNotesData(true); // 即座に保存
+  return true;
+}
