@@ -169,7 +169,7 @@ body.dark {
     --accent-fg: #000000;
 }
 
-/* グローエフェクト (共通) */
+/* グローエフェクト (共通 - Option 3: Radiant Aura) */
 .cell,
 button.modal-button-primary,
 button.modal-button-success,
@@ -177,11 +177,17 @@ button.enter,
 .bottom-nav .nav-item:hover,
 .note-item.active {
     box-shadow:
-        0 10px 20px -10px var(--accent-glow-primary),
+        0 8px 30px -5px var(--accent-glow-primary),
         0 0 20px var(--accent-glow-secondary),
         inset 0 1px 1px rgba(255, 255, 255, 0.1);
-    border-color: rgba(var(--accent-color-raw), 0.8);
+    border: 1px solid rgba(var(--accent-color-raw), 0.8);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cell .label,
+.cell .display {
+    text-shadow: 0 0 12px var(--accent-glow-text);
+    transition: text-shadow 0.3s;
 }
 
 .cell:active,
@@ -189,24 +195,19 @@ button.modal-button-primary:active,
 button.modal-button-success:active,
 button.enter:active {
     box-shadow:
-        0 5px 10px -5px var(--accent-glow-primary),
-        0 0 15px var(--accent-glow-secondary);
+        0 4px 15px -5px var(--accent-glow-primary),
+        0 0 10px var(--accent-glow-secondary);
     transform: scale(0.96);
-}
-
-.cell .label {
-    text-shadow: 0 0 10px var(--accent-glow-text);
-    transition: text-shadow 0.3s;
 }
 
 .display {
     box-shadow:
-        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 2px 4px rgba(0, 0, 0, 0.15),
         0 0 15px var(--accent-glow-secondary);
-    background: rgba(var(--accent-color-raw), 0.05);
-    border: 1px solid rgba(var(--accent-color-raw), 0.1);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(var(--accent-color-raw), 0.1);
+    border: 1px solid rgba(var(--accent-color-raw), 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 /* --- ページ構造 --- */

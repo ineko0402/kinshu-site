@@ -33,11 +33,11 @@ export function applyNoteColor(color) {
   const b = parseInt(hex.substring(4, 6), 16);
   const rgb = `${r}, ${g}, ${b}`;
 
-  // 強度の異なるRGBA変数を設定
-  // ダークモードならより鮮やかに、ライトモードでもネオン感が出るように
-  const alpha1 = isDark ? 0.6 : 0.4;
-  const alpha2 = isDark ? 0.3 : 0.2;
-  const alphaText = isDark ? 0.8 : 0.6;
+  // 強度の異なるRGBA変数を設定 (Option 3: Radiant Aura をベースに調整)
+  // ダークモードならより鮮やかに、ライトモードでもしっかりとネオン感が出る設定
+  const alpha1 = isDark ? 0.7 : 0.5;      // 拡散光 (広範囲)
+  const alpha2 = isDark ? 0.5 : 0.35;     // 中心光 (強め)
+  const alphaText = isDark ? 1.0 : 0.8;   // テキスト発光
 
   root.style.setProperty('--accent-color-raw', rgb);
   root.style.setProperty('--accent-glow-primary', `rgba(${rgb}, ${alpha1})`);
