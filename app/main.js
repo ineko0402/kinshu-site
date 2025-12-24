@@ -19,7 +19,10 @@ export function applyNoteColor(color) {
   const isDark = document.body.classList.contains('dark');
 
   if (!color || color === 'default') {
-    root.style.setProperty('--accent-glow', 'transparent');
+    root.style.setProperty('--accent-glow-primary', 'transparent');
+    root.style.setProperty('--accent-glow-secondary', 'transparent');
+    root.style.setProperty('--accent-glow-text', 'transparent');
+    root.style.setProperty('--accent-color-raw', isDark ? '255, 255, 255' : '52, 58, 64');
     return;
   }
   
@@ -28,10 +31,18 @@ export function applyNoteColor(color) {
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
+  const rgb = `${r}, ${g}, ${b}`;
 
-  // ダークモードならより強く発光、ライトモードなら控えめに
-  const alpha = isDark ? 0.4 : 0.15;
-  root.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, ${alpha})`);
+  // 強度の異なるRGBA変数を設定
+  // ダークモードならより鮮やかに、ライトモードでもネオン感が出るように
+  const alpha1 = isDark ? 0.6 : 0.4;
+  const alpha2 = isDark ? 0.3 : 0.2;
+  const alphaText = isDark ? 0.8 : 0.6;
+
+  root.style.setProperty('--accent-color-raw', rgb);
+  root.style.setProperty('--accent-glow-primary', `rgba(${rgb}, ${alpha1})`);
+  root.style.setProperty('--accent-glow-secondary', `rgba(${rgb}, ${alpha2})`);
+  root.style.setProperty('--accent-glow-text', `rgba(${rgb}, ${alphaText})`);
 }
 
 // ノート切り替えUIの表示/非表示を制御する関数
