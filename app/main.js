@@ -35,8 +35,10 @@ window.addEventListener('DOMContentLoaded', () => {
   // グローバルなボタンイベント
   document.getElementById('clearAllBtn')?.addEventListener('click', resetAll);
   document.getElementById('saveBtn')?.addEventListener('click', openSavePointModal);
+  document.getElementById('pc-saveBtn')?.addEventListener('click', openSavePointModal);
   document.getElementById('historyBtn')?.addEventListener('click', openHistoryModal);
   document.getElementById('settingsBtn')?.addEventListener('click', openSettings);
+  document.getElementById('headerSettingsBtn')?.addEventListener('click', openSettings);
   document.getElementById('noteSwitchBtn')?.addEventListener('click', openNoteSwitchModal);
 
   // PC用サイドバー限定のイベント

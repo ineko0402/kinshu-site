@@ -1,4 +1,12 @@
-@import './css/reset.css';
-@import './css/layout.css';
-@import './css/typography.css';
-@import './css/components.css';
+@import url('css/variables.css');
+@import url('css/base.css');
+@import url('css/effects.css');
+@import url('css/layout.css');
+@import url('css/components.css');
+@import url('css/modals.css');
+@import url('css/pc.css');
+
+/* ==========================================================================
+   金種入力アプリ：メインスタイル (style.css)
+   各モジュールを統合するエントリーポイントです。
+   ========================================================================== */

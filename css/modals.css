@@ -1,0 +1,172 @@
+/* ==========================================================================
+   モーダル・オーバーレイ (modals.css)
+   ========================================================================== */
+
+/* --- システム・オーバーレイ (キーパッド等) --- */
+#overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: var(--overlay-bg);
+    z-index: 1000;
+}
+
+#overlay.show {
+    display: flex;
+}
+
+#keypadPanel {
+    background: var(--surface-primary);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px var(--shadow-dark);
+    min-width: 260px;
+    text-align: center;
+}
+
+#keypadLabel {
+    margin-bottom: var(--space-sm);
+    font-weight: bold;
+}
+
+#keypadInput {
+    width: 100%;
+    padding: 10px;
+    text-align: right;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    background: var(--display-bg);
+    color: var(--text-color);
+    font-size: var(--font-size-lg);
+}
+
+.keyrow {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.keyrow button {
+    flex: 1;
+    height: 60px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    border-radius: var(--radius-md);
+    font-weight: bold;
+    font-size: var(--font-size-base);
+}
+
+.keyrow button.digit {
+    background: var(--keypad-digit-bg);
+    color: var(--keypad-digit-color);
+}
+
+.keyrow button.operator {
+    background: var(--keypad-operator-bg);
+    color: var(--keypad-operator-color);
+}
+
+.keyrow button.special {
+    background: var(--keypad-special-bg);
+    color: var(--keypad-special-color);
+}
+
+.keyrow button.clear {
+    background: var(--keypad-clear-bg);
+    color: var(--keypad-clear-color);
+}
+
+.keyrow button.enter {
+    background: var(--keypad-enter-bg);
+    color: var(--keypad-enter-color);
+}
+
+/* --- モーダル (ボトムシート等) --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    /* Mobile: Bottom Sheet */
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.settings-box {
+    background: var(--surface-primary);
+    color: var(--text-color);
+    padding: var(--space-lg);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+}
+
+.modal-overlay.show .settings-box {
+    transform: translateY(0);
+}
+
+/* トップシート */
+.modal-overlay.top-sheet {
+    align-items: flex-start;
+}
+
+.settings-box.top-sheet {
+    border-radius: 0 0 20px 20px;
+    transform: translateY(-100%);
+}
+
+.modal-overlay.show .settings-box.top-sheet {
+    transform: translateY(0);
+}
+
+/* 各種モーダル内要素 */
+.message-bar {
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+    display: none;
+}
+
+.message-bar.visible {
+    display: block;
+}
+
+.message-bar.error {
+    background: var(--surface-secondary);
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.message-bar.success {
+    background: var(--surface-secondary);
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.text-input,
+.select-input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 16px 0;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--display-bg);
+    color: var(--text-color);
+}

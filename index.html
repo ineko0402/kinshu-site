@@ -17,7 +17,6 @@
   <link rel="manifest" href="/kinshu-site/manifest.json">
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-  <link rel="stylesheet" href="css/pc.css" />
   <meta name="theme-color" content="#1976d2">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -39,14 +38,21 @@
     <main class="main-content">
       <header>
         <div class="header-left">
-          <button id="noteSwitchBtn" class="header-button">
+          <div id="pc-currentNoteDisplay" class="pc-only header-text">
+            <span id="pc-currentNoteName">新規ノート 1 (JPY)</span>
+          </div>
+          <button id="noteSwitchBtn" class="header-button mobile-only">
             <span id="currentNoteName">新規ノート 1 (JPY)</span> ▼
           </button>
         </div>
         <div class="header-center">
           <span id="total">¥0</span>
         </div>
-        <div class="header-right"></div>
+        <div class="header-right">
+          <button id="headerSettingsBtn" class="header-button pc-only" title="設定">
+            <span class="material-symbols-outlined">settings</span>
+          </button>
+        </div>
       </header>
 
       <div class="summary">
@@ -152,6 +158,9 @@
         <span class="material-symbols-outlined">history</span> 履歴一覧
       </div>
       <div id="pc-sidebar-history-list"></div>
+      <button id="pc-saveBtn" class="modal-button modal-button-success" style="margin-top: auto;">
+        <span class="material-symbols-outlined">save</span> 計算結果を保存
+      </button>
     </aside>
   </div>
 

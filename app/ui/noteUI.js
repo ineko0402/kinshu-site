@@ -42,6 +42,12 @@ export function updateNoteDisplay() {
     if (noteNameEl && currentNote) {
         noteNameEl.textContent = `${currentNote.name} (${currentNote.currency})`;
     }
+
+    // PC用の表示も更新
+    const pcNoteNameEl = document.getElementById('pc-currentNoteName');
+    if (pcNoteNameEl && currentNote) {
+        pcNoteNameEl.textContent = `${currentNote.name} (${currentNote.currency})`;
+    }
 }
 
 /**
@@ -68,17 +74,34 @@ export function renderSidebarNoteList() {
         ${note.name} <br>
         <small style="color: var(--text-secondary)">${note.currency}</small>
       </div>
-      <div class="note-actions">
-        <button class="edit-note-btn" style="padding: 2px 6px; font-size: 10px;">編集</button>
+      <div class="note-actions" style="display: flex; gap: 4px;">
+        <button class="edit-note-btn" title="編集"><span class="material-symbols-outlined" style="font-size: 18px;">edit</span></button>
+        <button class="delete-note-btn" title="削除"><span class="material-symbols-outlined" style="font-size: 18px;">delete</span></button>
       </div>
     `;
 
         div.addEventListener('click', (e) => {
-            if (e.target.classList.contains('edit-note-btn')) {
+            const target = e.target.closest('button');
+            if (target?.classList.contains('edit-note-btn')) {
                 openNoteEditModal(note.id, () => {
                     renderSidebarNoteList();
                     updateNoteDisplay();
                 });
+                return;
+            }
+
+            if (target?.classList.contains('delete-note-btn')) {
+                if (appState.notes.length <= 1) {
+                    alert('最後のノートは削除できません。');
+                    return;
+                }
+                if (confirm(`ノート「${note.name}」を削除しますか？`)) {
+                    deleteNote(note.id);
+                    renderSidebarNoteList();
+                    renderCurrency();
+                    updateSummary();
+                    updateNoteDisplay();
+                }
                 return;
             }
 

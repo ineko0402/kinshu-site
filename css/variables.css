@@ -1,0 +1,131 @@
+/* ==========================================================================
+   CSS変数定義 (variables.css)
+   ========================================================================== */
+
+:root {
+    /* 1. カラーパレット (無彩色) */
+    --bg-color: #f8f9fa;
+    --surface-primary: #ffffff;
+    --surface-secondary: #e9ecef;
+    --surface-tertiary: #dee2e6;
+
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+
+    --accent: #343a40;
+    --accent-fg: #ffffff;
+
+    --danger: #495057;
+    --danger-fg: #ffffff;
+
+    /* 2. タイポグラフィ変数 */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-xxl: 1.75rem;
+
+    /* 3. スペーシング変数 */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+
+    /* 4. Radius変数 */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* --- マッピング --- */
+    --text-color: var(--text-primary);
+    --border-color: var(--surface-tertiary);
+
+    /* コンポーネント */
+    --cell-bg: var(--surface-primary);
+    --display-bg: #EAECEF;
+    --button-bg: var(--surface-secondary);
+    --button-hover: var(--surface-tertiary);
+    --header-bg: var(--surface-primary);
+
+    --action-clear-bg: #fff;
+    --action-clear-color: var(--danger);
+
+    /* ダウンロードエリア */
+    --download-bg: #fff;
+    --download-text: #000;
+    --download-border: #ccc;
+    --download-stripe: #f8f9fa;
+
+    /* キーパッド */
+    --keypad-digit-bg: #ffffff;
+    --keypad-digit-color: var(--text-primary);
+    --keypad-operator-bg: var(--surface-secondary);
+    --keypad-operator-color: var(--text-primary);
+    --keypad-special-bg: var(--surface-tertiary);
+    --keypad-special-color: var(--text-primary);
+    --keypad-clear-bg: var(--danger);
+    --keypad-clear-color: var(--danger-fg);
+    --keypad-enter-bg: var(--accent);
+    --keypad-enter-color: var(--accent-fg);
+
+    /* ボトムナビゲーション */
+    --nav-bg: var(--surface-primary);
+    --nav-border-top: var(--surface-tertiary);
+    --nav-item-color: var(--text-secondary);
+    --nav-item-active: var(--accent);
+
+    /* 影 */
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --shadow-dark: rgba(0, 0, 0, 0.15);
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+}
+
+/* --- ダークテーマ (モノトーン) --- */
+body.dark {
+    --bg-color: #000000;
+    --surface-primary: #1a1a1a;
+    --surface-secondary: #333333;
+    --surface-tertiary: #4d4d4d;
+
+    --text-primary: #ffffff;
+    --text-secondary: #d1d1d1;
+
+    --danger: #ff6b6b;
+    --danger-fg: #000000;
+
+    --text-color: var(--text-primary);
+    --border-color: var(--surface-tertiary);
+
+    --display-bg: #121212;
+    --cell-bg: var(--surface-primary);
+    --button-bg: var(--surface-secondary);
+    --button-hover: var(--surface-tertiary);
+    --header-bg: var(--surface-primary);
+
+    --action-clear-bg: var(--surface-secondary);
+    --action-clear-color: #ff6b6b;
+
+    --keypad-digit-bg: #222222;
+    --keypad-digit-color: #ffffff;
+    --keypad-operator-bg: #333333;
+    --keypad-key-shadow: transparent;
+    --keypad-operator-color: #ffffff;
+    --keypad-special-bg: #444444;
+    --keypad-special-color: #ffffff;
+    --keypad-clear-bg: #555555;
+    --keypad-clear-color: #ffffff;
+    --keypad-enter-bg: #ffffff;
+    --keypad-enter-color: #000000;
+
+    --nav-bg: #1e1e1e;
+    --nav-border-top: #333;
+    --nav-item-color: #888;
+    --nav-item-active: #fff;
+
+    --download-stripe: #111111;
+
+    --accent: #ffffff;
+    --accent-fg: #000000;
+}

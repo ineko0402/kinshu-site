@@ -1,9 +1,7 @@
 /* ==========================================================================
    PC専用スタイル (pc.css)
-   モバイルファーストのベーススタイルをPC向けに上書き・拡張します。
    ========================================================================== */
 
-/* 1024px以上で適用される3カラムレイアウト */
 @media (min-width: 1024px) {
     body {
         overflow: hidden;
@@ -11,7 +9,7 @@
 
     .app-wrapper {
         display: grid;
-        grid-template-columns: 250px 1fr 300px;
+        grid-template-columns: 260px 1fr 320px;
         grid-template-areas: "left main right";
         height: 100vh;
         height: 100dvh;
@@ -19,51 +17,37 @@
         background: var(--bg-color);
     }
 
-    /* 左サイドバー: ノート一覧 */
+    /* サイドバー共通 */
+    .pc-sidebar {
+        background: var(--surface-primary);
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-md);
+        overflow-y: auto;
+    }
+
     .pc-sidebar.left-panel {
         grid-area: left;
         border-right: 1px solid var(--border-color);
-        background: var(--surface-primary);
-        display: flex;
-        flex-direction: column;
-        padding: var(--space-md);
-        overflow-y: auto;
     }
 
-    /* 右サイドバー: 履歴一覧 */
     .pc-sidebar.right-panel {
         grid-area: right;
         border-left: 1px solid var(--border-color);
-        background: var(--surface-primary);
-        display: flex;
-        flex-direction: column;
-        padding: var(--space-md);
-        overflow-y: auto;
     }
 
-    /* メインコンテンツ */
     .main-content {
         grid-area: main;
         display: flex;
         flex-direction: column;
         height: 100%;
         overflow: hidden;
-        border-left: 1px solid var(--border-color);
-        border-right: 1px solid var(--border-color);
     }
 
-    /* PCではボトムナビを隠す、あるいはヘッダー等に統合する（今回は非表示） */
     .main-content .bottom-nav {
-        display: none;
+        display: none !important;
     }
 
-    /* メイン内のコンテナ調整 */
-    .main-content .container {
-        max-width: 800px;
-        padding: var(--space-lg);
-    }
-
-    /* サイドバー内のリストスタイル調整 */
     .sidebar-title {
         font-size: var(--font-size-sm);
         font-weight: bold;
@@ -79,82 +63,101 @@
         flex: 1;
     }
 
-    /* サイドバー内のアイテムをモーダル用より少しコンパクトに */
+    /* アイテムスタイル (PC) */
     .pc-sidebar .note-item,
     .pc-sidebar .history-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
         margin-bottom: 8px;
-        padding: 8px;
-        font-size: var(--font-size-sm);
+        background: var(--surface-secondary);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
+        border: 1px solid var(--border-color);
+    }
+
+    .pc-sidebar .note-item:hover,
+    .pc-sidebar .history-item:hover {
+        background: var(--surface-tertiary);
+        transform: translateX(4px);
+    }
+
+    .pc-sidebar .note-item.active {
+        border-left: 4px solid var(--accent) !important;
+        background: var(--surface-tertiary);
     }
 
     .pc-sidebar .history-actions {
-        flex-wrap: wrap;
+        display: flex;
+        gap: 4px;
+        margin-top: 8px;
     }
 
     .pc-sidebar .history-actions button {
-        padding: 4px 6px;
+        flex: 1;
+        padding: 4px;
         font-size: 11px;
     }
 
-    /* --- グリッドの最適化 --- */
-    .bills {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+    /* 表示制御 */
+    .mobile-only {
+        display: none !important;
     }
 
-    .coins {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
+    .header-text {
+        font-size: var(--font-size-md);
+        font-weight: bold;
+        color: var(--text-primary);
+        padding-left: var(--space-md);
     }
 
-    /* ホバー効果 */
-    button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px var(--shadow-dark);
-    }
-}
-
-/* タブレット (768px ~ 1023px) の既存スタイルもこちらに移行 */
-@media (min-width: 768px) and (max-width: 1023px) {
-
-    .container,
-    .bills,
-    .coins {
-        max-width: 720px;
-    }
-
-    .bills {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    /* モーダルの配置などの調整 */
-    .modal-overlay {
+    .header-button.pc-only {
+        display: flex !important;
         align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        color: var(--text-primary);
+        background: transparent;
+        border: none;
+        cursor: pointer;
     }
 
-    .settings-box {
-        max-width: 500px;
-        width: 90%;
-        border-radius: 16px;
-        transform: translateY(20px);
+    .header-button.pc-only:hover {
+        background: var(--surface-secondary);
     }
 
-    .modal-overlay.show .settings-box {
-        transform: translateY(0);
+    .pc-sidebar .modal-button {
+        width: 100% !important;
+        margin-top: auto !important;
+        padding: 12px !important;
+        border-radius: 12px !important;
+        font-weight: bold !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+    }
+
+    /* グリッド最適化 (PC) */
+    .bills {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+
+    .coins {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 16px !important;
     }
 }
 
-/* スマホ以外の共通設定 */
-@media (min-width: 768px) {
-    :root {
-        --space-md: 20px;
-        --space-lg: 32px;
-    }
-}
-
-/* PC専用表示要素の制御 */
 @media (max-width: 1023px) {
-    .pc-sidebar {
+
+    .pc-sidebar,
+    .pc-only {
         display: none !important;
     }
 }
