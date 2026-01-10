@@ -352,63 +352,7 @@ header {
 /* デフォルトスタイル (上記) が適用されます */
 /* Grid: .bills (2列), .coins (3列) -> layout.css上部で定義済み */
 
-
-/* Tablet: 768px ~ 1023px */
-@media (min-width: 768px) {
-    :root {
-        --space-md: 20px;
-        /* 余白を少し広げる */
-        --space-lg: 32px;
-    }
-
-    .container,
-    .bills,
-    .coins {
-        max-width: 720px;
-        /* タブレット用コンテナ幅 */
-    }
-
-    .bills {
-        grid-template-columns: repeat(4, 1fr);
-        /* 2列 -> 4列 */
-    }
-
-    /* ボタンなどは指で押しやすいサイズのまま維持 */
-}
-
-/* PC: 1024px ~ */
-@media (min-width: 1024px) {
-    :root {
-        --space-md: 24px;
-        --space-lg: 40px;
-    }
-
-    .container,
-    .bills,
-    .coins {
-        max-width: 960px;
-        /* PC用コンテナ幅 */
-    }
-
-    .bills {
-        grid-template-columns: repeat(4, 1fr);
-        /* バランスを見て4列維持か、必要なら増やす */
-        gap: 16px;
-        /* グリッド間隔を広げる */
-    }
-
-    .coins {
-        grid-template-columns: repeat(6, 1fr);
-        /* 3列 -> 6列 */
-        gap: 16px;
-    }
-
-    button:hover {
-        /* PCのみホバー効果を強調 */
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px var(--shadow-dark);
-    }
-}
+/* PC/タブレット向けのスタイルは pc.css に移設されました */
 
 /* その他: 横向き (Landscape Mobile) */
 @media (max-height: 500px) and (orientation: landscape) {

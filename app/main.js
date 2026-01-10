@@ -11,6 +11,22 @@ import { bindExportEvents, downloadImage } from './export/imageExport.js';
 import { resetAll, updateSummary } from './ui/renderer.js';
 import { jpyData, cnyData } from './core/data.js';
 
+// 初期化時にPC用サイドバーを更新
+document.addEventListener('DOMContentLoaded', () => {
+  renderSidebarNoteList();
+  renderSidebarHistoryList();
+
+  // PC用新規作成ボタン
+  const pcNewBtn = document.getElementById('pc-newNoteBtn');
+  if (pcNewBtn) {
+    pcNewBtn.addEventListener('click', () => {
+      openNoteCreateModal(() => {
+        renderSidebarNoteList();
+      });
+    });
+  }
+});
+
 /**
  * ノートの色をCSS変数に適用する (グローエフェクトのみ)
  */
@@ -25,7 +41,7 @@ export function applyNoteColor(color) {
     root.style.setProperty('--accent-color-raw', isDark ? '255, 255, 255' : '52, 58, 64');
     return;
   }
-  
+
   // hex to rgb
   const hex = color.replace('#', '');
   const r = parseInt(hex.substring(0, 2), 16);
@@ -293,6 +309,9 @@ export function openSavePointModal() {
       try {
         addSavedPoint(appState.currentNoteId, memo, counts, total, bills, coins);
         showMessage('保存しました。', 'success');
+
+        // サイドバーの履歴を更新
+        renderSidebarHistoryList();
 
         // 短い待機時間でモーダルを閉じる（500ms）
         setTimeout(() => {
@@ -685,6 +704,9 @@ export function openNoteSwitchModal() {
   }
 
   renderNoteList();
+
+  // サイドバーも更新
+  renderSidebarNoteList();
 
   // ノート切り替え・編集・削除処理
   noteListEl.addEventListener('click', (e) => {
