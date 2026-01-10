@@ -150,6 +150,12 @@ export function openSavePointModal() {
     requestAnimationFrame(() => {
         overlay.classList.add('show');
         document.body.classList.add('modal-open');
+
+        // モバイルでの視認性改善: メモ入力にフォーカスしてスクロール
+        setTimeout(() => {
+            memoInput.focus();
+            memoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 350);
     });
 }
 

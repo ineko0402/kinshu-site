@@ -186,6 +186,12 @@ export function openNoteEditModal(noteId, onUpdate = null) {
     requestAnimationFrame(() => {
         overlay.classList.add('show');
         document.body.classList.add('modal-open');
+
+        // モバイルでの視認性改善: 入力フィールドにフォーカスしてスクロール
+        setTimeout(() => {
+            noteNameInput.focus();
+            noteNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 350);
     });
 
     noteNameInput.value = note.name;
@@ -261,6 +267,12 @@ export function openNoteCreateModal(onUpdate = null) {
     requestAnimationFrame(() => {
         overlay.classList.add('show');
         document.body.classList.add('modal-open');
+
+        // モバイルでの視認性改善: 入力フィールドにフォーカスしてスクロール
+        setTimeout(() => {
+            noteNameInput.focus();
+            noteNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 350);
     });
 
     const colorInput = overlay.querySelector('#createNoteColorInput');

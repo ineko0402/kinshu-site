@@ -170,3 +170,41 @@
     background: var(--display-bg);
     color: var(--text-color);
 }
+/* --- PC表示用の調整 (1024px以上) --- */
+@media (min-width: 1024px) {
+    /* モーダルを中央配置に変更 */
+    .modal-overlay {
+        align-items: center;
+    }
+
+    /* ボトムシート → センターポップアップ */
+    .settings-box {
+        border-radius: 16px; /* 全方向に角丸 */
+        max-width: 500px; /* 幅を狭める */
+        width: 90%;
+        max-height: 80vh;
+        transform: scale(0.9); /* スケールアニメーション */
+        opacity: 0;
+    }
+
+    .modal-overlay.show .settings-box {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    /* トップシートもセンター配置 */
+    .modal-overlay.top-sheet {
+        align-items: center;
+    }
+
+    .settings-box.top-sheet {
+        border-radius: 16px;
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    .modal-overlay.show .settings-box.top-sheet {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
