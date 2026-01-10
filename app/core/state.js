@@ -169,7 +169,7 @@ export function updateNoteName(noteId, newName) {
 
 /**
  * ノートを切り替える
- * 現在のノートのデータを保存し、指定されたノートをロード
+ * 現在のノートの情報を更新（DOM操作は呼び出し側で実施）
  * @param {string} noteId - 切り替え先のノートID
  * @returns {boolean} 成功した場合true
  */
@@ -177,14 +177,8 @@ export function switchNote(noteId) {
   const targetNote = appState.notes.find(n => n.id === noteId);
   if (!targetNote) return false;
 
-  // 既存のノートのデータを保存
-  saveCounts();
-
   appState.currentNoteId = noteId;
   appState.currentCurrency = targetNote.currency;
-
-  // 新しいノートのデータをロード
-  loadState();
   return true;
 }
 
@@ -229,44 +223,7 @@ export function initState() {
   document.body.classList.toggle('dark', localStorage.getItem('darkMode') === 'true');
 }
 
-/**
- * 現在のノートのデータをUIから読み込み
- */
-export function loadState() {
-  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
-  if (!currentNote) return;
-
-  const saved = currentNote.counts || {};
-  document.querySelectorAll('.cell').forEach(cell => {
-    const id = cell.dataset.id;
-    const val = saved[id] || '0';
-    const el = cell.querySelector('.display');
-    if (el) {
-      el.dataset.value = val;
-      el.textContent = val;
-    }
-  });
-}
-
-/**
- * 現在のノートの金種データを保存
- * UIから値を読み取り、ノートに保存
- */
-export function saveCounts() {
-  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
-  if (!currentNote) return;
-
-  const values = {};
-  document.querySelectorAll('.cell').forEach(cell => {
-    const id = cell.dataset.id;
-    const val = cell.querySelector('.display').dataset.value || '0';
-    values[id] = val;
-  });
-
-  currentNote.counts = values;
-  currentNote.updatedAt = new Date().toISOString();
-  saveNotesData();
-}
+// loadState() と saveCounts() は app/ui/stateSync.js に移動しました
 
 /**
  * 現在のノートの設定を取得

@@ -1,6 +1,7 @@
 // app/ui/historyUI.js
-import { appState, addSavedPoint, deleteSavedPoint, restoreCounts, loadState } from '../core/state.js';
+import { appState, addSavedPoint, deleteSavedPoint, restoreCounts } from '../core/state.js';
 import { renderCurrency, updateSummary } from './renderer.js';
+import { loadStateToUI } from './stateSync.js';
 import { jpyData, cnyData } from '../core/data.js';
 
 /**
@@ -76,7 +77,7 @@ export function renderSidebarHistoryList() {
 export function handleRestoreHistory(savedPoint) {
     if (confirm(`履歴「${savedPoint.memo}」の内容を現在の入力に復元しますか？`)) {
         restoreCounts(appState.currentNoteId, savedPoint.counts);
-        loadState();
+        loadStateToUI();
         updateSummary();
         renderCurrency();
         alert('データを復元しました。');

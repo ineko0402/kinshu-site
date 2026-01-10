@@ -1,6 +1,16 @@
 // app/ui/noteUI.js
 import { appState, switchNote, createNewNote, updateNoteName, updateNoteColor, updateNoteSettings, deleteNote } from '../core/state.js';
 import { renderCurrency, updateSummary } from './renderer.js';
+import { saveCountsFromUI, loadStateToUI } from './stateSync.js';
+
+// saveNotesData を呼び出すためのヘルパー（循環参照を避けるため）
+let saveNotesDataFn = null;
+async function initSaveNotesDataFn() {
+    if (!saveNotesDataFn) {
+        const { saveNotesData } = await import('../core/state.js');
+        saveNotesDataFn = () => saveNotesData();
+    }
+}
 
 /**
  * ノートの色をCSS変数に適用する
@@ -117,15 +127,26 @@ export function renderSidebarNoteList() {
 /**
  * ノートの切り替え共通処理
  */
-export function handleNoteSwitch(noteId) {
+export async function handleNoteSwitch(noteId) {
+    // saveNotesData関数を準備
+    await initSaveNotesDataFn();
+
+    // 現在のノートの状態を保存
+    saveCountsFromUI(saveNotesDataFn);
+
+    // ノートを切り替え
     const success = switchNote(noteId);
     if (success) {
         const note = appState.notes.find(n => n.id === noteId);
+
+        // 新しいノートのデータをUIに反映
+        loadStateToUI();
         applyNoteColor(note.color);
         renderCurrency();
         updateSummary();
         updateNoteDisplay();
         renderSidebarNoteList();
+
         // 履歴サイドバーがある場合はそれも更新（循環参照を避けるため dispatchEvent 等を検討するか、main側で行う）
         document.dispatchEvent(new CustomEvent('noteSwitched', { detail: { noteId } }));
     }

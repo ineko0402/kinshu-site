@@ -1,6 +1,7 @@
 ﻿// app/main.js
-import { initState, loadState, appState } from './core/state.js';
-import { renderCurrency, resetAll, updateSummary } from './ui/renderer.js';
+import { initState, appState } from './core/state.js';
+import { renderCurrency, resetAll, updateSummary, setSaveNotesDataFn } from './ui/renderer.js';
+import { loadStateToUI } from './ui/stateSync.js';
 import { bindKeypadEvents } from './ui/keypad.js';
 import { bindExportEvents } from './export/imageExport.js';
 
@@ -13,7 +14,18 @@ import { bindSettingsEvents, openSettings } from './ui/settingsUI.js';
 window.addEventListener('DOMContentLoaded', () => {
   // 状態初期化・読込
   initState();
-  loadState();
+
+  // saveNotesData関数をrenderer.jsに提供（循環参照を避けるため）
+  // state.jsから直接importしてもよいが、将来storage.jsに分離する場合に備える
+  import('./core/state.js').then(({ saveNotesData }) => {
+    function saveNotesDataWrapper() {
+      saveNotesData();
+    }
+    setSaveNotesDataFn(saveNotesDataWrapper);
+  });
+
+  // UIへの状態反映
+  loadStateToUI();
 
   // 現在のノートの設定を反映
   const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);

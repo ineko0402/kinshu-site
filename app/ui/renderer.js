@@ -3,8 +3,16 @@
 // 通貨リスト描画と集計更新
 // ==============================
 
-import { appState, saveCounts, getCurrentNoteSettings } from '../core/state.js';
+import { appState, getCurrentNoteSettings } from '../core/state.js';
 import { jpyData, cnyData } from '../core/data.js';
+import { saveCountsFromUI } from './stateSync.js';
+
+// saveNotesData を呼び出すためのヘルパー（循環参照を避けるため）
+let saveNotesDataFn = null;
+export function setSaveNotesDataFn(fn) {
+  saveNotesDataFn = fn;
+}
+
 
 export function renderCurrency() {
   const container = document.querySelector('.container');
@@ -16,12 +24,12 @@ export function renderCurrency() {
 
   // JPYとCNYのセルコンテナの表示/非表示を切り替える
   const isJPY = appState.currentCurrency === 'JPY';
-  
+
   // JPYセルの表示/非表示
   document.querySelectorAll('.container > .bills:not(.cny-cells), .container > .coins:not(.cny-cells)').forEach(el => {
     el.classList.toggle('hidden', !isJPY);
   });
-  
+
   // CNYセルの表示/非表示
   document.querySelectorAll('.cny-cells').forEach(el => {
     el.classList.toggle('hidden', isJPY);
@@ -105,7 +113,7 @@ export function updateSummary() {
   document.getElementById('coinCount').textContent = coins;
   document.getElementById('totalCount').textContent = bills + coins;
 
-  saveCounts();
+  saveCountsFromUI(saveNotesDataFn);
 }
 
 export function resetAll() {
