@@ -46,6 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // グローバルなボタンイベント
   document.getElementById('clearAllBtn')?.addEventListener('click', resetAll);
+  document.getElementById('pc-clearAllBtn')?.addEventListener('click', resetAll);
   document.getElementById('saveBtn')?.addEventListener('click', openSavePointModal);
   document.getElementById('pc-saveBtn')?.addEventListener('click', openSavePointModal);
   document.getElementById('historyBtn')?.addEventListener('click', openHistoryModal);
