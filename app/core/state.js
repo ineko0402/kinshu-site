@@ -38,7 +38,7 @@ let saveTimeout = null;
  * @param {boolean} immediate - 即座に保存する場合true（デフォルト: false）
  * @throws {Error} ストレージ容量不足などの場合
  */
-function saveNotesData(immediate = false) {
+export function saveNotesData(immediate = false) {
   // 即座に保存する場合
   if (immediate) {
     clearTimeout(saveTimeout);
