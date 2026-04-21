@@ -1,400 +1,709 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
+    />
+    <title>金種入力アプリ</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- ファビコン -->
+    <link rel="icon" type="image/x-icon" href="/favicon_io/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon_io/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon_io/apple-icon-180x180.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="/favicon_io/apple-icon-152x152.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/favicon_io/android-icon-192x192.png"
+    />
+    <link rel="manifest" href="/kinshu-site/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <meta name="theme-color" content="#1976d2" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-  <title>金種入力アプリ</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- ファビコン -->
-  <link rel="icon" type="image/x-icon" href="/favicon_io/favicon.ico">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-icon-180x180.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/favicon_io/apple-icon-152x152.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/favicon_io/android-icon-192x192.png">
-  <link rel="manifest" href="/kinshu-site/manifest.json">
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-  <meta name="theme-color" content="#1976d2">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-</head>
+  <body>
+    <div class="app-wrapper">
+      <!-- PC専用: 左サイドバー (ノート一覧) -->
+      <aside class="pc-sidebar left-panel">
+        <div class="sidebar-title">
+          <span class="material-symbols-outlined">description</span> ノート一覧
+        </div>
+        <div id="pc-sidebar-note-list"></div>
+        <button
+          id="pc-newNoteBtn"
+          class="modal-button modal-button-accent"
+          style="margin-top: auto"
+        >
+          <span class="material-symbols-outlined">add_circle</span> 新規作成
+        </button>
+      </aside>
 
-<body>
-  <div class="app-wrapper">
-    <!-- PC専用: 左サイドバー (ノート一覧) -->
-    <aside class="pc-sidebar left-panel">
-      <div class="sidebar-title">
-        <span class="material-symbols-outlined">description</span> ノート一覧
-      </div>
-      <div id="pc-sidebar-note-list"></div>
-      <button id="pc-newNoteBtn" class="modal-button modal-button-accent" style="margin-top: auto;">
-        <span class="material-symbols-outlined">add_circle</span> 新規作成
-      </button>
-    </aside>
-
-    <!-- メインコンテンツ -->
-    <main class="main-content">
-      <header>
-        <div class="header-left">
-          <div id="pc-currentNoteDisplay" class="pc-only header-text">
-            <span id="pc-currentNoteName">新規ノート 1 (JPY)</span>
+      <!-- メインコンテンツ -->
+      <main class="main-content">
+        <header>
+          <div class="header-left">
+            <div id="pc-currentNoteDisplay" class="pc-only header-text">
+              <span id="pc-currentNoteName">新規ノート 1 (JPY)</span>
+            </div>
+            <button id="noteSwitchBtn" class="header-button mobile-only">
+              <span id="currentNoteName">新規ノート 1 (JPY)</span> ▼
+            </button>
           </div>
-          <button id="noteSwitchBtn" class="header-button mobile-only">
-            <span id="currentNoteName">新規ノート 1 (JPY)</span> ▼
-          </button>
+          <div class="header-center">
+            <span id="total">¥0</span>
+          </div>
+          <div class="header-right">
+            <button
+              id="pc-clearAllBtn"
+              class="header-button pc-only"
+              title="オールクリア"
+            >
+              <span class="material-symbols-outlined">restart_alt</span>
+            </button>
+            <button
+              id="headerSettingsBtn"
+              class="header-button pc-only"
+              title="設定"
+            >
+              <span class="material-symbols-outlined">settings</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="summary">
+          <div class="item">紙幣：<span id="billCount">0</span>枚</div>
+          <div class="item">硬貨：<span id="coinCount">0</span>枚</div>
+          <div class="item">計：<span id="totalCount">0</span>枚</div>
         </div>
-        <div class="header-center">
-          <span id="total">¥0</span>
+
+        <div class="container">
+          <!-- JPY (日本円) の金種要素を静的に配置 -->
+          <div class="bills">
+            <div
+              class="cell"
+              data-id="jpy-10000"
+              data-kind="10000"
+              data-label="一万円札"
+            >
+              <span class="label">一万円札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="jpy-5000"
+              data-kind="5000"
+              data-label="五千円札"
+            >
+              <span class="label">五千円札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="jpy-2000"
+              data-kind="2000"
+              data-label="二千円札"
+            >
+              <span class="label">二千円札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="jpy-1000"
+              data-kind="1000"
+              data-label="千円札"
+            >
+              <span class="label">千円札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+          </div>
+          <div class="coins">
+            <div
+              class="cell"
+              data-id="jpy-500"
+              data-kind="500"
+              data-label="五百円玉"
+            >
+              <span class="label">五百円玉</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="jpy-100"
+              data-kind="100"
+              data-label="百円玉"
+            >
+              <span class="label">百円玉</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="jpy-50"
+              data-kind="50"
+              data-label="五十円玉"
+            >
+              <span class="label">五十円玉</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="jpy-10"
+              data-kind="10"
+              data-label="十円玉"
+            >
+              <span class="label">十円玉</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div class="cell" data-id="jpy-5" data-kind="5" data-label="五円玉">
+              <span class="label">五円玉</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div class="cell" data-id="jpy-1" data-kind="1" data-label="一円玉">
+              <span class="label">一円玉</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+          </div>
+
+          <!-- CNY (中国元) の金種要素を静的に配置 (初期は非表示) -->
+          <div class="bills cny-cells hidden">
+            <div
+              class="cell"
+              data-id="cny-100"
+              data-kind="100"
+              data-label="100元札"
+            >
+              <span class="label">100元札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="cny-50"
+              data-kind="50"
+              data-label="50元札"
+            >
+              <span class="label">50元札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="cny-20"
+              data-kind="20"
+              data-label="20元札"
+            >
+              <span class="label">20元札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="cny-10"
+              data-kind="10"
+              data-label="10元札"
+            >
+              <span class="label">10元札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div class="cell" data-id="cny-5" data-kind="5" data-label="5元札">
+              <span class="label">5元札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div class="cell" data-id="cny-1b" data-kind="1" data-label="1元札">
+              <span class="label">1元札</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+          </div>
+          <div class="coins cny-cells hidden">
+            <div
+              class="cell"
+              data-id="cny-1c"
+              data-kind="1"
+              data-label="1元硬貨"
+            >
+              <span class="label">1元硬貨</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="cny-05"
+              data-kind="0.5"
+              data-label="5角硬貨"
+            >
+              <span class="label">5角硬貨</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+            <div
+              class="cell"
+              data-id="cny-01"
+              data-kind="0.1"
+              data-label="1角硬貨"
+            >
+              <span class="label">1角硬貨</span>
+              <div class="display" data-value="0">0</div>
+            </div>
+          </div>
         </div>
-        <div class="header-right">
-          <button id="pc-clearAllBtn" class="header-button pc-only" title="オールクリア">
+
+        <nav class="bottom-nav">
+          <button id="clearAllBtn" class="nav-item">
             <span class="material-symbols-outlined">restart_alt</span>
+            <span class="nav-label">クリア</span>
           </button>
-          <button id="headerSettingsBtn" class="header-button pc-only" title="設定">
+          <button id="saveBtn" class="nav-item">
+            <span class="material-symbols-outlined">save</span>
+            <span class="nav-label">保存</span>
+          </button>
+          <button id="historyBtn" class="nav-item">
+            <span class="material-symbols-outlined">history</span>
+            <span class="nav-label">履歴</span>
+          </button>
+          <button id="settingsBtn" class="nav-item">
             <span class="material-symbols-outlined">settings</span>
+            <span class="nav-label">設定</span>
           </button>
-        </div>
-      </header>
+        </nav>
+      </main>
 
-      <div class="summary">
-        <div class="item">紙幣：<span id="billCount">0</span>枚</div>
-        <div class="item">硬貨：<span id="coinCount">0</span>枚</div>
-        <div class="item">計：<span id="totalCount">0</span>枚</div>
-      </div>
-
-      <div class="container">
-        <!-- JPY (日本円) の金種要素を静的に配置 -->
-        <div class="bills">
-          <div class="cell" data-id="jpy-10000" data-kind="10000" data-label="一万円札"><span class="label">一万円札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-5000" data-kind="5000" data-label="五千円札"><span class="label">五千円札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-2000" data-kind="2000" data-label="二千円札"><span class="label">二千円札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-1000" data-kind="1000" data-label="千円札"><span class="label">千円札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
+      <!-- PC専用: 右サイドバー (履歴一覧) -->
+      <aside class="pc-sidebar right-panel">
+        <div class="sidebar-title">
+          <span class="material-symbols-outlined">history</span> 履歴一覧
         </div>
-        <div class="coins">
-          <div class="cell" data-id="jpy-500" data-kind="500" data-label="五百円玉"><span class="label">五百円玉</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-100" data-kind="100" data-label="百円玉"><span class="label">百円玉</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-50" data-kind="50" data-label="五十円玉"><span class="label">五十円玉</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-10" data-kind="10" data-label="十円玉"><span class="label">十円玉</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-5" data-kind="5" data-label="五円玉"><span class="label">五円玉</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="jpy-1" data-kind="1" data-label="一円玉"><span class="label">一円玉</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-        </div>
-
-        <!-- CNY (中国元) の金種要素を静的に配置 (初期は非表示) -->
-        <div class="bills cny-cells hidden">
-          <div class="cell" data-id="cny-100" data-kind="100" data-label="100元札"><span class="label">100元札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="cny-50" data-kind="50" data-label="50元札"><span class="label">50元札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="cny-20" data-kind="20" data-label="20元札"><span class="label">20元札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="cny-10" data-kind="10" data-label="10元札"><span class="label">10元札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="cny-5" data-kind="5" data-label="5元札"><span class="label">5元札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="cny-1b" data-kind="1" data-label="1元札"><span class="label">1元札</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-        </div>
-        <div class="coins cny-cells hidden">
-          <div class="cell" data-id="cny-1c" data-kind="1" data-label="1元硬貨"><span class="label">1元硬貨</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="cny-05" data-kind="0.5" data-label="5角硬貨"><span class="label">5角硬貨</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-          <div class="cell" data-id="cny-01" data-kind="0.1" data-label="1角硬貨"><span class="label">1角硬貨</span>
-            <div class="display" data-value="0">0</div>
-          </div>
-        </div>
-      </div>
-
-      <nav class="bottom-nav">
-        <button id="clearAllBtn" class="nav-item">
-          <span class="material-symbols-outlined">restart_alt</span>
-          <span class="nav-label">クリア</span>
+        <div id="pc-sidebar-history-list"></div>
+        <button
+          id="pc-saveBtn"
+          class="modal-button modal-button-success"
+          style="margin-top: auto"
+        >
+          <span class="material-symbols-outlined">save</span> 計算結果を保存
         </button>
-        <button id="saveBtn" class="nav-item">
-          <span class="material-symbols-outlined">save</span>
-          <span class="nav-label">保存</span>
-        </button>
-        <button id="historyBtn" class="nav-item">
-          <span class="material-symbols-outlined">history</span>
-          <span class="nav-label">履歴</span>
-        </button>
-        <button id="settingsBtn" class="nav-item">
-          <span class="material-symbols-outlined">settings</span>
-          <span class="nav-label">設定</span>
-        </button>
-      </nav>
-    </main>
-
-    <!-- PC専用: 右サイドバー (履歴一覧) -->
-    <aside class="pc-sidebar right-panel">
-      <div class="sidebar-title">
-        <span class="material-symbols-outlined">history</span> 履歴一覧
-      </div>
-      <div id="pc-sidebar-history-list"></div>
-      <button id="pc-saveBtn" class="modal-button modal-button-success" style="margin-top: auto;">
-        <span class="material-symbols-outlined">save</span> 計算結果を保存
-      </button>
-    </aside>
-  </div>
-
-  <!-- オーバーレイテンキー -->
-  <div id="overlay">
-    <div id="keypadPanel">
-      <div id="keypadLabel">金種名</div>
-      <input id="keypadInput" type="text" readonly value="0" />
-      <div class="keyrow"><button class="operator">+</button><button class="operator">-</button><button
-          class="operator">×</button><button class="operator">÷</button></div>
-      <div class="keyrow"><button class="digit">7</button><button class="digit">8</button><button
-          class="digit">9</button><button class="special clear">AC</button></div>
-      <div class="keyrow"><button class="digit">4</button><button class="digit">5</button><button
-          class="digit">6</button><button class="special">⇐</button></div>
-      <div class="keyrow"><button class="digit">1</button><button class="digit">2</button><button
-          class="digit">3</button><button class="operator">=</button></div>
-      <div class="keyrow"><button class="digit">0</button><button class="digit">00</button><button
-          class="digit">.</button><button class="special enter">Enter</button></div>
+      </aside>
     </div>
-  </div>
 
-  <!-- ダウンロード用HTML（非表示） -->
-  <div id="download-area"></div>
-
-  <script type="module">
-    import './app/main.js';
-  </script>
-
-  <!-- settingsTemplate (グローバル設定 - ダークモードのみ) -->
-  <template id="settingsTemplate">
-    <div class="modal-overlay" id="settings-overlay">
-      <div id="settings-box" class="settings-box">
-        <h3><span class="material-symbols-outlined">settings</span> 設定</h3>
-
-        <div class="settings-section-title"><span class="material-symbols-outlined">tune</span> 一般</div>
-        <label><input type="checkbox" id="darkModeCheckbox"> ダークモード</label>
-        <hr>
-
-        <div class="settings-section-title"><span class="material-symbols-outlined">cloud_sync</span> バックアップ</div>
-        <small>全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</small>
-        <div class="modal-buttons" style="flex-direction: column; margin-top: 10px;">
-          <button id="exportBtn" class="modal-button modal-button-success">
-            <span class="material-symbols-outlined">download</span> エクスポート (JSON)
-          </button>
-          <input type="file" id="importInput" accept=".json" class="hidden-input">
-          <button id="importBtn" class="modal-button modal-button-primary">
-            <span class="material-symbols-outlined">upload</span> インポート (JSON)
-          </button>
+    <!-- オーバーレイテンキー -->
+    <div id="overlay">
+      <div id="keypadPanel">
+        <div id="keypadLabel">金種名</div>
+        <input id="keypadInput" type="text" readonly value="0" />
+        <div class="keyrow">
+          <button class="operator">+</button><button class="operator">-</button
+          ><button class="operator">×</button
+          ><button class="operator">÷</button>
         </div>
-        <hr>
-
-        <div class="settings-section-title"><span class="material-symbols-outlined">description</span> ライセンス情報</div>
-        <small>
-          このアプリは <a href="https://github.com/niklasvh/html2canvas" target="_blank">html2canvas</a> を使用しています<br>
-          © 2012 Niklas von Hertzen (MIT License)
-        </small>
-        <hr>
-
-        <button id="closeSettingsBtn" class="modal-button modal-button-default">閉じる</button>
-      </div>
-    </div>
-  </template>
-
-  <!-- noteSwitchTemplate -->
-  <template id="noteSwitchTemplate">
-    <div class="modal-overlay top-sheet" id="note-overlay">
-      <div id="note-box" class="settings-box top-sheet">
-        <h3><span class="material-symbols-outlined">swap_horiz</span> ノート切り替え</h3>
-        <ul id="noteList" class="note-list">
-          <!-- ノート一覧がここに挿入される -->
-        </ul>
-        <button id="newNoteBtn" class="modal-button modal-button-accent">
-          <span class="material-symbols-outlined">add_circle</span> 新しいノートを作成
-        </button>
-        <button id="closeNoteBtn" class="modal-button modal-button-default">
-          <span class="material-symbols-outlined">close</span> 閉じる
-        </button>
-      </div>
-    </div>
-  </template>
-
-  <!-- noteEditTemplate -->
-  <template id="noteEditTemplate">
-    <div class="modal-overlay top-sheet" id="note-edit-overlay">
-      <div id="note-edit-box" class="settings-box top-sheet">
-        <h3><span class="material-symbols-outlined">edit_note</span> ノート編集</h3>
-
-        <div id="noteEditMessage" class="message-bar"></div>
-
-        <div class="settings-section-title"><span class="material-symbols-outlined">info</span> 基本情報</div>
-        <label for="noteNameInput">ノート名</label>
-        <input type="text" id="noteNameInput" class="text-input" placeholder="ノート名を入力">
-
-        <div class="info-row">
-          <strong>通貨:</strong> <span id="currencyDisplay">JPY</span>
+        <div class="keyrow">
+          <button class="digit">7</button><button class="digit">8</button
+          ><button class="digit">9</button
+          ><button class="special clear">AC</button>
         </div>
-
-        <div class="note-settings-section">
-          <hr>
-          <div class="settings-section-title"><span class="material-symbols-outlined">money_off</span> 金種制限（JPYのみ）</div>
-          <label><input type="checkbox" id="noteHide2000"> 2千円を使わない</label><br>
-          <label><input type="checkbox" id="noteHideBills"> お札を使わない</label><br>
-          <label><input type="checkbox" id="noteHideCoins"> 小銭を使わない</label><br>
+        <div class="keyrow">
+          <button class="digit">4</button><button class="digit">5</button
+          ><button class="digit">6</button><button class="special">⇐</button>
         </div>
-
-        <div class="settings-section-title"><span class="material-symbols-outlined">auto_awesome</span> グローエフェクト</div>
-        <div class="color-presets" id="editNoteColorPresets">
-          <button class="color-preset-btn default" data-color="default" title="デフォルト (無色)"></button>
-          <button class="color-preset-btn" data-color="#ff6b6b" style="background: #ff6b6b;"></button>
-          <button class="color-preset-btn" data-color="#4dabf7" style="background: #4dabf7;"></button>
-          <button class="color-preset-btn" data-color="#51cf66" style="background: #51cf66;"></button>
-          <button class="color-preset-btn" data-color="#fcc419" style="background: #fcc419;"></button>
-          <button class="color-preset-btn" data-color="#b197fc" style="background: #b197fc;"></button>
+        <div class="keyrow">
+          <button class="digit">1</button><button class="digit">2</button
+          ><button class="digit">3</button><button class="operator">=</button>
         </div>
-        <input type="hidden" id="editNoteColorInput">
-
-        <div class="modal-buttons">
-          <button id="saveNoteEditBtn" class="modal-button modal-button-success">
-            <span class="material-symbols-outlined">check</span> 保存
-          </button>
-          <button id="closeNoteEditBtn" class="modal-button modal-button-default">
-            <span class="material-symbols-outlined">close</span> キャンセル
-          </button>
+        <div class="keyrow">
+          <button class="digit">0</button><button class="digit">00</button
+          ><button class="digit">.</button
+          ><button class="special enter">Enter</button>
         </div>
       </div>
     </div>
-  </template>
 
-  <!-- noteCreateTemplate (新規追加) -->
-  <template id="noteCreateTemplate">
-    <div class="modal-overlay top-sheet" id="note-create-overlay">
-      <div id="note-create-box" class="settings-box top-sheet">
-        <h3><span class="material-symbols-outlined">note_add</span> 新規ノート作成</h3>
+    <!-- ダウンロード用HTML（非表示） -->
+    <div id="download-area"></div>
 
-        <div class="settings-section-title"><span class="material-symbols-outlined">info</span> 基本情報</div>
-        <label for="newNoteNameInput">ノート名</label>
-        <input type="text" id="newNoteNameInput" class="text-input" placeholder="ノート名を入力">
+    <script type="module">
+      import "./app/main.js";
+    </script>
 
-        <label for="newNoteCurrencySelect">通貨</label>
-        <select id="newNoteCurrencySelect" class="select-input">
-          <option value="JPY">JPY (日本円)</option>
-          <option value="CNY">CNY (中国元)</option>
-        </select>
+    <!-- settingsTemplate (グローバル設定 - ダークモードのみ) -->
+    <template id="settingsTemplate">
+      <div class="modal-overlay" id="settings-overlay">
+        <div id="settings-box" class="settings-box">
+          <h3><span class="material-symbols-outlined">settings</span> 設定</h3>
 
-        <div class="note-settings-section" style="display: block;">
-          <hr>
-          <div class="settings-section-title"><span class="material-symbols-outlined">money_off</span> 金種制限（JPYのみ）</div>
-          <label><input type="checkbox" id="newNoteHide2000"> 2千円を使わない</label><br>
-          <label><input type="checkbox" id="newNoteHideBills"> お札を使わない</label><br>
-          <label><input type="checkbox" id="newNoteHideCoins"> 小銭を使わない</label><br>
-        </div>
+          <div class="settings-section-title">
+            <span class="material-symbols-outlined">tune</span> 一般
+          </div>
+          <label
+            ><input type="checkbox" id="darkModeCheckbox" /> ダークモード</label
+          >
+          <hr />
 
-        <div class="settings-section-title"><span class="material-symbols-outlined">auto_awesome</span> グローエフェクト</div>
-        <div class="color-presets" id="createNoteColorPresets">
-          <button class="color-preset-btn default active" data-color="default" title="デフォルト (無色)"></button>
-          <button class="color-preset-btn" data-color="#ff6b6b" style="background: #ff6b6b;"></button>
-          <button class="color-preset-btn" data-color="#4dabf7" style="background: #4dabf7;"></button>
-          <button class="color-preset-btn" data-color="#51cf66" style="background: #51cf66;"></button>
-          <button class="color-preset-btn" data-color="#fcc419" style="background: #fcc419;"></button>
-          <button class="color-preset-btn" data-color="#b197fc" style="background: #b197fc;"></button>
-        </div>
-        <input type="hidden" id="createNoteColorInput" value="default">
+          <div class="settings-section-title">
+            <span class="material-symbols-outlined">cloud_sync</span>
+            バックアップ
+          </div>
+          <small
+            >全てのノートデータをJSONファイルとしてエクスポート/インポートできます。</small
+          >
+          <div
+            class="modal-buttons"
+            style="flex-direction: column; margin-top: 10px"
+          >
+            <button id="exportBtn" class="modal-button modal-button-success">
+              <span class="material-symbols-outlined">download</span>
+              エクスポート (JSON)
+            </button>
+            <input
+              type="file"
+              id="importInput"
+              accept=".json"
+              class="hidden-input"
+            />
+            <button id="importBtn" class="modal-button modal-button-primary">
+              <span class="material-symbols-outlined">upload</span> インポート
+              (JSON)
+            </button>
+          </div>
+          <hr />
 
-        <div class="modal-buttons">
-          <button id="createNoteBtn" class="modal-button modal-button-success">
-            <span class="material-symbols-outlined">check</span> 作成
-          </button>
-          <button id="closeNoteCreateBtn" class="modal-button modal-button-default">
-            <span class="material-symbols-outlined">close</span> キャンセル
+          <div class="settings-section-title">
+            <span class="material-symbols-outlined">description</span>
+            ライセンス情報
+          </div>
+          <small>
+            このアプリは
+            <a href="https://github.com/niklasvh/html2canvas" target="_blank"
+              >html2canvas</a
+            >
+            を使用しています<br />
+            © 2012 Niklas von Hertzen (MIT License)
+          </small>
+          <hr />
+
+          <button
+            id="closeSettingsBtn"
+            class="modal-button modal-button-default"
+          >
+            閉じる
           </button>
         </div>
       </div>
-    </div>
-  </template>
+    </template>
 
-  <!-- savePointTemplate (保存ポイント作成) -->
-  <template id="savePointTemplate">
-    <div class="modal-overlay" id="savepoint-overlay">
-      <div id="savepoint-box" class="settings-box">
-        <h3><span class="material-symbols-outlined">save</span> 保存</h3>
-
-        <div id="savePointMessage" class="message-bar"></div>
-
-        <div id="savePointPreview" class="info-row">
-          <!-- 現在の集計情報が表示される -->
-        </div>
-
-        <label for="savePointMemoInput">メモ</label>
-        <input type="text" id="savePointMemoInput" class="text-input">
-
-        <div class="modal-buttons">
-          <button id="saveSavePointBtn" class="modal-button modal-button-success">
-            <span class="material-symbols-outlined">save</span> 保存
+    <!-- noteSwitchTemplate -->
+    <template id="noteSwitchTemplate">
+      <div class="modal-overlay top-sheet" id="note-overlay">
+        <div id="note-box" class="settings-box top-sheet">
+          <h3>
+            <span class="material-symbols-outlined">swap_horiz</span>
+            ノート切り替え
+          </h3>
+          <ul id="noteList" class="note-list">
+            <!-- ノート一覧がここに挿入される -->
+          </ul>
+          <button id="newNoteBtn" class="modal-button modal-button-accent">
+            <span class="material-symbols-outlined">add_circle</span>
+            新しいノートを作成
           </button>
-          <button id="closeSavePointBtn" class="modal-button modal-button-default">
-            <span class="material-symbols-outlined">close</span> キャンセル
+          <button id="closeNoteBtn" class="modal-button modal-button-default">
+            <span class="material-symbols-outlined">close</span> 閉じる
           </button>
         </div>
       </div>
-    </div>
-  </template>
+    </template>
 
-  <!-- historyTemplate (履歴一覧) -->
-  <template id="historyTemplate">
-    <div class="modal-overlay" id="history-overlay">
-      <div id="history-box" class="settings-box settings-box-large">
-        <h3><span class="material-symbols-outlined">history</span> 履歴</h3>
-        <ul id="historyList" class="history-list">
-          <!-- 履歴一覧がここに挿入される -->
-        </ul>
-        <button id="closeHistoryBtn" class="modal-button modal-button-default">
-          <span class="material-symbols-outlined">close</span> 閉じる
-        </button>
-      </div>
-    </div>
-  </template>
+    <!-- noteEditTemplate -->
+    <template id="noteEditTemplate">
+      <div class="modal-overlay top-sheet" id="note-edit-overlay">
+        <div id="note-edit-box" class="settings-box top-sheet">
+          <h3>
+            <span class="material-symbols-outlined">edit_note</span> ノート編集
+          </h3>
 
-  <!-- historyDetailTemplate (履歴詳細) -->
-  <template id="historyDetailTemplate">
-    <div class="modal-overlay" id="history-detail-overlay">
-      <div id="history-detail-box" class="settings-box settings-box-large">
-        <div id="historyDetailContent">
-          <!-- 詳細内容がここに挿入される -->
+          <div id="noteEditMessage" class="message-bar"></div>
+
+          <div class="settings-section-title">
+            <span class="material-symbols-outlined">info</span> 基本情報
+          </div>
+          <label for="noteNameInput">ノート名</label>
+          <input
+            type="text"
+            id="noteNameInput"
+            class="text-input"
+            placeholder="ノート名を入力"
+          />
+
+          <div class="info-row">
+            <strong>通貨:</strong> <span id="currencyDisplay">JPY</span>
+          </div>
+
+          <div class="note-settings-section">
+            <hr />
+            <div class="settings-section-title">
+              <span class="material-symbols-outlined">money_off</span>
+              金種制限（JPYのみ）
+            </div>
+            <label
+              ><input type="checkbox" id="noteHide2000" />
+              2千円を使わない</label
+            ><br />
+            <label
+              ><input type="checkbox" id="noteHideBills" />
+              お札を使わない</label
+            ><br />
+            <label
+              ><input type="checkbox" id="noteHideCoins" />
+              小銭を使わない</label
+            ><br />
+          </div>
+
+          <div class="settings-section-title">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            グローエフェクト
+          </div>
+          <div class="color-presets" id="editNoteColorPresets">
+            <button
+              class="color-preset-btn default"
+              data-color="default"
+              title="デフォルト (無色)"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#ff6b6b"
+              style="background: #ff6b6b"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#4dabf7"
+              style="background: #4dabf7"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#51cf66"
+              style="background: #51cf66"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#fcc419"
+              style="background: #fcc419"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#b197fc"
+              style="background: #b197fc"
+            ></button>
+          </div>
+          <input type="hidden" id="editNoteColorInput" />
+
+          <div class="modal-buttons">
+            <button
+              id="saveNoteEditBtn"
+              class="modal-button modal-button-success"
+            >
+              <span class="material-symbols-outlined">check</span> 保存
+            </button>
+            <button
+              id="closeNoteEditBtn"
+              class="modal-button modal-button-default"
+            >
+              <span class="material-symbols-outlined">close</span> キャンセル
+            </button>
+          </div>
         </div>
-        <button id="closeHistoryDetailBtn" class="modal-button modal-button-default">
-          <span class="material-symbols-outlined">close</span> 閉じる
-        </button>
       </div>
-    </div>
-  </template>
+    </template>
 
-</body>
+    <!-- noteCreateTemplate (新規追加) -->
+    <template id="noteCreateTemplate">
+      <div class="modal-overlay top-sheet" id="note-create-overlay">
+        <div id="note-create-box" class="settings-box top-sheet">
+          <h3>
+            <span class="material-symbols-outlined">note_add</span>
+            新規ノート作成
+          </h3>
 
+          <div class="settings-section-title">
+            <span class="material-symbols-outlined">info</span> 基本情報
+          </div>
+          <label for="newNoteNameInput">ノート名</label>
+          <input
+            type="text"
+            id="newNoteNameInput"
+            class="text-input"
+            placeholder="ノート名を入力"
+          />
+
+          <label for="newNoteCurrencySelect">通貨</label>
+          <select id="newNoteCurrencySelect" class="select-input">
+            <option value="JPY">JPY (日本円)</option>
+            <option value="CNY">CNY (中国元)</option>
+          </select>
+
+          <div class="note-settings-section" style="display: block">
+            <hr />
+            <div class="settings-section-title">
+              <span class="material-symbols-outlined">money_off</span>
+              金種制限（JPYのみ）
+            </div>
+            <label
+              ><input type="checkbox" id="newNoteHide2000" />
+              2千円を使わない</label
+            ><br />
+            <label
+              ><input type="checkbox" id="newNoteHideBills" />
+              お札を使わない</label
+            ><br />
+            <label
+              ><input type="checkbox" id="newNoteHideCoins" />
+              小銭を使わない</label
+            ><br />
+          </div>
+
+          <div class="settings-section-title">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            グローエフェクト
+          </div>
+          <div class="color-presets" id="createNoteColorPresets">
+            <button
+              class="color-preset-btn default active"
+              data-color="default"
+              title="デフォルト (無色)"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#ff6b6b"
+              style="background: #ff6b6b"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#4dabf7"
+              style="background: #4dabf7"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#51cf66"
+              style="background: #51cf66"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#fcc419"
+              style="background: #fcc419"
+            ></button>
+            <button
+              class="color-preset-btn"
+              data-color="#b197fc"
+              style="background: #b197fc"
+            ></button>
+          </div>
+          <input type="hidden" id="createNoteColorInput" value="default" />
+
+          <div class="modal-buttons">
+            <button
+              id="createNoteBtn"
+              class="modal-button modal-button-success"
+            >
+              <span class="material-symbols-outlined">check</span> 作成
+            </button>
+            <button
+              id="closeNoteCreateBtn"
+              class="modal-button modal-button-default"
+            >
+              <span class="material-symbols-outlined">close</span> キャンセル
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- savePointTemplate (保存ポイント作成) -->
+    <template id="savePointTemplate">
+      <div class="modal-overlay" id="savepoint-overlay">
+        <div id="savepoint-box" class="settings-box">
+          <h3><span class="material-symbols-outlined">save</span> 保存</h3>
+
+          <div id="savePointMessage" class="message-bar"></div>
+
+          <div id="savePointPreview" class="info-row">
+            <!-- 現在の集計情報が表示される -->
+          </div>
+
+          <label for="savePointMemoInput">メモ</label>
+          <input type="text" id="savePointMemoInput" class="text-input" />
+
+          <div class="modal-buttons">
+            <button
+              id="saveSavePointBtn"
+              class="modal-button modal-button-success"
+            >
+              <span class="material-symbols-outlined">save</span> 保存
+            </button>
+            <button
+              id="previewSavePointDetailBtn"
+              class="modal-button modal-button-default"
+            >
+              <span class="material-symbols-outlined">visibility</span> 詳細
+            </button>
+            <button
+              id="closeSavePointBtn"
+              class="modal-button modal-button-default"
+            >
+              <span class="material-symbols-outlined">close</span> キャンセル
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- historyTemplate (履歴一覧) -->
+    <template id="historyTemplate">
+      <div class="modal-overlay" id="history-overlay">
+        <div id="history-box" class="settings-box settings-box-large">
+          <h3><span class="material-symbols-outlined">history</span> 履歴</h3>
+          <ul id="historyList" class="history-list">
+            <!-- 履歴一覧がここに挿入される -->
+          </ul>
+          <button
+            id="closeHistoryBtn"
+            class="modal-button modal-button-default"
+          >
+            <span class="material-symbols-outlined">close</span> 閉じる
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <!-- historyDetailTemplate (履歴詳細) -->
+    <template id="historyDetailTemplate">
+      <div class="modal-overlay" id="history-detail-overlay">
+        <div id="history-detail-box" class="settings-box settings-box-large">
+          <div id="historyDetailContent">
+            <!-- 詳細内容がここに挿入される -->
+          </div>
+          <button
+            id="closeHistoryDetailBtn"
+            class="modal-button modal-button-default"
+          >
+            <span class="material-symbols-outlined">close</span> 閉じる
+          </button>
+        </div>
+      </div>
+    </template>
+  </body>
 </html>

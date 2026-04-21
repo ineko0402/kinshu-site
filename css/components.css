@@ -5,205 +5,292 @@
 /* --- ボタン基本 --- */
 button,
 .btn {
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 4px var(--shadow-light);
-    border-radius: var(--radius-md);
-    touch-action: manipulation;
-    transition: background-color 0.2s, transform 0.1s;
-    background: var(--button-bg);
-    color: var(--text-color);
-    font-size: var(--font-size-base);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-light);
+  border-radius: var(--radius-md);
+  touch-action: manipulation;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+  background: var(--button-bg);
+  color: var(--text-color);
+  font-size: var(--font-size-base);
 }
 
 button:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 button:active {
-    transform: scale(0.98);
+  transform: scale(0.98);
 }
 
 /* --- セル (Cell) --- */
 .cell {
-    background: var(--cell-bg);
-    padding: 12px;
-    border-radius: var(--radius-md);
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 4px var(--shadow-light);
+  background: var(--cell-bg);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 2px 4px var(--shadow-light);
 }
 
 .cell:active {
-    transform: scale(0.95);
+  transform: scale(0.95);
 }
 
 .cell.disabled {
-    opacity: 0.4;
-    pointer-events: none;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 /* --- ディスプレイ (Display) --- */
 .display {
-    margin-top: 6px;
-    padding: var(--space-sm);
-    background: var(--display-bg);
-    border-radius: var(--radius-md);
-    box-shadow: inset 0 1px 3px var(--shadow-light);
+  margin-top: 6px;
+  padding: var(--space-sm);
+  background: var(--display-bg);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 1px 3px var(--shadow-light);
 }
 
 /* --- ヘッダーボタン --- */
 .header-button {
-    padding: 5px 10px;
-    background: transparent;
-    color: var(--text-color);
-    border: none;
-    cursor: pointer;
-    box-shadow: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: var(--font-size-sm);
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  background: transparent;
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .header-button:hover {
-    background: var(--surface-secondary);
+  background: var(--surface-secondary);
 }
 
 /* --- ボトムナビゲーション --- */
 .bottom-nav {
-    flex-shrink: 0;
-    height: 60px;
-    background: var(--nav-bg);
-    border-top: 1px solid var(--nav-border-top);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 100;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  height: 60px;
+  background: var(--nav-bg);
+  border-top: 1px solid var(--nav-border-top);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .nav-item {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--nav-item-color);
-    padding: 5px;
-    flex-grow: 1;
-    cursor: pointer;
-    transition: color 0.2s;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-item-color);
+  padding: 5px;
+  flex-grow: 1;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
 .nav-item:active {
-    background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .nav-item .material-symbols-outlined {
-    font-size: 24px;
-    margin-bottom: 2px;
+  font-size: 24px;
+  margin-bottom: 2px;
 }
 
 .nav-item .nav-label {
-    font-size: 10px;
-    font-weight: 500;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 .nav-item:hover {
-    color: var(--nav-item-active);
+  color: var(--nav-item-active);
 }
 
 /* --- ダウンロード用エリア --- */
 .download-capture {
-    display: block !important;
-    width: 360px;
-    padding: 20px;
-    background-color: #fff;
+  display: block !important;
+  width: 360px;
+  padding: 20px;
+  background-color: #fff;
 }
 
 #download-area:not(.download-capture) {
-    display: none;
+  display: none;
 }
 
 /* --- リストアイテム (ノート・履歴) --- */
 .note-list,
 .history-list {
-    list-style: none;
-    padding: 5px;
-    margin: 10px 0;
-    max-height: 350px;
-    overflow-y: auto;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
+  list-style: none;
+  padding: 5px;
+  margin: 10px 0;
+  max-height: 350px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
 }
 
 .note-item,
 .history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 8px;
-    background: var(--cell-bg);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: var(--cell-bg);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid var(--border-color);
 }
 
 .history-item {
-    flex-direction: column;
-    align-items: stretch;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.history-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.history-actions button {
+  flex: 1;
+  padding: 4px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.history-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-total {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.detail-summary {
+  font-size: 13px;
+  margin: 10px 0 4px;
+  color: var(--text-primary);
+}
+
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.detail-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-color);
+  word-break: break-word;
+}
+
+.detail-table tr:last-child td {
+  border-bottom: none;
+}
+
+.detail-table td.detail-label {
+  width: 30%;
+  text-align: right;
+}
+
+.detail-table td.detail-count {
+  width: 20%;
+  text-align: center;
+}
+
+.detail-table td.detail-amount {
+  width: 50%;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .modal-button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
 }
 
 .modal-button-default {
-    background: var(--button-bg);
-    color: var(--text-color);
+  background: var(--button-bg);
+  color: var(--text-color);
 }
 
 .modal-button-accent,
 .modal-button-success {
-    background: var(--accent);
-    color: var(--accent-fg);
+  background: var(--accent);
+  color: var(--accent-fg);
 }
 
 /* レスポンシブ調整 */
 @media (max-width: 768px) {
-
-    .cell,
-    button {
-        transform: translateZ(0);
-    }
+  .cell,
+  button {
+    transform: translateZ(0);
+  }
 }
 
 .color-preset-btn.active {
-    border-color: var(--text-color);
-    transform: scale(1.15);
-    box-shadow: 0 0 10px var(--accent);
+  border-color: var(--text-color);
+  transform: scale(1.15);
+  box-shadow: 0 0 10px var(--accent);
 }
 
-
 .color-preset-btn.default {
-    background: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),
-        linear-gradient(45deg, #ccc 25%, #eee 25%, #eee 75%, #ccc 75%, #ccc);
-    background-size: 8px 8px;
-    background-position: 0 0, 4px 4px;
-    border: 1px solid var(--border-color);
+  background:
+    linear-gradient(
+      45deg,
+      #ccc 25%,
+      transparent 25%,
+      transparent 75%,
+      #ccc 75%,
+      #ccc
+    ),
+    linear-gradient(45deg, #ccc 25%, #eee 25%, #eee 75%, #ccc 75%, #ccc);
+  background-size: 8px 8px;
+  background-position:
+    0 0,
+    4px 4px;
+  border: 1px solid var(--border-color);
 }
