@@ -126,18 +126,6 @@ button:active {
   color: var(--nav-item-active);
 }
 
-/* --- ダウンロード用エリア --- */
-.download-capture {
-  display: block !important;
-  width: 360px;
-  padding: 20px;
-  background-color: #fff;
-}
-
-#download-area:not(.download-capture) {
-  display: none;
-}
-
 /* --- リストアイテム (ノート・履歴) --- */
 .note-list,
 .history-list {
