@@ -76,6 +76,14 @@ export function renderSidebarHistoryList() {
       showHistoryDetail(sp);
     });
 
+    div.querySelector(".delete-history-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (confirm("削除しますか？")) {
+        deleteSavedPoint(appState.currentNoteId, sp.id);
+        renderSidebarHistoryList();
+      }
+    });
+
     container.appendChild(div);
   });
 }
