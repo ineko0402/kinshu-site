@@ -4,207 +4,228 @@
 
 /* --- システム・オーバーレイ (キーパッド等) --- */
 #overlay {
-    position: fixed;
-    inset: 0;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background: var(--overlay-bg);
-    z-index: 1000;
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: var(--overlay-bg);
+  z-index: 1000;
 }
 
 #overlay.show {
-    display: flex;
+  display: flex;
 }
 
 #keypadPanel {
-    background: var(--surface-primary);
-    padding: var(--space-md);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 4px 12px var(--shadow-dark);
-    min-width: 260px;
-    text-align: center;
+  background: var(--surface-primary);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px var(--shadow-dark);
+  min-width: 260px;
+  text-align: center;
 }
 
 #keypadLabel {
-    margin-bottom: var(--space-sm);
-    font-weight: bold;
+  margin-bottom: var(--space-sm);
+  font-weight: bold;
 }
 
 #keypadInput {
-    width: 100%;
-    padding: 10px;
-    text-align: right;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    margin-bottom: 10px;
-    background: var(--display-bg);
-    color: var(--text-color);
-    font-size: var(--font-size-lg);
+  width: 100%;
+  padding: 10px;
+  text-align: right;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  background: var(--display-bg);
+  color: var(--text-color);
+  font-size: var(--font-size-lg);
 }
 
 .keyrow {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    margin: 4px 0;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0;
 }
 
 .keyrow button {
-    flex: 1;
-    height: 60px;
-    background: var(--button-bg);
-    color: var(--text-color);
-    border-radius: var(--radius-md);
-    font-weight: bold;
-    font-size: var(--font-size-base);
+  flex: 1;
+  height: 60px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  font-size: var(--font-size-base);
 }
 
 .keyrow button.digit {
-    background: var(--keypad-digit-bg);
-    color: var(--keypad-digit-color);
+  background: var(--keypad-digit-bg);
+  color: var(--keypad-digit-color);
 }
 
 .keyrow button.operator {
-    background: var(--keypad-operator-bg);
-    color: var(--keypad-operator-color);
+  background: var(--keypad-operator-bg);
+  color: var(--keypad-operator-color);
 }
 
 .keyrow button.special {
-    background: var(--keypad-special-bg);
-    color: var(--keypad-special-color);
+  background: var(--keypad-special-bg);
+  color: var(--keypad-special-color);
 }
 
 .keyrow button.clear {
-    background: var(--keypad-clear-bg);
-    color: var(--keypad-clear-color);
+  background: var(--keypad-clear-bg);
+  color: var(--keypad-clear-color);
 }
 
 .keyrow button.enter {
-    background: var(--keypad-enter-bg);
-    color: var(--keypad-enter-color);
+  background: var(--keypad-enter-bg);
+  color: var(--keypad-enter-color);
 }
 
 /* --- モーダル (ボトムシート等) --- */
 .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 9998;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    /* Mobile: Bottom Sheet */
-    opacity: 0;
-    pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /* Mobile: Bottom Sheet */
+  opacity: 0;
+  pointer-events: none;
 }
 
 .modal-overlay.show {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .settings-box {
-    background: var(--surface-primary);
-    color: var(--text-color);
-    padding: var(--space-lg);
-    border-radius: 20px 20px 0 0;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    max-height: 85vh;
-    overflow-y: auto;
-    transform: translateY(100%);
+  background: var(--surface-primary);
+  color: var(--text-color);
+  padding: var(--space-lg);
+  padding-bottom: calc(var(--space-lg) + 12px);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 88vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+}
+
+.modal-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-sm);
+}
+
+.modal-buttons button,
+.settings-box button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  line-height: 1.2;
+  box-sizing: border-box;
 }
 
 .modal-overlay.show .settings-box {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 /* トップシート */
 .modal-overlay.top-sheet {
-    align-items: flex-start;
+  align-items: flex-start;
 }
 
 .settings-box.top-sheet {
-    border-radius: 0 0 20px 20px;
-    transform: translateY(-100%);
+  border-radius: 0 0 20px 20px;
+  transform: translateY(-100%);
 }
 
 .modal-overlay.show .settings-box.top-sheet {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 /* 各種モーダル内要素 */
 .message-bar {
-    padding: var(--space-sm);
-    margin-bottom: var(--space-md);
-    border-radius: var(--radius-md);
-    text-align: center;
-    display: none;
+  padding: var(--space-sm);
+  margin-bottom: var(--space-md);
+  border-radius: var(--radius-md);
+  text-align: center;
+  display: none;
 }
 
 .message-bar.visible {
-    display: block;
+  display: block;
 }
 
 .message-bar.error {
-    background: var(--surface-secondary);
-    color: #c62828;
-    border: 1px solid #ef9a9a;
+  background: var(--surface-secondary);
+  color: #c62828;
+  border: 1px solid #ef9a9a;
 }
 
 .message-bar.success {
-    background: var(--surface-secondary);
-    color: #2e7d32;
-    border: 1px solid #a5d6a7;
+  background: var(--surface-secondary);
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
 }
 
 .text-input,
 .select-input {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0 16px 0;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    background: var(--display-bg);
-    color: var(--text-color);
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 16px 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--display-bg);
+  color: var(--text-color);
 }
 /* --- PC表示用の調整 (1024px以上) --- */
 @media (min-width: 1024px) {
-    /* モーダルを中央配置に変更 */
-    .modal-overlay {
-        align-items: center;
-    }
+  /* モーダルを中央配置に変更 */
+  .modal-overlay {
+    align-items: center;
+  }
 
-    /* ボトムシート → センターポップアップ */
-    .settings-box {
-        border-radius: 16px; /* 全方向に角丸 */
-        max-width: 500px; /* 幅を狭める */
-        width: 90%;
-        max-height: 80vh;
-        transform: scale(0.9); /* スケールアニメーション */
-        opacity: 0;
-    }
+  /* ボトムシート → センターポップアップ */
+  .settings-box {
+    border-radius: 16px; /* 全方向に角丸 */
+    max-width: 500px; /* 幅を狭める */
+    width: 90%;
+    max-height: 80vh;
+    padding-bottom: calc(var(--space-lg) + 16px);
+    transform: scale(0.9); /* スケールアニメーション */
+    opacity: 0;
+  }
 
-    .modal-overlay.show .settings-box {
-        transform: scale(1);
-        opacity: 1;
-    }
+  .modal-overlay.show .settings-box {
+    transform: scale(1);
+    opacity: 1;
+  }
 
-    /* トップシートもセンター配置 */
-    .modal-overlay.top-sheet {
-        align-items: center;
-    }
+  /* トップシートもセンター配置 */
+  .modal-overlay.top-sheet {
+    align-items: center;
+  }
 
-    .settings-box.top-sheet {
-        border-radius: 16px;
-        transform: scale(0.9);
-        opacity: 0;
-    }
+  .settings-box.top-sheet {
+    border-radius: 16px;
+    transform: scale(0.9);
+    opacity: 0;
+  }
 
-    .modal-overlay.show .settings-box.top-sheet {
-        transform: scale(1);
-        opacity: 1;
-    }
+  .modal-overlay.show .settings-box.top-sheet {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
