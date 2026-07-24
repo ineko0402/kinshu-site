@@ -158,22 +158,6 @@ export function openSavePointModal() {
     });
   });
 
-  const previewDetail = () => {
-    const previewPoint = {
-      memo: memoInput.value.trim() || "保存前詳細",
-      counts,
-      total,
-      timestamp: Date.now(),
-    };
-    showHistoryDetail(previewPoint);
-  };
-
-  document
-    .getElementById("previewSavePointDetailBtn")
-    ?.addEventListener("click", () => {
-      previewDetail();
-    });
-
   closeBtn.addEventListener("click", () => closeOverlay(overlay));
   requestAnimationFrame(() => {
     overlay.classList.add("show");
