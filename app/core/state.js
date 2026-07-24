@@ -8,24 +8,25 @@ const MAX_SAVED_POINTS = 30; // 履歴保存上限
 const DEFAULT_NOTE_SETTINGS = {
   hide2000: false,
   hideBills: false,
-  hideCoins: false
+  hideCoins: false,
 };
 
 // アプリケーション全体の状態
 export const appState = {
-  currentCurrency: 'JPY',
-  currentInput: '',
+  currentCurrency: "JPY",
+  currentInput: "",
   activeDisplay: null,
   isFirstInput: true,
   // --- ノート管理用プロパティ ---
   currentNoteId: null,
-  notes: [] // { id, name, createdAt, updatedAt, currency, counts, settings, color, savedPoints } の配列
+  notes: [], // { id, name, createdAt, updatedAt, currency, counts, settings, color, savedPoints } の配列
 };
 
 // UUID生成関数（RFC4122 version 4準拠）
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -60,12 +61,12 @@ function performSave() {
   try {
     const dataToSave = {
       currentNoteId: appState.currentNoteId,
-      notes: appState.notes
+      notes: appState.notes,
     };
-    localStorage.setItem('notes_data', JSON.stringify(dataToSave));
+    localStorage.setItem("notes_data", JSON.stringify(dataToSave));
   } catch (error) {
-    console.error('ノートデータの保存に失敗:', error);
-    alert('データの保存に失敗しました。ストレージの容量を確認してください。');
+    console.error("ノートデータの保存に失敗:", error);
+    alert("データの保存に失敗しました。ストレージの容量を確認してください。");
     throw error; // エラーを再スロー
   }
 }
@@ -76,12 +77,16 @@ function performSave() {
  */
 export function initNotes() {
   try {
-    const savedData = JSON.parse(localStorage.getItem('notes_data') || '{}');
+    const savedData = JSON.parse(localStorage.getItem("notes_data") || "{}");
     appState.notes = savedData.notes || [];
 
     // ノートが存在しない場合はデフォルトノートを作成
     if (appState.notes.length === 0) {
-      const defaultNote = createNewNote('新規ノート 1', 'JPY', DEFAULT_NOTE_SETTINGS);
+      const defaultNote = createNewNote(
+        "新規ノート 1",
+        "JPY",
+        DEFAULT_NOTE_SETTINGS,
+      );
       // createNewNote内でpushとsaveが実行されるので、ここでは不要
       appState.currentNoteId = defaultNote.id;
     } else {
@@ -89,15 +94,21 @@ export function initNotes() {
     }
 
     // 現在のノートの通貨設定をappStateに反映
-    const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+    const currentNote = appState.notes.find(
+      (n) => n.id === appState.currentNoteId,
+    );
     if (currentNote) {
       appState.currentCurrency = currentNote.currency;
     }
   } catch (error) {
-    console.error('ノートデータの読み込みに失敗:', error);
+    console.error("ノートデータの読み込みに失敗:", error);
     // エラー時はデフォルトノートを作成
     appState.notes = [];
-    const defaultNote = createNewNote('新規ノート 1', 'JPY', DEFAULT_NOTE_SETTINGS);
+    const defaultNote = createNewNote(
+      "新規ノート 1",
+      "JPY",
+      DEFAULT_NOTE_SETTINGS,
+    );
     appState.currentNoteId = defaultNote.id;
     appState.currentCurrency = defaultNote.currency;
   }
@@ -119,12 +130,12 @@ export function createNewNote(name, currency, settings = {}) {
     updatedAt: now,
     currency: currency,
     counts: {},
-    color: 'default', // デフォルトカラー
+    color: "default", // デフォルトカラー
     settings: {
       ...DEFAULT_NOTE_SETTINGS,
-      ...settings
+      ...settings,
     },
-    savedPoints: []
+    savedPoints: [],
   };
   appState.notes.push(newNote);
   saveNotesData();
@@ -138,13 +149,13 @@ export function createNewNote(name, currency, settings = {}) {
  * @returns {boolean} 成功した場合true
  */
 export function updateNoteSettings(noteId, settings) {
-  const note = appState.notes.find(n => n.id === noteId);
+  const note = appState.notes.find((n) => n.id === noteId);
   if (!note) return false;
 
   note.settings = {
     ...DEFAULT_NOTE_SETTINGS,
     ...(note.settings || {}),
-    ...settings
+    ...settings,
   };
   note.updatedAt = new Date().toISOString();
   saveNotesData();
@@ -158,7 +169,7 @@ export function updateNoteSettings(noteId, settings) {
  * @returns {boolean} 成功した場合true
  */
 export function updateNoteName(noteId, newName) {
-  const note = appState.notes.find(n => n.id === noteId);
+  const note = appState.notes.find((n) => n.id === noteId);
   if (!note) return false;
 
   note.name = newName;
@@ -174,7 +185,7 @@ export function updateNoteName(noteId, newName) {
  * @returns {boolean} 成功した場合true
  */
 export function switchNote(noteId) {
-  const targetNote = appState.notes.find(n => n.id === noteId);
+  const targetNote = appState.notes.find((n) => n.id === noteId);
   if (!targetNote) return false;
 
   appState.currentNoteId = noteId;
@@ -189,7 +200,7 @@ export function switchNote(noteId) {
  * @returns {boolean} 成功した場合true
  */
 export function deleteNote(noteId) {
-  const index = appState.notes.findIndex(n => n.id === noteId);
+  const index = appState.notes.findIndex((n) => n.id === noteId);
   if (index === -1) return false;
 
   appState.notes.splice(index, 1);
@@ -197,12 +208,17 @@ export function deleteNote(noteId) {
 
   // 削除したノートが現在アクティブなノートだった場合、最初のノートに切り替える
   if (appState.currentNoteId === noteId) {
-    appState.currentNoteId = appState.notes.length > 0 ? appState.notes[0].id : null;
+    appState.currentNoteId =
+      appState.notes.length > 0 ? appState.notes[0].id : null;
     if (appState.currentNoteId) {
       switchNote(appState.currentNoteId);
     } else {
       // 全てのノートが削除された場合、デフォルトノートを作成
-      const defaultNote = createNewNote('新規ノート 1', 'JPY', DEFAULT_NOTE_SETTINGS);
+      const defaultNote = createNewNote(
+        "新規ノート 1",
+        "JPY",
+        DEFAULT_NOTE_SETTINGS,
+      );
       // createNewNote内でpushとsaveが実行されるので、ここでは不要
       appState.currentNoteId = defaultNote.id;
       switchNote(defaultNote.id);
@@ -220,7 +236,46 @@ export function initState() {
   initNotes();
 
   // グローバル設定（ダークモードのみ）
-  document.body.classList.toggle('dark', localStorage.getItem('darkMode') === 'true');
+  document.body.classList.toggle(
+    "dark",
+    localStorage.getItem("darkMode") === "true",
+  );
+}
+
+/**
+ * インポートしたバックアップを適用する
+ * @param {Object} payload
+ */
+export function applyImportedBackup(payload) {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("インポートデータが不正です。");
+  }
+
+  if (!Array.isArray(payload.notes)) {
+    throw new Error("notesプロパティが配列ではありません。");
+  }
+
+  appState.notes = payload.notes;
+  appState.currentNoteId =
+    typeof payload.currentNoteId === "string" ? payload.currentNoteId : null;
+
+  const currentNote =
+    appState.notes.find((note) => note.id === appState.currentNoteId) ||
+    appState.notes[0];
+  if (currentNote) {
+    appState.currentNoteId = currentNote.id;
+    appState.currentCurrency = currentNote.currency;
+  } else {
+    const defaultNote = createNewNote(
+      "新規ノート 1",
+      "JPY",
+      DEFAULT_NOTE_SETTINGS,
+    );
+    appState.currentNoteId = defaultNote.id;
+    appState.currentCurrency = defaultNote.currency;
+  }
+
+  saveNotesData(true);
 }
 
 // loadState() と saveCounts() は app/ui/stateSync.js に移動しました
@@ -230,12 +285,14 @@ export function initState() {
  * @returns {Object} ノートの設定オブジェクト（デフォルト値を含む）
  */
 export function getCurrentNoteSettings() {
-  const currentNote = appState.notes.find(n => n.id === appState.currentNoteId);
+  const currentNote = appState.notes.find(
+    (n) => n.id === appState.currentNoteId,
+  );
   if (!currentNote) return { ...DEFAULT_NOTE_SETTINGS };
 
   return {
     ...DEFAULT_NOTE_SETTINGS,
-    ...(currentNote.settings || {})
+    ...(currentNote.settings || {}),
   };
 }
 
@@ -249,8 +306,15 @@ export function getCurrentNoteSettings() {
  * @param {number} coinCount - 硬貨枚数
  * @returns {Object|boolean} 保存ポイントオブジェクト、失敗時false
  */
-export function addSavedPoint(noteId, memo, countsData, total, billCount, coinCount) {
-  const note = appState.notes.find(n => n.id === noteId);
+export function addSavedPoint(
+  noteId,
+  memo,
+  countsData,
+  total,
+  billCount,
+  coinCount,
+) {
+  const note = appState.notes.find((n) => n.id === noteId);
   if (!note) return false;
 
   const savedPoint = {
@@ -260,7 +324,7 @@ export function addSavedPoint(noteId, memo, countsData, total, billCount, coinCo
     counts: { ...countsData },
     total: total,
     billCount: billCount,
-    coinCount: coinCount
+    coinCount: coinCount,
   };
 
   if (!note.savedPoints) {
@@ -287,10 +351,10 @@ export function addSavedPoint(noteId, memo, countsData, total, billCount, coinCo
  * @returns {boolean} 成功した場合true
  */
 export function deleteSavedPoint(noteId, savedPointId) {
-  const note = appState.notes.find(n => n.id === noteId);
+  const note = appState.notes.find((n) => n.id === noteId);
   if (!note || !note.savedPoints) return false;
 
-  const index = note.savedPoints.findIndex(sp => sp.id === savedPointId);
+  const index = note.savedPoints.findIndex((sp) => sp.id === savedPointId);
   if (index === -1) return false;
 
   note.savedPoints.splice(index, 1);
@@ -306,7 +370,7 @@ export function deleteSavedPoint(noteId, savedPointId) {
  * @returns {boolean} 成功した場合true
  */
 export function restoreCounts(noteId, counts) {
-  const note = appState.notes.find(n => n.id === noteId);
+  const note = appState.notes.find((n) => n.id === noteId);
   if (!note) return false;
 
   note.counts = { ...counts };
@@ -322,7 +386,7 @@ export function restoreCounts(noteId, counts) {
  * @returns {boolean} 成功した場合true
  */
 export function updateNoteColor(noteId, color) {
-  const note = appState.notes.find(n => n.id === noteId);
+  const note = appState.notes.find((n) => n.id === noteId);
   if (!note) return false;
 
   note.color = color;
@@ -330,4 +394,3 @@ export function updateNoteColor(noteId, color) {
   saveNotesData(true);
   return true;
 }
-

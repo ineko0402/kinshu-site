@@ -1,73 +1,93 @@
 // app/ui/settingsUI.js
-import { openBackupModal } from '../main.js'; // main側の命名に合わせるか、こちらに移行
-// 元の settings.js の内容を整理してここに集約
+import { downloadBackup, importBackupFromFile } from "../storage/backup.js";
 
 /**
  * 設定モーダルを開く
  */
 export function openSettings() {
-    const template = document.getElementById('settingsTemplate');
-    const clone = template.content.cloneNode(true);
-    document.body.appendChild(clone);
+  const template = document.getElementById("settingsTemplate");
+  const clone = template.content.cloneNode(true);
+  const overlay = clone.querySelector(".modal-overlay");
+  const box = overlay.querySelector("#settings-box");
 
-    const overlay = document.getElementById('settings-overlay');
-    const closeBtn = document.getElementById('closeSettingsBtn');
+  box.querySelector("#darkModeCheckbox").checked =
+    document.body.classList.contains("dark");
 
-    // バックアップボタン
-    const backupBtn = document.getElementById('openBackupBtn');
-    if (backupBtn) {
-        backupBtn.addEventListener('click', () => {
-            closeOverlay(overlay);
-            // main.js の openBackupModal を呼び出す（または後ほどここへ移行）
-            import('../main.js').then(m => m.openBackupModal());
-        });
+  box.querySelector("#darkModeCheckbox").addEventListener("change", (e) => {
+    const checked = e.target.checked;
+    document.body.classList.toggle("dark", checked);
+    localStorage.setItem("theme", checked ? "dark" : "light");
+  });
+
+  const exportBtn = box.querySelector("#exportBtn");
+  const importBtn = box.querySelector("#importBtn");
+  const importInput = box.querySelector("#importInput");
+
+  exportBtn.addEventListener("click", () => {
+    try {
+      downloadBackup();
+      alert("ノートデータをエクスポートしました。");
+    } catch (error) {
+      console.error(error);
+      alert("エクスポートに失敗しました。");
+    }
+  });
+
+  importBtn.addEventListener("click", () => {
+    importInput.value = "";
+    importInput.click();
+  });
+
+  importInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!confirm("現在のノートデータを上書きしてインポートしますか？")) {
+      return;
     }
 
-    // テーマ切り替え
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.checked = document.body.classList.contains('dark');
-        themeToggle.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                document.body.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            }
-        });
+    try {
+      await importBackupFromFile(file);
+      alert("ノートデータをインポートしました。ページをリロードします。");
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.message ||
+          "ファイルの読み込みに失敗しました。JSON形式を確認してください。",
+      );
     }
+  });
 
-    // ライセンス表示
-    const licenseBtn = document.getElementById('viewLicenseBtn');
-    if (licenseBtn) {
-        licenseBtn.addEventListener('click', () => {
-            alert('金種計算機 (Kinshu)\nMIT License\n© 2024');
-        });
-    }
+  const closeBtn = box.querySelector("#closeSettingsBtn");
+  closeBtn.addEventListener("click", closeOverlay);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay();
+  });
 
-    function closeOverlay(ov) {
-        ov.classList.remove('show');
-        document.body.classList.remove('modal-open');
-        setTimeout(() => {
-            if (document.body.contains(ov)) document.body.removeChild(ov);
-        }, 300);
-    }
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.classList.add("show");
+    document.body.classList.add("modal-open");
+  });
 
-    closeBtn.addEventListener('click', () => closeOverlay(overlay));
-    requestAnimationFrame(() => {
-        overlay.classList.add('show');
-        document.body.classList.add('modal-open');
-    });
+  function closeOverlay() {
+    overlay.classList.remove("show");
+    document.body.classList.remove("modal-open");
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 300);
+  }
 }
 
 /**
  * 設定関連のイベントをバインド
  */
 export function bindSettingsEvents() {
-    // 起動時のテーマ適用
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark');
-    }
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark");
+  }
 }
