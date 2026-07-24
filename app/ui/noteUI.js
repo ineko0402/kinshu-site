@@ -4,7 +4,6 @@ import {
   switchNote,
   createNewNote,
   updateNoteName,
-  updateNoteColor,
   updateNoteSettings,
   deleteNote,
 } from "../core/state.js";
@@ -23,35 +22,13 @@ async function initSaveNotesDataFn() {
 /**
  * ノートの色をCSS変数に適用する
  */
-export function applyNoteColor(color) {
+export function applyNoteColor() {
   const root = document.documentElement;
   const isDark = document.body.classList.contains("dark");
-
-  if (!color || color === "default") {
-    root.style.setProperty("--accent-glow-primary", "transparent");
-    root.style.setProperty("--accent-glow-secondary", "transparent");
-    root.style.setProperty("--accent-glow-text", "transparent");
-    root.style.setProperty(
-      "--accent-color-raw",
-      isDark ? "255, 255, 255" : "52, 58, 64",
-    );
-    return;
-  }
-
-  const hex = color.replace("#", "");
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  const rgb = `${r}, ${g}, ${b}`;
-
-  const alpha1 = isDark ? 0.7 : 0.5;
-  const alpha2 = isDark ? 0.5 : 0.35;
-  const alphaText = isDark ? 1.0 : 0.8;
-
-  root.style.setProperty("--accent-color-raw", rgb);
-  root.style.setProperty("--accent-glow-primary", `rgba(${rgb}, ${alpha1})`);
-  root.style.setProperty("--accent-glow-secondary", `rgba(${rgb}, ${alpha2})`);
-  root.style.setProperty("--accent-glow-text", `rgba(${rgb}, ${alphaText})`);
+  root.style.setProperty(
+    "--accent-color-raw",
+    isDark ? "255, 255, 255" : "52, 58, 64",
+  );
 }
 
 /**
@@ -154,7 +131,7 @@ export async function handleNoteSwitch(noteId) {
 
     // 新しいノートのデータをUIに反映
     loadStateToUI();
-    applyNoteColor(note.color);
+    applyNoteColor();
     renderCurrency();
     updateSummary();
     updateNoteDisplay();
@@ -212,19 +189,6 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   noteNameInput.value = note.name;
   currencyDisplay.textContent = note.currency;
 
-  const colorInput = overlay.querySelector("#editNoteColorInput");
-  colorInput.value = note.color || "default";
-  const colorBtns = overlay.querySelectorAll(".color-preset-btn");
-
-  colorBtns.forEach((btn) => {
-    if (btn.dataset.color === colorInput.value) btn.classList.add("active");
-    btn.addEventListener("click", () => {
-      colorBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      colorInput.value = btn.dataset.color;
-    });
-  });
-
   if (note.currency === "JPY") {
     overlay.querySelector(".note-settings-section").classList.add("visible");
     const settings = note.settings || {};
@@ -240,7 +204,6 @@ export function openNoteEditModal(noteId, onUpdate = null) {
     if (!newName) return;
 
     updateNoteName(noteId, newName);
-    updateNoteColor(noteId, colorInput.value);
 
     if (note.currency === "JPY") {
       updateNoteSettings(noteId, {
@@ -251,7 +214,7 @@ export function openNoteEditModal(noteId, onUpdate = null) {
     }
 
     if (noteId === appState.currentNoteId) {
-      applyNoteColor(colorInput.value);
+      applyNoteColor();
       renderCurrency();
       updateSummary();
       updateNoteDisplay();
@@ -290,17 +253,6 @@ export function openNoteCreateModal(onUpdate = null) {
       noteNameInput.focus();
       noteNameInput.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 350);
-  });
-
-  const colorInput = overlay.querySelector("#createNoteColorInput");
-  const colorBtns = overlay.querySelectorAll(".color-preset-btn");
-  colorBtns.forEach((btn) => {
-    if (btn.dataset.color === colorInput.value) btn.classList.add("active");
-    btn.addEventListener("click", () => {
-      colorBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      colorInput.value = btn.dataset.color;
-    });
   });
 
   createBtn.addEventListener("click", () => {

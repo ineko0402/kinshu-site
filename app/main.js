@@ -46,7 +46,7 @@ window.addEventListener("DOMContentLoaded", () => {
     (n) => n.id === appState.currentNoteId,
   );
   if (currentNote) {
-    applyNoteColor(currentNote.color);
+    applyNoteColor();
   }
 
   // 各種レンダリング

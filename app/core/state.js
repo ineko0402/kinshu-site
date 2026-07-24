@@ -130,7 +130,6 @@ export function createNewNote(name, currency, settings = {}) {
     updatedAt: now,
     currency: currency,
     counts: {},
-    color: "default", // デフォルトカラー
     settings: {
       ...DEFAULT_NOTE_SETTINGS,
       ...settings,
@@ -385,12 +384,3 @@ export function restoreCounts(noteId, counts) {
  * @param {string} color - HEXカラーコード
  * @returns {boolean} 成功した場合true
  */
-export function updateNoteColor(noteId, color) {
-  const note = appState.notes.find((n) => n.id === noteId);
-  if (!note) return false;
-
-  note.color = color;
-  note.updatedAt = new Date().toISOString();
-  saveNotesData(true);
-  return true;
-}
