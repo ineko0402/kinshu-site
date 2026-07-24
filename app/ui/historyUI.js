@@ -12,14 +12,28 @@ import { jpyData, cnyData } from "../core/data.js";
 /**
  * モーダル共通のクローズ処理
  */
-function closeOverlay(overlay) {
+function closeOverlay(overlay, escapeHandler = null) {
+  if (
+    !overlay ||
+    (!overlay.classList.contains("show") &&
+      !overlay.classList.contains("closing"))
+  )
+    return;
+
+  if (escapeHandler) {
+    document.removeEventListener("keydown", escapeHandler);
+  }
+
   overlay.classList.remove("show");
+  overlay.classList.add("closing");
   document.body.classList.remove("modal-open");
+
   setTimeout(() => {
+    overlay.classList.remove("closing");
     if (document.body.contains(overlay)) {
       document.body.removeChild(overlay);
     }
-  }, 300);
+  }, 260);
 }
 
 /**
@@ -114,11 +128,17 @@ export function openSavePointModal() {
   const clone = template.content.cloneNode(true);
   document.body.appendChild(clone);
 
-  const overlay = document.getElementById("savepoint-overlay");
-  const closeBtn = document.getElementById("closeSavePointBtn");
-  const saveBtn = document.getElementById("saveSavePointBtn");
-  const memoInput = document.getElementById("savePointMemoInput");
-  const previewEl = document.getElementById("savePointPreview");
+  const overlay =
+    clone.querySelector(".modal-overlay") ||
+    document.getElementById("savepoint-overlay");
+  const closeBtn = overlay.querySelector("#closeSavePointBtn");
+  const saveBtn = overlay.querySelector("#saveSavePointBtn");
+  const memoInput = overlay.querySelector("#savePointMemoInput");
+  const previewEl = overlay.querySelector("#savePointPreview");
+  const handleEscape = (e) => {
+    if (e.key === "Escape") closeOverlay(overlay, handleEscape);
+  };
+  document.addEventListener("keydown", handleEscape);
 
   // 現在の集計情報を計算
   const data = currentNote.currency === "JPY" ? jpyData : cnyData;
@@ -154,11 +174,14 @@ export function openSavePointModal() {
     requestAnimationFrame(() => {
       addSavedPoint(appState.currentNoteId, memo, counts, total, bills, coins);
       renderSidebarHistoryList();
-      closeOverlay(overlay);
+      closeOverlay(overlay, handleEscape);
     });
   });
 
-  closeBtn.addEventListener("click", () => closeOverlay(overlay));
+  closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay(overlay, handleEscape);
+  });
   requestAnimationFrame(() => {
     overlay.classList.add("show");
     document.body.classList.add("modal-open");
@@ -184,8 +207,14 @@ export function openHistoryModal() {
   const clone = template.content.cloneNode(true);
   document.body.appendChild(clone);
 
-  const overlay = document.getElementById("history-overlay");
-  const historyListEl = document.getElementById("historyList");
+  const overlay =
+    clone.querySelector(".modal-overlay") ||
+    document.getElementById("history-overlay");
+  const historyListEl = overlay.querySelector("#historyList");
+  const handleEscape = (e) => {
+    if (e.key === "Escape") closeOverlay(overlay, handleEscape);
+  };
+  document.addEventListener("keydown", handleEscape);
 
   const renderHistoryList = () => {
     historyListEl.innerHTML = "";
@@ -237,7 +266,10 @@ export function openHistoryModal() {
     document.body.classList.add("modal-open");
   });
   document.getElementById("closeHistoryBtn").onclick = () =>
-    closeOverlay(overlay);
+    closeOverlay(overlay, handleEscape);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay(overlay, handleEscape);
+  });
 }
 
 /**
@@ -253,7 +285,13 @@ export function showHistoryDetail(savedPoint) {
   const clone = template.content.cloneNode(true);
   document.body.appendChild(clone);
 
-  const overlay = document.getElementById("history-detail-overlay");
+  const overlay =
+    clone.querySelector(".modal-overlay") ||
+    document.getElementById("history-detail-overlay");
+  const handleEscape = (e) => {
+    if (e.key === "Escape") closeOverlay(overlay, handleEscape);
+  };
+  document.addEventListener("keydown", handleEscape);
   const date = new Date(savedPoint.timestamp);
   const data = currentNote.currency === "JPY" ? jpyData : cnyData;
   const settings = currentNote.settings || {};
@@ -287,5 +325,8 @@ export function showHistoryDetail(savedPoint) {
     document.body.classList.add("modal-open");
   });
   document.getElementById("closeHistoryDetailBtn").onclick = () =>
-    closeOverlay(overlay);
+    closeOverlay(overlay, handleEscape);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay(overlay, handleEscape);
+  });
 }

@@ -60,6 +60,11 @@ export function openSettings() {
   });
 
   const closeBtn = box.querySelector("#closeSettingsBtn");
+  const handleEscape = (e) => {
+    if (e.key === "Escape") closeOverlay();
+  };
+  document.addEventListener("keydown", handleEscape);
+
   closeBtn.addEventListener("click", closeOverlay);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeOverlay();
@@ -72,13 +77,23 @@ export function openSettings() {
   });
 
   function closeOverlay() {
+    if (
+      !overlay.classList.contains("show") &&
+      !overlay.classList.contains("closing")
+    )
+      return;
+
+    document.removeEventListener("keydown", handleEscape);
     overlay.classList.remove("show");
+    overlay.classList.add("closing");
     document.body.classList.remove("modal-open");
+
     setTimeout(() => {
+      overlay.classList.remove("closing");
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
       }
-    }, 300);
+    }, 260);
   }
 }
 

@@ -147,14 +147,28 @@ export async function handleNoteSwitch(noteId) {
 /**
  * モーダル共通のクローズ処理
  */
-function closeOverlay(overlay) {
+function closeOverlay(overlay, escapeHandler = null) {
+  if (
+    !overlay ||
+    (!overlay.classList.contains("show") &&
+      !overlay.classList.contains("closing"))
+  )
+    return;
+
+  if (escapeHandler) {
+    document.removeEventListener("keydown", escapeHandler);
+  }
+
   overlay.classList.remove("show");
+  overlay.classList.add("closing");
   document.body.classList.remove("modal-open");
+
   setTimeout(() => {
+    overlay.classList.remove("closing");
     if (document.body.contains(overlay)) {
       document.body.removeChild(overlay);
     }
-  }, 300);
+  }, 260);
 }
 
 /**
@@ -168,12 +182,18 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   const clone = template.content.cloneNode(true);
   document.body.appendChild(clone);
 
-  const overlay = document.getElementById("note-edit-overlay");
-  const closeBtn = document.getElementById("closeNoteEditBtn");
-  const saveBtn = document.getElementById("saveNoteEditBtn");
-  const noteNameInput = document.getElementById("noteNameInput");
-  const currencyDisplay = document.getElementById("currencyDisplay");
-  const messageBar = document.getElementById("noteEditMessage");
+  const overlay =
+    clone.querySelector(".modal-overlay") ||
+    document.getElementById("note-edit-overlay");
+  const closeBtn = overlay.querySelector("#closeNoteEditBtn");
+  const saveBtn = overlay.querySelector("#saveNoteEditBtn");
+  const noteNameInput = overlay.querySelector("#noteNameInput");
+  const handleEscape = (e) => {
+    if (e.key === "Escape") closeOverlay(overlay, handleEscape);
+  };
+  document.addEventListener("keydown", handleEscape);
+  const currencyDisplay = overlay.querySelector("#currencyDisplay");
+  const messageBar = overlay.querySelector("#noteEditMessage");
 
   requestAnimationFrame(() => {
     overlay.classList.add("show");
@@ -222,10 +242,13 @@ export function openNoteEditModal(noteId, onUpdate = null) {
 
     if (onUpdate) onUpdate();
     renderSidebarNoteList();
-    closeOverlay(overlay);
+    closeOverlay(overlay, handleEscape);
   });
 
-  closeBtn.addEventListener("click", () => closeOverlay(overlay));
+  closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay(overlay, handleEscape);
+  });
 }
 
 /**
@@ -236,11 +259,17 @@ export function openNoteCreateModal(onUpdate = null) {
   const clone = template.content.cloneNode(true);
   document.body.appendChild(clone);
 
-  const overlay = document.getElementById("note-create-overlay");
-  const closeBtn = document.getElementById("closeNoteCreateBtn");
-  const createBtn = document.getElementById("createNoteBtn");
-  const noteNameInput = document.getElementById("newNoteNameInput");
-  const currencySelect = document.getElementById("newNoteCurrencySelect");
+  const overlay =
+    clone.querySelector(".modal-overlay") ||
+    document.getElementById("note-create-overlay");
+  const closeBtn = overlay.querySelector("#closeNoteCreateBtn");
+  const createBtn = overlay.querySelector("#createNoteBtn");
+  const noteNameInput = overlay.querySelector("#newNoteNameInput");
+  const handleEscape = (e) => {
+    if (e.key === "Escape") closeOverlay(overlay, handleEscape);
+  };
+  document.addEventListener("keydown", handleEscape);
+  const currencySelect = overlay.querySelector("#newNoteCurrencySelect");
 
   noteNameInput.value = `新規ノート ${appState.notes.length + 1}`;
 
@@ -275,10 +304,13 @@ export function openNoteCreateModal(onUpdate = null) {
     handleNoteSwitch(newNote.id);
 
     if (onUpdate) onUpdate();
-    closeOverlay(overlay);
+    closeOverlay(overlay, handleEscape);
   });
 
-  closeBtn.addEventListener("click", () => closeOverlay(overlay));
+  closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay(overlay, handleEscape);
+  });
 }
 
 /**
@@ -289,10 +321,16 @@ export function openNoteSwitchModal() {
   const clone = template.content.cloneNode(true);
   document.body.appendChild(clone);
 
-  const overlay = document.getElementById("note-overlay");
-  const closeBtn = document.getElementById("closeNoteBtn");
-  const noteListEl = document.getElementById("noteList");
-  const newNoteBtn = document.getElementById("newNoteBtn");
+  const overlay =
+    clone.querySelector(".modal-overlay") ||
+    document.getElementById("note-overlay");
+  const closeBtn = overlay.querySelector("#closeNoteBtn");
+  const noteListEl = overlay.querySelector("#noteList");
+  const newNoteBtn = overlay.querySelector("#newNoteBtn");
+  const handleEscape = (e) => {
+    if (e.key === "Escape") closeOverlay(overlay, handleEscape);
+  };
+  document.addEventListener("keydown", handleEscape);
 
   const renderNoteList = () => {
     noteListEl.innerHTML = "";
@@ -348,5 +386,8 @@ export function openNoteSwitchModal() {
     document.body.classList.add("modal-open");
   });
 
-  closeBtn.addEventListener("click", () => closeOverlay(overlay));
+  closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeOverlay(overlay, handleEscape);
+  });
 }
