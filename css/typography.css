@@ -24,6 +24,13 @@ header {
     color: var(--text-primary);
 }
 
+#total,
+.summary span,
+.display,
+#keypadInput {
+    font-variant-numeric: tabular-nums;
+}
+
 .summary span {
     font-size: var(--font-size-sm);
 }
