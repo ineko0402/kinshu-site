@@ -145,12 +145,12 @@
     /* グリッド最適化 (PC) */
     .bills {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 16px !important;
+        gap: clamp(10px, 1.2vw, 16px) !important;
     }
 
     .coins {
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 16px !important;
+        gap: clamp(10px, 1.2vw, 16px) !important;
     }
 }
 
