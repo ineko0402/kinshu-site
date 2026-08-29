@@ -83,6 +83,7 @@ export function renderCurrency() {
         d.dataset.value = '0';
         d.textContent = '0';
       }
+      cell.classList.toggle('has-value', Number(d.dataset.value) !== 0);
     });
   }
 
@@ -120,6 +121,7 @@ export function resetAll() {
   document.querySelectorAll('.display').forEach(d => {
     d.dataset.value = '0';
     d.textContent = '0';
+    d.closest('.cell')?.classList.remove('has-value');
   });
   updateSummary();
 }

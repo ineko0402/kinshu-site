@@ -32,6 +32,9 @@
     --space-md: 16px;
     --space-lg: 24px;
     --space-xl: 32px;
+    --app-gutter: clamp(8px, 1.5vw, 24px);
+    --section-gap: clamp(8px, 1.2vw, 16px);
+    --grid-gap: clamp(6px, 1vw, 14px);
 
     /* 4. Radius変数 */
     --radius-sm: 4px;
@@ -48,6 +51,9 @@
     --button-bg: var(--surface-secondary);
     --button-hover: var(--surface-tertiary);
     --header-bg: var(--surface-primary);
+    --surface-border: rgba(33, 37, 41, 0.12);
+    --cell-filled-border: #adb5bd;
+    --display-filled-bg: #e2e6ea;
 
     --action-clear-bg: #fff;
     --action-clear-color: var(--danger);
@@ -79,6 +85,7 @@
     /* 影 */
     --shadow-light: rgba(0, 0, 0, 0.05);
     --shadow-dark: rgba(0, 0, 0, 0.15);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
     --overlay-bg: rgba(0, 0, 0, 0.5);
 }
 
@@ -103,6 +110,9 @@ body.dark {
     --button-bg: var(--surface-secondary);
     --button-hover: var(--surface-tertiary);
     --header-bg: var(--surface-primary);
+    --surface-border: rgba(255, 255, 255, 0.16);
+    --cell-filled-border: #6c757d;
+    --display-filled-bg: #1f1f1f;
 
     --action-clear-bg: var(--surface-secondary);
     --action-clear-color: #ff6b6b;

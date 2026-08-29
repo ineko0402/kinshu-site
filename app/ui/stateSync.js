@@ -22,6 +22,7 @@ export function loadStateToUI() {
         if (el) {
             el.dataset.value = val;
             el.textContent = val;
+            cell.classList.toggle('has-value', Number(val) !== 0);
         }
     });
 }

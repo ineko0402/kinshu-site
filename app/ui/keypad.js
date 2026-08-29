@@ -43,6 +43,7 @@ export function bindKeypadEvents() {
           if (display) {
             display.dataset.value = appState.currentInput;
             display.textContent = appState.currentInput;
+            display.closest('.cell')?.classList.toggle('has-value', Number(appState.currentInput) !== 0);
           }
           updateSummary();
           hideKeypad();
