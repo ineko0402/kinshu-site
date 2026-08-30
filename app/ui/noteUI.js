@@ -40,7 +40,8 @@ export function updateNoteDisplay() {
   );
   const noteNameEl = document.getElementById("currentNoteName");
   if (noteNameEl && currentNote) {
-    noteNameEl.textContent = `${currentNote.name} (${currentNote.currency})`;
+    const currencyLabel = currentNote.currency === "JPY" ? "円" : "元";
+    noteNameEl.textContent = `${currentNote.name} · ${currencyLabel}`;
   }
 
   // PC用の表示も更新
