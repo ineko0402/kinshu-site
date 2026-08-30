@@ -156,6 +156,15 @@ button:active {
   color: var(--nav-item-active);
 }
 
+@media (max-width: 1023px) and (orientation: portrait) {
+  .bottom-nav {
+    align-self: stretch;
+    height: 100%;
+    min-height: 60px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 /* --- リストアイテム (ノート・履歴) --- */
 .note-list,
 .history-list {

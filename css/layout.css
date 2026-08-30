@@ -193,9 +193,5 @@ header {
   .bottom-nav {
     grid-row: 7;
     position: static;
-    align-self: stretch;
-    height: 100%;
-    min-height: 60px;
-    padding-bottom: env(safe-area-inset-bottom);
   }
 }
