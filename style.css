@@ -1,11 +1,11 @@
-@import url('css/variables.css');
-@import url('css/base.css');
-@import url('css/effects.css');
-@import url('css/layout.css');
-@import url('css/components.css');
-@import url('css/typography.css');
-@import url('css/modals.css');
-@import url('css/pc.css');
+@import url('css/variables.css?v=20260830.3');
+@import url('css/base.css?v=20260830.3');
+@import url('css/effects.css?v=20260830.3');
+@import url('css/layout.css?v=20260830.3');
+@import url('css/components.css?v=20260830.3');
+@import url('css/typography.css?v=20260830.3');
+@import url('css/modals.css?v=20260830.3');
+@import url('css/pc.css?v=20260830.3');
 
 /* ==========================================================================
    金種入力アプリ：メインスタイル (style.css)
