@@ -161,7 +161,7 @@ header {
     grid-row: 3 / span 4;
     display: grid;
     grid-template-rows: repeat(4, minmax(0, 1fr));
-    gap: clamp(6px, 1vw, 10px);
+    gap: var(--grid-gap);
     min-height: 0;
     overflow: hidden;
   }

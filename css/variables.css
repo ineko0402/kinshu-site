@@ -14,6 +14,7 @@
 
     --accent: #343a40;
     --accent-fg: #ffffff;
+    --accent-color-raw: 52, 58, 64;
 
     --danger: #495057;
     --danger-fg: #ffffff;
@@ -138,4 +139,5 @@ body.dark {
 
     --accent: #ffffff;
     --accent-fg: #000000;
+    --accent-color-raw: 255, 255, 255;
 }

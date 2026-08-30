@@ -107,7 +107,7 @@
     }
 
     .header-text {
-        font-size: var(--font-size-md);
+        font-size: var(--font-size-base);
         font-weight: bold;
         color: var(--text-primary);
         padding-left: var(--space-md);
