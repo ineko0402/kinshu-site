@@ -22,6 +22,7 @@ header {
     font-size: clamp(1.75rem, 6vw, 2.25rem);
     font-weight: bold;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 #total,
@@ -105,6 +106,18 @@ header {
 }
 
 /* --- レスポンシブ (タイポグラフィ関連) --- */
+
+@media (max-width: 1023px) and (orientation: portrait) {
+    #noteSwitchBtn {
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+    }
+
+    #total {
+        font-size: clamp(1.75rem, 10vw, 2.75rem);
+        line-height: 1;
+    }
+}
 
 /* 極小画面 */
 @media (max-width: 374px) {

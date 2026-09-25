@@ -388,7 +388,7 @@ UI 修正時は最低限、次を確認してください。
 `sw.js` のキャッシュ名:
 
 ```js
-const CACHE_NAME = "CalcApp-cache-v20260925";
+const CACHE_NAME = "CalcApp-cache-v20260925.2";
 ```
 
 更新時にキャッシュ内容を確実に切り替えたい場合は `CACHE_NAME` を変更してください。
@@ -400,7 +400,7 @@ activate 時に旧キャッシュは削除されます。
 - `./`
 - `./index.html`
 - `./style.css`
-- `./style.css?v=20260925.1`
+- `./style.css?v=20260925.2`
 - `style.css` が import するバージョン付き CSS 11 ファイル
 - `./manifest.json`
 
