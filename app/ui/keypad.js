@@ -17,82 +17,20 @@ export function bindKeypadEvents() {
   bindBackdropDismiss(overlay, hideKeypad);
 
   panel.addEventListener('click', e => {
-    if (e.target.tagName !== 'BUTTON' || !appState.activeDisplay) return;
+    if (e.target.tagName === 'BUTTON') handleKeypadKey(e.target.textContent);
+  });
 
-    const key = e.target.textContent;
-    const inputEl = document.getElementById('keypadInput');
-    const isNumber = /^[0-9]$/.test(key) || key === '00';
-    const isOperator = /^[+\-×÷]$/.test(key);
-    const isDecimal = key === '.';
+  document.addEventListener('keydown', e => {
+    if (!overlay.classList.contains('show') || !appState.activeDisplay ||
+        e.isComposing || e.ctrlKey || e.altKey || e.metaKey) return;
 
-    switch (key) {
-      case 'AC':
-        appState.currentInput = '0';
-        appState.isFirstInput = true;
-        break;
-      case '⇐':
-        appState.currentInput = appState.currentInput.slice(0, -1) || '0';
-        if (appState.currentInput === '0') appState.isFirstInput = true;
-        break;
-      case '=':
-      case 'Enter':
-        appState.currentInput = safeEval(appState.currentInput);
-        if (key === 'Enter') {
-          const display = appState.activeDisplay;
-          if (display) {
-            display.dataset.value = appState.currentInput;
-            display.textContent = appState.currentInput;
-            display.closest('.cell')?.classList.toggle('has-value', Number(appState.currentInput) !== 0);
-          }
-          updateSummary();
-          hideKeypad();
-          return;
-        }
-        appState.isFirstInput = true;
-        break;
-      default:
-        // 現在の文字列
-        let current = appState.currentInput;
+    const key = e.key === '*' ? '×' : e.key === '/' ? '÷' :
+      e.key === 'Backspace' ? '⇐' : e.key === 'Delete' ? 'AC' : e.key;
+    if (!/^[0-9.+\-×÷]$/.test(key) && !['Enter', '⇐', 'AC', 'Escape'].includes(key)) return;
 
-        // 1. 先頭の0の扱い
-        if (appState.isFirstInput && isNumber) {
-          appState.currentInput = (key === '00') ? '0' : key;
-          appState.isFirstInput = false;
-        } else if (isNumber) {
-          // '0' だけが表示されている時に数字(0以外)を打ったら置換
-          if (current === '0' && key !== '0' && key !== '00') {
-            appState.currentInput = key;
-          } else if (current === '0' && (key === '0' || key === '00')) {
-            // '0' の時に '0' や '00' を打っても '0' のまま
-          } else {
-            appState.currentInput += key;
-          }
-        }
-
-        // 2. 演算子の制限
-        else if (isOperator) {
-          const lastChar = current.slice(-1);
-          if (/[+\-×÷.]$/.test(lastChar)) {
-            // 末尾が演算子や小数点なら置換
-            appState.currentInput = current.slice(0, -1) + key;
-          } else {
-            appState.currentInput += key;
-          }
-          appState.isFirstInput = false;
-        }
-
-        // 3. 小数点の制限
-        else if (isDecimal) {
-          const segments = current.split(/[+\-×÷]/);
-          const lastSegment = segments[segments.length - 1];
-          if (!lastSegment.includes('.')) {
-            appState.currentInput += key;
-            appState.isFirstInput = false;
-          }
-        }
-    }
-
-    inputEl.value = appState.currentInput;
+    e.preventDefault();
+    if (key === 'Escape') hideKeypad();
+    else handleKeypadKey(key);
   });
 
   // 各セルクリックでキーパッド表示
@@ -100,6 +38,64 @@ export function bindKeypadEvents() {
     const cell = e.target.closest('.cell');
     if (cell) showKeypad(cell);
   });
+}
+
+function handleKeypadKey(key) {
+  if (!appState.activeDisplay) return;
+  const isNumber = /^[0-9]$/.test(key) || key === '00';
+  const isOperator = /^[+\-×÷]$/.test(key);
+
+  switch (key) {
+    case 'AC':
+      appState.currentInput = '0';
+      appState.isFirstInput = true;
+      break;
+    case '⇐':
+      appState.currentInput = appState.currentInput.slice(0, -1) || '0';
+      if (appState.currentInput === '0') appState.isFirstInput = true;
+      break;
+    case '=':
+    case 'Enter':
+      appState.currentInput = safeEval(appState.currentInput);
+      if (key === 'Enter') {
+        const display = appState.activeDisplay;
+        display.dataset.value = appState.currentInput;
+        display.textContent = appState.currentInput;
+        display.closest('.cell')?.classList.toggle('has-value', Number(appState.currentInput) !== 0);
+        updateSummary();
+        hideKeypad();
+        return;
+      }
+      appState.isFirstInput = true;
+      break;
+    default: {
+      const current = appState.currentInput;
+
+      if (appState.isFirstInput && isNumber) {
+        appState.currentInput = key === '00' ? '0' : key;
+        appState.isFirstInput = false;
+      } else if (isNumber) {
+        if (current === '0' && key !== '0' && key !== '00') {
+          appState.currentInput = key;
+        } else if (current !== '0') {
+          appState.currentInput += key;
+        }
+      } else if (isOperator) {
+        const lastChar = current.slice(-1);
+        appState.currentInput = /[+\-×÷.]$/.test(lastChar)
+          ? current.slice(0, -1) + key : current + key;
+        appState.isFirstInput = false;
+      } else if (key === '.') {
+        const segments = current.split(/[+\-×÷]/);
+        if (!segments[segments.length - 1].includes('.')) {
+          appState.currentInput += key;
+          appState.isFirstInput = false;
+        }
+      }
+    }
+  }
+
+  document.getElementById('keypadInput').value = appState.currentInput;
 }
 
 function showKeypad(cell) {
