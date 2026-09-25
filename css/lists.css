@@ -25,6 +25,124 @@
   border: 1px solid var(--border-color);
 }
 
+/* ノート切り替えは通常時に名前とピンだけを表示する。 */
+.note-switch-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.note-switch-heading h3 {
+  margin: 0;
+}
+
+.settings-box .note-switch-heading button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+
+.note-switch-item {
+  gap: var(--space-sm);
+  padding: 4px 8px;
+}
+
+.settings-box .note-select-btn,
+.settings-box .note-pin-btn {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  text-align: left;
+}
+
+.settings-box .note-select-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-select-btn[aria-current="true"] {
+  font-weight: bold;
+}
+
+.note-select-btn[aria-current="true"]::before {
+  content: "✓ ";
+}
+
+.settings-box .note-pin-btn {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  color: var(--nav-item-color);
+}
+
+.note-pin-btn .material-symbols-outlined {
+  font-variation-settings: "FILL" 0;
+}
+
+.note-pin-btn.is-pinned {
+  color: var(--accent);
+}
+
+.note-pin-btn.is-pinned .material-symbols-outlined {
+  font-variation-settings: "FILL" 1;
+}
+
+.sidebar-pin {
+  font-size: 16px;
+  vertical-align: middle;
+  font-variation-settings: "FILL" 1;
+}
+
+.note-check-label {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.note-check-label input {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+}
+
+.note-check-label .note-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-manage-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.note-manage-actions[hidden] {
+  display: none;
+}
+
+.note-manage-actions button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .history-item {
   flex-direction: column;
   align-items: stretch;
@@ -124,4 +242,3 @@
   background: var(--accent);
   color: var(--accent-fg);
 }
-
