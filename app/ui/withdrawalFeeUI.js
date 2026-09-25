@@ -55,6 +55,7 @@ export function openWithdrawalFeeModal() {
     const estimatedFee = handling === null ? null : estimateFee(method.value, handling);
     fee.textContent = estimatedFee === null ? '—' : `${estimatedFee.toLocaleString()}円`;
     source.href = SOURCES[method.value];
+    source.textContent = isShinwa ? '手数料表：十八親和銀行' : '手数料表：長崎三菱信用組合';
     explanation.textContent = isShinwa
       ? 'A − B。Bは窓口の実際の払出金種で変わります。手数料は現在の公表額による目安です。'
       : 'A − 一万円札の枚数。手数料は現在の公表額による目安です。';

@@ -389,7 +389,7 @@ UI 修正時は最低限、次を確認してください。
 `sw.js` のキャッシュ名:
 
 ```js
-const CACHE_NAME = "CalcApp-cache-v20260925.3";
+const CACHE_NAME = "CalcApp-cache-v20260925.4";
 ```
 
 更新時にキャッシュ内容を確実に切り替えたい場合は `CACHE_NAME` を変更してください。

@@ -340,7 +340,7 @@
     </div>
 
     <script type="module">
-      import "./app/main.js?v=20260925.3";
+      import "./app/main.js?v=20260925.4";
     </script>
 
     <!-- settingsTemplate (グローバル設定 - ダークモードのみ) -->
@@ -399,10 +399,10 @@
       <div class="modal-overlay" id="withdrawal-fee-overlay">
         <div class="settings-box withdrawal-fee-box" role="dialog" aria-modal="true" aria-labelledby="withdrawalFeeTitle">
           <h3 id="withdrawalFeeTitle">金種指定支払の試算</h3>
-          <label for="withdrawalFeeMethod">金融機関</label>
+          <label for="withdrawalFeeMethod">計算方法</label>
           <select id="withdrawalFeeMethod" class="select-input">
-            <option value="shinwa">十八親和銀行</option>
-            <option value="ryoshin">長崎三菱信用組合</option>
+            <option value="shinwa">指定なしとの差（A − B）</option>
+            <option value="ryoshin">一万円札を除く</option>
           </select>
           <div class="withdrawal-fee-row"><span>金種指定した枚数 A</span><strong id="withdrawalSpecifiedCount"></strong></div>
           <div id="withdrawalBaselineRow">
