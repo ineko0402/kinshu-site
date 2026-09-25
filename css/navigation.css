@@ -1,0 +1,75 @@
+/* ボトムナビゲーション */
+
+/* --- ボトムナビゲーション --- */
+.bottom-nav {
+  flex-shrink: 0;
+  height: 60px;
+  background: var(--nav-bg);
+  border-top: 1px solid var(--nav-border-top);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.nav-item {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-item-color);
+  padding: 5px;
+  flex-grow: 1;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.nav-item:active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.nav-item:focus-visible {
+  color: var(--nav-item-active);
+  background: var(--surface-secondary);
+  outline: none;
+}
+
+.nav-item:focus-visible::before {
+  position: absolute;
+  top: 0;
+  right: 18%;
+  left: 18%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 999px;
+  content: "";
+}
+
+.nav-item .material-symbols-outlined {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+.nav-item .nav-label {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  color: var(--nav-item-active);
+}
+
+@media (max-width: 1023px) and (orientation: portrait) {
+  .bottom-nav {
+    align-self: stretch;
+    height: 100%;
+    min-height: 60px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
