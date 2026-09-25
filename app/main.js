@@ -24,6 +24,7 @@ import {
   showHistoryDetail,
 } from "./ui/historyUI.js";
 import { bindSettingsEvents, openSettings } from "./ui/settingsUI.js";
+import { openWithdrawalFeeModal } from "./ui/withdrawalFeeUI.js?v=20260925.4";
 
 // DOM構築完了後に初期化
 window.addEventListener("DOMContentLoaded", () => {
@@ -59,6 +60,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // イベントバインド
   bindKeypadEvents();
   bindSettingsEvents();
+  document.getElementById('countCalculatorBtn')?.addEventListener('click', openWithdrawalFeeModal);
 
   // グローバルなボタンイベント
   document.getElementById("clearAllBtn")?.addEventListener("click", resetAll);
