@@ -9,6 +9,18 @@ import { renderCurrency, updateSummary } from "./renderer.js";
 import { loadStateToUI } from "./stateSync.js";
 import { jpyData, cnyData } from "../core/data.js";
 import { bindBackdropDismiss } from "./backdropDismiss.js";
+import { confirmAction, showFeedback } from "./feedback.js";
+
+function historyTitle(savedPoint, currency) {
+  const memo = typeof savedPoint.memo === "string" ? savedPoint.memo.trim() : "";
+  return memo || `${savedPoint.total.toLocaleString()} ${currency === "JPY" ? "円" : "元"}`;
+}
+
+async function confirmHistoryDeletion(savedPoint, currency) {
+  const title = historyTitle(savedPoint, currency);
+  if (!await confirmAction("履歴を削除しますか？", `「${title}」を削除します。`, "削除")) return false;
+  return deleteSavedPoint(appState.currentNoteId, savedPoint.id);
+}
 
 /**
  * モーダル共通のクローズ処理
@@ -68,7 +80,7 @@ export function renderSidebarHistoryList() {
     div.className = "history-item";
     div.innerHTML = `
       <div class="history-header" style="font-size: 11px; display: flex; justify-content: space-between;">
-        <strong>${sp.memo}</strong>
+        <strong class="history-title"></strong>
         <span class="history-date">${dateStr} ${timeStr}</span>
       </div>
       <div style="font-size: 12px; margin: 4px 0; font-weight: bold;">
@@ -80,6 +92,7 @@ export function renderSidebarHistoryList() {
         <button class="delete-history-btn" style="flex: 1; padding: 4px; font-size: 10px;"><span class="material-symbols-outlined">delete</span> 削除</button>
       </div>
     `;
+    div.querySelector(".history-title").textContent = historyTitle(sp, currentNote.currency);
 
     div.querySelector(".restore-history-btn").addEventListener("click", (e) => {
       e.stopPropagation();
@@ -91,10 +104,9 @@ export function renderSidebarHistoryList() {
       showHistoryDetail(sp);
     });
 
-    div.querySelector(".delete-history-btn").addEventListener("click", (e) => {
+    div.querySelector(".delete-history-btn").addEventListener("click", async (e) => {
       e.stopPropagation();
-      if (confirm("削除しますか？")) {
-        deleteSavedPoint(appState.currentNoteId, sp.id);
+      if (await confirmHistoryDeletion(sp, currentNote.currency)) {
         renderSidebarHistoryList();
       }
     });
@@ -106,14 +118,17 @@ export function renderSidebarHistoryList() {
 /**
  * 履歴の復元処理
  */
-export function handleRestoreHistory(savedPoint) {
-  if (confirm(`履歴「${savedPoint.memo}」の内容を現在の入力に復元しますか？`)) {
-    restoreCounts(appState.currentNoteId, savedPoint.counts);
-    loadStateToUI();
-    updateSummary();
-    renderCurrency();
-    alert("データを復元しました。");
-  }
+export async function handleRestoreHistory(savedPoint) {
+  const note = appState.notes.find((n) => n.id === appState.currentNoteId);
+  if (!note) return false;
+  const title = historyTitle(savedPoint, note.currency);
+  if (!await confirmAction("履歴を復元しますか？", `「${title}」の内容で現在の入力を置き換えます。`, "復元")) return false;
+  restoreCounts(note.id, savedPoint.counts);
+  loadStateToUI();
+  updateSummary();
+  renderCurrency();
+  showFeedback("データを復元しました。");
+  return true;
 }
 
 /**
@@ -231,7 +246,7 @@ export function openHistoryModal() {
       li.innerHTML = `
         <div class="history-header">
           <div class="history-meta">
-            <strong>${sp.memo}</strong>
+            <strong class="history-title"></strong>
             <div class="history-total">${sp.total.toLocaleString()} ${currentNote.currency === "JPY" ? "円" : "元"}</div>
           </div>
           <span class="history-date">${dateStr}</span>
@@ -242,15 +257,14 @@ export function openHistoryModal() {
           <button class="delete-history-btn"><span class="material-symbols-outlined">delete</span> 削除</button>
         </div>
       `;
-      li.querySelector(".restore-history-btn").onclick = () => {
-        handleRestoreHistory(sp);
-        closeOverlay(overlay);
+      li.querySelector(".history-title").textContent = historyTitle(sp, currentNote.currency);
+      li.querySelector(".restore-history-btn").onclick = async () => {
+        if (await handleRestoreHistory(sp)) closeOverlay(overlay, handleEscape);
       };
       li.querySelector(".view-detail-btn").onclick = () =>
         showHistoryDetail(sp);
-      li.querySelector(".delete-history-btn").onclick = () => {
-        if (confirm("削除しますか？")) {
-          deleteSavedPoint(appState.currentNoteId, sp.id);
+      li.querySelector(".delete-history-btn").onclick = async () => {
+        if (await confirmHistoryDeletion(sp, currentNote.currency)) {
           renderHistoryList();
           renderSidebarHistoryList();
         }
@@ -295,7 +309,7 @@ export function showHistoryDetail(savedPoint) {
 
   const unit = currentNote.currency === "JPY" ? "円" : "元";
   let html = `
-    <h4>${savedPoint.memo}</h4>
+    <h4 id="historyDetailTitle"></h4>
     <p>${date.toLocaleString()}</p>
     <div class="detail-summary"><strong>合計:</strong> ${savedPoint.total.toLocaleString()} ${unit}</div>
     <hr>
@@ -317,6 +331,7 @@ export function showHistoryDetail(savedPoint) {
   html += `</tbody></table>`;
 
   document.getElementById("historyDetailContent").innerHTML = html;
+  document.getElementById("historyDetailTitle").textContent = historyTitle(savedPoint, currentNote.currency);
   requestAnimationFrame(() => {
     overlay.classList.add("show");
     document.body.classList.add("modal-open");

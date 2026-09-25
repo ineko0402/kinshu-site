@@ -22,7 +22,7 @@ import {
   openSavePointModal,
   openHistoryModal,
   showHistoryDetail,
-} from "./ui/historyUI.js?v=20260925.11";
+} from "./ui/historyUI.js?v=20260925.12";
 import { bindSettingsEvents, openSettings } from "./ui/settingsUI.js?v=20260925.11";
 import { openWithdrawalFeeModal } from "./ui/withdrawalFeeUI.js?v=20260925.7";
 
