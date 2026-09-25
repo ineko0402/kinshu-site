@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
     />
     <title>金種入力アプリ</title>
-    <link rel="stylesheet" href="style.css?v=20260925.8" />
+    <link rel="stylesheet" href="style.css?v=20260925.9" />
     <!-- ファビコン -->
     <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico" />
     <link
@@ -340,7 +340,7 @@
     </div>
 
     <script type="module">
-      import "./app/main.js?v=20260925.8";
+      import "./app/main.js?v=20260925.9";
     </script>
 
     <!-- settingsTemplate (グローバル設定 - ダークモードのみ) -->
@@ -401,8 +401,8 @@
           <h3 id="withdrawalFeeTitle">金種指定支払の試算</h3>
           <label for="withdrawalFeeMethod">計算方法</label>
           <select id="withdrawalFeeMethod" class="select-input">
-            <option value="shinwa">指定なしとの差（A − B）</option>
-            <option value="ryoshin">一万円札を除く</option>
+            <option value="difference">指定なしとの差（A − B）</option>
+            <option value="excludeTenThousand">一万円札を除く</option>
           </select>
           <div class="withdrawal-fee-row"><span>金種指定した枚数 A</span><strong id="withdrawalSpecifiedCount"></strong></div>
           <div id="withdrawalBaselineRow">
@@ -413,10 +413,9 @@
           <div class="withdrawal-fee-row" id="withdrawalTenThousandRow" hidden><span>一万円札</span><strong id="withdrawalTenThousandCount"></strong></div>
           <div class="withdrawal-fee-result">
             <span>お取扱枚数</span><strong id="withdrawalHandlingCount"></strong>
-            <span>手数料の目安</span><strong id="withdrawalFeeAmount"></strong>
           </div>
           <p id="withdrawalFeeExplanation" class="withdrawal-fee-note"></p>
-          <a id="withdrawalFeeSource" href="#" target="_blank" rel="noopener noreferrer">公式の手数料表を確認</a>
+          <a id="withdrawalFeeSource" href="#" target="_blank" rel="noopener noreferrer">取扱枚数の算出方法を確認（外部サイト）</a>
           <button id="closeWithdrawalFeeBtn" class="modal-button modal-button-default" type="button">閉じる</button>
         </div>
       </div>

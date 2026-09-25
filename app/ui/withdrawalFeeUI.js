@@ -1,10 +1,10 @@
 import { appState } from '../core/state.js';
 import { jpyData } from '../core/data.js';
-import { estimateUnspecifiedCount, getHandlingCount, estimateFee } from '../core/withdrawalFee.js';
+import { estimateUnspecifiedCount, getHandlingCount } from '../core/withdrawalFee.js?v=20260925.5';
 
 const SOURCES = {
-  shinwa: 'https://www.18shinwabank.co.jp/price/commissions/ryougae/',
-  ryoshin: 'https://www.ryo-sin.co.jp/rate/fee.html#exchange',
+  difference: 'https://www.fukuokabank.co.jp/price/commissions/ryougae/',
+  excludeTenThousand: 'https://www.resonabank.co.jp/kojin/kinri_kawase/tesuryo/',
 };
 
 function getSpecifiedCounts() {
@@ -35,7 +35,6 @@ export function openWithdrawalFeeModal() {
   const method = overlay.querySelector('#withdrawalFeeMethod');
   const baseline = overlay.querySelector('#withdrawalBaselineCount');
   const result = overlay.querySelector('#withdrawalHandlingCount');
-  const fee = overlay.querySelector('#withdrawalFeeAmount');
   const source = overlay.querySelector('#withdrawalFeeSource');
   const explanation = overlay.querySelector('#withdrawalFeeExplanation');
   const trigger = document.getElementById('countCalculatorBtn');
@@ -43,25 +42,23 @@ export function openWithdrawalFeeModal() {
   overlay.querySelector('#withdrawalSpecifiedCount').textContent = `${values.count.toLocaleString()}枚`;
   overlay.querySelector('#withdrawalTenThousandCount').textContent = `${values.tenThousand.toLocaleString()}枚`;
   baseline.value = estimateUnspecifiedCount(values.amount);
-  method.value = localStorage.getItem('withdrawal_fee_method') === 'ryoshin' ? 'ryoshin' : 'shinwa';
+  method.value = localStorage.getItem('withdrawal_count_method') === 'excludeTenThousand'
+    ? 'excludeTenThousand' : 'difference';
 
   const update = () => {
-    const isShinwa = method.value === 'shinwa';
-    overlay.querySelector('#withdrawalBaselineRow').hidden = !isShinwa;
-    overlay.querySelector('#withdrawalTenThousandRow').hidden = isShinwa;
+    const isDifference = method.value === 'difference';
+    overlay.querySelector('#withdrawalBaselineRow').hidden = !isDifference;
+    overlay.querySelector('#withdrawalTenThousandRow').hidden = isDifference;
     const enteredBaseline = baseline.value.trim() === '' ? NaN : Number(baseline.value);
     const handling = getHandlingCount(method.value, values.count, values.tenThousand, enteredBaseline);
     result.textContent = handling === null ? '枚数を確認' : `${handling.toLocaleString()}枚`;
-    const estimatedFee = handling === null ? null : estimateFee(method.value, handling);
-    fee.textContent = estimatedFee === null ? '—' : `${estimatedFee.toLocaleString()}円`;
     source.href = SOURCES[method.value];
-    source.textContent = isShinwa ? '手数料表：十八親和銀行' : '手数料表：長崎三菱信用組合';
-    explanation.textContent = isShinwa
-      ? 'A − B。Bは窓口の実際の払出金種で変わります。手数料は現在の公表額による目安です。'
-      : 'A − 一万円札の枚数。手数料は現在の公表額による目安です。';
+    explanation.textContent = isDifference
+      ? 'A − B。Bは窓口の実際の払出金種で変わります。'
+      : 'A − 一万円札の枚数。新券指定には対応していません。';
   };
   method.addEventListener('change', () => {
-    localStorage.setItem('withdrawal_fee_method', method.value);
+    localStorage.setItem('withdrawal_count_method', method.value);
     update();
   });
   baseline.addEventListener('input', update);
