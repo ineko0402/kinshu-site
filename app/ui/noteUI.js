@@ -11,6 +11,7 @@ import {
 import { renderCurrency, updateSummary } from "./renderer.js";
 import { saveCountsFromUI, loadStateToUI } from "./stateSync.js";
 import { bindBackdropDismiss } from "./backdropDismiss.js";
+import { confirmAction, informAction } from "./feedback.js";
 
 // saveNotesData を呼び出すためのヘルパー（循環参照を避けるため）
 let saveNotesDataFn = null;
@@ -115,7 +116,7 @@ export function renderSidebarNoteList() {
     `;
     div.querySelector(".note-title").textContent = note.name;
 
-    div.addEventListener("click", (e) => {
+    div.addEventListener("click", async (e) => {
       const target = e.target.closest("button");
       if (target?.classList.contains("edit-note-btn")) {
         openNoteEditModal(note.id, () => {
@@ -127,10 +128,10 @@ export function renderSidebarNoteList() {
 
       if (target?.classList.contains("delete-note-btn")) {
         if (appState.notes.length <= 1) {
-          alert("最後のノートは削除できません。");
+          await informAction("削除できません", "最後のノートは削除できません。");
           return;
         }
-        if (confirm(`ノート「${note.name}」を削除しますか？`)) {
+        if (await confirmAction("ノートを削除しますか？", `「${note.name}」を削除します。`, "削除")) {
           deleteNote(note.id);
           renderSidebarNoteList();
           renderCurrency();
@@ -486,10 +487,10 @@ export function openNoteSwitchModal() {
     });
   }
 
-  deleteBtn.addEventListener("click", () => {
+  deleteBtn.addEventListener("click", async () => {
     const ids = [...selected];
     if (ids.length === 0 || ids.length >= appState.notes.length) return;
-    if (!confirm(`選択した${ids.length}件のノートを削除しますか？`)) return;
+    if (!await confirmAction("ノートを削除しますか？", `選択した${ids.length}件のノートを削除します。`, "削除")) return;
     const activeDeleted = ids.includes(appState.currentNoteId);
     ids.forEach((id) => deleteNote(id));
     selected.clear();

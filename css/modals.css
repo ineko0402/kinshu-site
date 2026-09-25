@@ -26,6 +26,36 @@
   opacity: 0;
 }
 
+.modal-overlay.action-overlay {
+  z-index: 10000;
+}
+
+.action-overlay [hidden] {
+  display: none;
+}
+
+#app-feedback {
+  position: fixed;
+  left: 50%;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+  z-index: 10001;
+  max-width: calc(100vw - 32px);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  background: var(--text-primary);
+  color: var(--surface-primary);
+  box-shadow: 0 4px 12px var(--shadow-dark);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#app-feedback.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 .settings-box {
   background: var(--surface-primary);
   color: var(--text-color);

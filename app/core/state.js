@@ -2,6 +2,7 @@
 // ==============================
 // アプリ全体の状態管理とlocalStorage同期
 // ==============================
+import { informAction } from "../ui/feedback.js";
 
 // 定数定義
 const MAX_SAVED_POINTS = 30; // 履歴保存上限
@@ -66,7 +67,7 @@ function performSave() {
     localStorage.setItem("notes_data", JSON.stringify(dataToSave));
   } catch (error) {
     console.error("ノートデータの保存に失敗:", error);
-    alert("データの保存に失敗しました。ストレージの容量を確認してください。");
+    informAction("保存に失敗しました", "ストレージの容量を確認してください。");
     throw error; // エラーを再スロー
   }
 }

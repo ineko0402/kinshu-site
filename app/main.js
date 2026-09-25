@@ -16,15 +16,15 @@ import {
   renderSidebarNoteList,
   openNoteSwitchModal,
   openNoteCreateModal,
-} from "./ui/noteUI.js?v=20260925.8";
+} from "./ui/noteUI.js?v=20260925.9";
 import {
   renderSidebarHistoryList,
   openSavePointModal,
   openHistoryModal,
   showHistoryDetail,
-} from "./ui/historyUI.js?v=20260925.11";
-import { bindSettingsEvents, openSettings } from "./ui/settingsUI.js?v=20260925.11";
-import { openWithdrawalFeeModal } from "./ui/withdrawalFeeUI.js?v=20260925.7";
+} from "./ui/historyUI.js?v=20260925.12";
+import { bindSettingsEvents, openSettings } from "./ui/settingsUI.js?v=20260925.12";
+import { openWithdrawalFeeModal } from "./ui/withdrawalFeeUI.js?v=20260925.8";
 
 // DOM構築完了後に初期化
 window.addEventListener("DOMContentLoaded", () => {
