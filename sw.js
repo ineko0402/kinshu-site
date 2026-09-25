@@ -1,9 +1,21 @@
 // sw.js
-const CACHE_NAME = 'CalcApp-cache-v20251223';
+const CACHE_NAME = 'CalcApp-cache-v20260925';
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
+  './style.css?v=20260925.1',
+  './css/variables.css?v=20260925.1',
+  './css/base.css?v=20260925.1',
+  './css/effects.css?v=20260925.1',
+  './css/layout.css?v=20260925.1',
+  './css/components.css?v=20260925.1',
+  './css/navigation.css?v=20260925.1',
+  './css/lists.css?v=20260925.1',
+  './css/typography.css?v=20260925.1',
+  './css/keypad.css?v=20260925.1',
+  './css/modals.css?v=20260925.1',
+  './css/pc.css?v=20260925.1',
   './manifest.json'
 ];
 

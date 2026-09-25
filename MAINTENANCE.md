@@ -340,6 +340,24 @@ CNY では現在この制限設定を使用していません。
 
 本アプリはスマートフォン利用を主用途としつつ、PC 用サイドバー UI もあります。
 
+`index.html` は `style.css` のみ読み込みます。`style.css` が次の順序で各ファイルを読み込みます。
+
+| ファイル | 担当 |
+| --- | --- |
+| `variables.css` | 色、文字、余白などの変数とダークテーマ |
+| `base.css` | リセットとページ共通設定 |
+| `effects.css` | ホバーや押下などの効果 |
+| `layout.css` | ヘッダー、集計欄、金種グリッドとモバイル配置 |
+| `components.css` | 共通ボタン、金種セル、ヘッダーボタン |
+| `navigation.css` | 下部ナビゲーション |
+| `lists.css` | ノート・履歴一覧、詳細表、共通モーダルボタン |
+| `typography.css` | 表示サイズと文字のレスポンシブ調整 |
+| `keypad.css` | オーバーレイテンキー |
+| `modals.css` | 設定・履歴等のシート、メッセージと入力欄 |
+| `pc.css` | PC 専用のサイドバーとレイアウト |
+
+CSS は読み込み順により同じ詳細度の指定が上書きされます。既存の指定を移動するときは、元の読み込み順とメディアクエリの条件を保ってください。`index.html` の `style.css` のバージョンと、`style.css` 内の import のバージョンを揃えます。
+
 UI 修正時は最低限、次を確認してください。
 
 - スマートフォン幅
@@ -370,7 +388,7 @@ UI 修正時は最低限、次を確認してください。
 `sw.js` のキャッシュ名:
 
 ```js
-const CACHE_NAME = "CalcApp-cache-v20251223";
+const CACHE_NAME = "CalcApp-cache-v20260925";
 ```
 
 更新時にキャッシュ内容を確実に切り替えたい場合は `CACHE_NAME` を変更してください。
@@ -382,6 +400,8 @@ activate 時に旧キャッシュは削除されます。
 - `./`
 - `./index.html`
 - `./style.css`
+- `./style.css?v=20260925.1`
+- `style.css` が import するバージョン付き CSS 11 ファイル
 - `./manifest.json`
 
 JavaScript ファイルは現状 `urlsToCache` に列挙されていません。
