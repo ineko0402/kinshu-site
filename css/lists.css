@@ -51,8 +51,14 @@
   padding: 4px 8px;
 }
 
+.note-switch-item.is-pinned {
+  border-left: 3px solid var(--accent);
+  background: var(--surface-secondary);
+}
+
 .settings-box .note-select-btn,
-.settings-box .note-pin-btn {
+.settings-box .note-pin-btn,
+.settings-box .note-edit-btn {
   border: 0;
   background: transparent;
   box-shadow: none;
@@ -77,7 +83,8 @@
   content: "✓ ";
 }
 
-.settings-box .note-pin-btn {
+.settings-box .note-pin-btn,
+.settings-box .note-edit-btn {
   display: grid;
   place-items: center;
   flex: 0 0 44px;
@@ -85,6 +92,21 @@
   min-height: 44px;
   padding: 0;
   color: var(--nav-item-color);
+}
+
+.settings-box .note-pin-btn.is-pinned {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--accent);
+  border-radius: var(--radius-md);
+  color: var(--accent-fg);
+}
+
+.pin-state-label {
+  font-size: 10px;
+  line-height: 1;
 }
 
 .note-pin-btn .material-symbols-outlined {
@@ -129,9 +151,32 @@
 
 .note-manage-actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-sm);
   margin-bottom: var(--space-md);
+}
+
+.note-manage-actions.multi-selected {
+  grid-template-columns: 1fr;
+}
+
+.settings-box .note-manage-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 4px;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.settings-box .note-manage-actions button[hidden] {
+  display: none;
+}
+
+.note-manage-actions .material-symbols-outlined {
+  font-size: 20px;
 }
 
 .note-manage-actions[hidden] {

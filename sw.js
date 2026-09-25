@@ -1,22 +1,22 @@
 // sw.js
-const CACHE_NAME = 'CalcApp-cache-v20260925.6';
+const CACHE_NAME = 'CalcApp-cache-v20260925.7';
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
-  './style.css?v=20260925.6',
-  './css/variables.css?v=20260925.6',
-  './css/base.css?v=20260925.6',
-  './css/effects.css?v=20260925.6',
-  './css/layout.css?v=20260925.6',
-  './css/components.css?v=20260925.6',
-  './css/navigation.css?v=20260925.6',
-  './css/lists.css?v=20260925.6',
-  './css/typography.css?v=20260925.6',
-  './css/keypad.css?v=20260925.6',
-  './css/modals.css?v=20260925.6',
-  './css/withdrawal-fee.css?v=20260925.6',
-  './css/pc.css?v=20260925.6',
+  './style.css?v=20260925.7',
+  './css/variables.css?v=20260925.7',
+  './css/base.css?v=20260925.7',
+  './css/effects.css?v=20260925.7',
+  './css/layout.css?v=20260925.7',
+  './css/components.css?v=20260925.7',
+  './css/navigation.css?v=20260925.7',
+  './css/lists.css?v=20260925.7',
+  './css/typography.css?v=20260925.7',
+  './css/keypad.css?v=20260925.7',
+  './css/modals.css?v=20260925.7',
+  './css/withdrawal-fee.css?v=20260925.7',
+  './css/pc.css?v=20260925.7',
   './manifest.json'
 ];
 
