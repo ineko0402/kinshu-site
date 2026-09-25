@@ -41,7 +41,8 @@ export function openWithdrawalFeeModal() {
 
   overlay.querySelector('#withdrawalSpecifiedCount').textContent = `${values.count.toLocaleString()}枚`;
   overlay.querySelector('#withdrawalTenThousandCount').textContent = `${values.tenThousand.toLocaleString()}枚`;
-  baseline.value = estimateUnspecifiedCount(values.amount);
+  const baselineCount = estimateUnspecifiedCount(values.amount);
+  baseline.textContent = `${baselineCount.toLocaleString()}枚`;
   method.value = localStorage.getItem('withdrawal_count_method') === 'excludeTenThousand'
     ? 'excludeTenThousand' : 'difference';
 
@@ -49,8 +50,8 @@ export function openWithdrawalFeeModal() {
     const isDifference = method.value === 'difference';
     overlay.querySelector('#withdrawalBaselineRow').hidden = !isDifference;
     overlay.querySelector('#withdrawalTenThousandRow').hidden = isDifference;
-    const enteredBaseline = baseline.value.trim() === '' ? NaN : Number(baseline.value);
-    const handling = getHandlingCount(method.value, values.count, values.tenThousand, enteredBaseline);
+    overlay.querySelector('#withdrawalResultLabel').textContent = isDifference ? 'お取扱枚数の目安' : 'お取扱枚数';
+    const handling = getHandlingCount(method.value, values.count, values.tenThousand, baselineCount);
     result.textContent = handling === null ? '枚数を確認' : `${handling.toLocaleString()}枚`;
     source.href = SOURCES[method.value];
     explanation.textContent = isDifference
@@ -61,7 +62,6 @@ export function openWithdrawalFeeModal() {
     localStorage.setItem('withdrawal_count_method', method.value);
     update();
   });
-  baseline.addEventListener('input', update);
   update();
 
   const close = () => {
