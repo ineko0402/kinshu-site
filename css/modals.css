@@ -30,6 +30,10 @@
   z-index: 10000;
 }
 
+.action-overlay [hidden] {
+  display: none;
+}
+
 #app-feedback {
   position: fixed;
   left: 50%;

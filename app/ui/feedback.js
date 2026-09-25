@@ -1,6 +1,6 @@
 import { bindBackdropDismiss } from './backdropDismiss.js';
 
-export function confirmAction(title, message, actionLabel) {
+function actionDialog(title, message, actionLabel, withCancel) {
   return new Promise((resolve) => {
     const previousFocus = document.activeElement;
     const overlay = document.createElement('div');
@@ -18,6 +18,7 @@ export function confirmAction(title, message, actionLabel) {
     overlay.querySelector('#actionMessage').textContent = message;
     const cancel = overlay.querySelector('.action-cancel');
     const confirm = overlay.querySelector('.action-confirm');
+    cancel.hidden = !withCancel;
     confirm.textContent = actionLabel;
 
     let finished = false;
@@ -46,9 +47,17 @@ export function confirmAction(title, message, actionLabel) {
     document.body.classList.add('modal-open');
     requestAnimationFrame(() => {
       overlay.classList.add('show');
-      cancel.focus();
+      (withCancel ? cancel : confirm).focus();
     });
   });
+}
+
+export function confirmAction(title, message, actionLabel) {
+  return actionDialog(title, message, actionLabel, true);
+}
+
+export function informAction(title, message, actionLabel = '閉じる') {
+  return actionDialog(title, message, actionLabel, false);
 }
 
 let messageTimer;

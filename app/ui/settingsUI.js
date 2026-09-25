@@ -1,6 +1,7 @@
 // app/ui/settingsUI.js
 import { downloadBackup, importBackupFromFile } from "../storage/backup.js";
 import { bindBackdropDismiss } from "./backdropDismiss.js";
+import { confirmAction, informAction, showFeedback } from "./feedback.js";
 
 /**
  * 設定モーダルを開く
@@ -27,10 +28,10 @@ export function openSettings() {
   exportBtn.addEventListener("click", () => {
     try {
       downloadBackup();
-      alert("ノートデータをエクスポートしました。");
+      showFeedback("ノートデータをエクスポートしました。");
     } catch (error) {
       console.error(error);
-      alert("エクスポートに失敗しました。");
+      informAction("エクスポートに失敗しました", "ノートデータをエクスポートできませんでした。");
     }
   });
 
@@ -43,17 +44,17 @@ export function openSettings() {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!confirm("現在のノートデータを上書きしてインポートしますか？")) {
+    if (!await confirmAction("データをインポートしますか？", "現在のノートデータを上書きします。", "インポート")) {
       return;
     }
 
     try {
       await importBackupFromFile(file);
-      alert("ノートデータをインポートしました。ページをリロードします。");
+      await informAction("インポートしました", "ページを再読み込みします。", "再読み込み");
       window.location.reload();
     } catch (error) {
       console.error(error);
-      alert(
+      await informAction("インポートに失敗しました",
         error.message ||
           "ファイルの読み込みに失敗しました。JSON形式を確認してください。",
       );

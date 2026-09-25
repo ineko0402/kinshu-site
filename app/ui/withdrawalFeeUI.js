@@ -2,6 +2,7 @@ import { appState } from '../core/state.js';
 import { jpyData } from '../core/data.js';
 import { estimateUnspecifiedCount, getHandlingCount } from '../core/withdrawalFee.js?v=20260925.5';
 import { bindBackdropDismiss } from './backdropDismiss.js';
+import { informAction } from './feedback.js';
 
 const SOURCES = {
   difference: 'https://www.fukuokabank.co.jp/price/commissions/ryougae/',
@@ -28,7 +29,7 @@ export function openWithdrawalFeeModal() {
   if (appState.currentCurrency !== 'JPY') return;
   const values = getSpecifiedCounts();
   if (!values) {
-    alert('枚数または金額が正しくありません。金種の入力値を確認してください。');
+    informAction('入力値を確認してください', '枚数または金額が正しくありません。金種の入力値を確認してください。');
     return;
   }
 
