@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
     />
     <title>金種入力アプリ</title>
-    <link rel="stylesheet" href="style.css?v=20260925.3" />
+    <link rel="stylesheet" href="style.css?v=20260925.5" />
     <!-- ファビコン -->
     <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico" />
     <link
@@ -340,7 +340,7 @@
     </div>
 
     <script type="module">
-      import "./app/main.js?v=20260925.4";
+      import "./app/main.js?v=20260925.5";
     </script>
 
     <!-- settingsTemplate (グローバル設定 - ダークモードのみ) -->
@@ -426,13 +426,19 @@
     <template id="noteSwitchTemplate">
       <div class="modal-overlay top-sheet" id="note-overlay">
         <div id="note-box" class="settings-box top-sheet">
-          <h3>
-            <span class="material-symbols-outlined">swap_horiz</span>
-            ノート切り替え
-          </h3>
+          <div class="note-switch-heading">
+            <h3><span class="material-symbols-outlined">swap_horiz</span> ノート切り替え</h3>
+            <button id="manageNotesBtn" type="button" aria-pressed="false">整理</button>
+          </div>
           <ul id="noteList" class="note-list">
             <!-- ノート一覧がここに挿入される -->
           </ul>
+          <div id="noteManageActions" class="note-manage-actions" hidden>
+            <button id="moveNoteUpBtn" type="button" disabled>上へ</button>
+            <button id="moveNoteDownBtn" type="button" disabled>下へ</button>
+            <button id="editSelectedNoteBtn" type="button" disabled>名前・設定</button>
+            <button id="deleteSelectedNotesBtn" type="button" disabled>削除</button>
+          </div>
           <button id="newNoteBtn" class="modal-button modal-button-accent">
             <span class="material-symbols-outlined">add_circle</span>
             新しいノートを作成

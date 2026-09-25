@@ -6,12 +6,44 @@ import {
   updateNoteName,
   updateNoteSettings,
   deleteNote,
+  saveNotesData,
 } from "../core/state.js";
 import { renderCurrency, updateSummary } from "./renderer.js";
 import { saveCountsFromUI, loadStateToUI } from "./stateSync.js";
 
 // saveNotesData を呼び出すためのヘルパー（循環参照を避けるため）
 let saveNotesDataFn = null;
+
+// notes 配列の順番が手動順。旧データに pinned がない場合も通常ノートとして扱う。
+function getOrderedNotes() {
+  return [
+    ...appState.notes.filter((note) => note.pinned),
+    ...appState.notes.filter((note) => !note.pinned),
+  ];
+}
+
+function setNotePinned(noteId, pinned) {
+  const note = appState.notes.find((item) => item.id === noteId);
+  if (!note) return false;
+  note.pinned = pinned;
+  saveNotesData(true);
+  return true;
+}
+
+function moveNote(noteId, direction) {
+  const note = appState.notes.find((item) => item.id === noteId);
+  if (!note || (direction !== -1 && direction !== 1)) return false;
+  const peers = appState.notes.filter((item) => Boolean(item.pinned) === Boolean(note.pinned));
+  const index = peers.findIndex((item) => item.id === noteId);
+  const neighbor = peers[index + direction];
+  if (!neighbor) return false;
+  const from = appState.notes.indexOf(note);
+  const to = appState.notes.indexOf(neighbor);
+  [appState.notes[from], appState.notes[to]] = [appState.notes[to], appState.notes[from]];
+  saveNotesData(true);
+  return true;
+}
+
 async function initSaveNotesDataFn() {
   if (!saveNotesDataFn) {
     const { saveNotesData } = await import("../core/state.js");
@@ -59,7 +91,7 @@ export function renderSidebarNoteList() {
   if (!container) return;
 
   container.innerHTML = "";
-  appState.notes.forEach((note) => {
+  getOrderedNotes().forEach((note) => {
     const div = document.createElement("div");
     div.className = "note-item";
     div.dataset.id = note.id;
@@ -72,7 +104,7 @@ export function renderSidebarNoteList() {
 
     div.innerHTML = `
       <div class="note-name ${note.id === appState.currentNoteId ? "active" : ""}" style="flex: 1; padding: 5px;">
-        ${note.name} <br>
+        ${note.pinned ? '<span class="material-symbols-outlined sidebar-pin" title="ピン留め">push_pin</span>' : ''}<span class="note-title"></span><br>
         <small style="color: var(--text-secondary)">${note.currency}</small>
       </div>
       <div class="note-actions" style="display: flex; gap: 4px;">
@@ -80,6 +112,7 @@ export function renderSidebarNoteList() {
         <button class="delete-note-btn" title="削除"><span class="material-symbols-outlined" style="font-size: 18px;">delete</span></button>
       </div>
     `;
+    div.querySelector(".note-title").textContent = note.name;
 
     div.addEventListener("click", (e) => {
       const target = e.target.closest("button");
@@ -328,52 +361,140 @@ export function openNoteSwitchModal() {
   const closeBtn = overlay.querySelector("#closeNoteBtn");
   const noteListEl = overlay.querySelector("#noteList");
   const newNoteBtn = overlay.querySelector("#newNoteBtn");
+  const manageBtn = overlay.querySelector("#manageNotesBtn");
+  const actions = overlay.querySelector("#noteManageActions");
+  const moveUpBtn = overlay.querySelector("#moveNoteUpBtn");
+  const moveDownBtn = overlay.querySelector("#moveNoteDownBtn");
+  const editBtn = overlay.querySelector("#editSelectedNoteBtn");
+  const deleteBtn = overlay.querySelector("#deleteSelectedNotesBtn");
+  const selected = new Set();
+  let managing = false;
   const handleEscape = (e) => {
     if (e.key === "Escape") closeOverlay(overlay, handleEscape);
   };
   document.addEventListener("keydown", handleEscape);
 
-  const renderNoteList = () => {
-    noteListEl.innerHTML = "";
-    appState.notes.forEach((note) => {
-      const li = document.createElement("li");
-      li.className = "note-item";
-      li.dataset.id = note.id;
-      li.innerHTML = `
-        <span class="note-name ${note.id === appState.currentNoteId ? "active" : ""}">${note.name} (${note.currency})</span>
-        <div class="note-actions">
-          <button class="edit-note-btn" title="編集"><span class="material-symbols-outlined">edit</span></button>
-          <button class="delete-note-btn" title="削除"><span class="material-symbols-outlined">delete</span></button>
-        </div>
-      `;
-      noteListEl.appendChild(li);
-    });
+  const updateActions = () => {
+    manageBtn.textContent = managing ? "完了" : "整理";
+    manageBtn.setAttribute("aria-pressed", String(managing));
+    actions.hidden = !managing;
+    const onlyId = selected.size === 1 ? [...selected][0] : null;
+    const note = appState.notes.find((item) => item.id === onlyId);
+    const peers = note ? getOrderedNotes().filter((item) => Boolean(item.pinned) === Boolean(note.pinned)) : [];
+    const index = peers.findIndex((item) => item.id === onlyId);
+    moveUpBtn.disabled = index <= 0;
+    moveDownBtn.disabled = index < 0 || index === peers.length - 1;
+    editBtn.disabled = !onlyId;
+    deleteBtn.disabled = selected.size === 0 || selected.size === appState.notes.length;
   };
 
-  renderNoteList();
+  const renderNoteList = () => {
+    noteListEl.replaceChildren();
+    for (const note of getOrderedNotes()) {
+      const li = document.createElement("li");
+      li.className = "note-item note-switch-item";
+      li.dataset.id = note.id;
+      const name = `${note.name} (${note.currency})`;
 
-  noteListEl.addEventListener("click", (e) => {
-    const li = e.target.closest(".note-item");
+      if (managing) {
+        const label = document.createElement("label");
+        label.className = "note-check-label";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = selected.has(note.id);
+        checkbox.setAttribute("aria-label", `選択: ${name}`);
+        const text = document.createElement("span");
+        text.className = "note-name";
+        text.textContent = name;
+        label.append(checkbox, text);
+        li.appendChild(label);
+      } else {
+        const switchBtn = document.createElement("button");
+        switchBtn.type = "button";
+        switchBtn.className = "note-select-btn";
+        switchBtn.textContent = name;
+        if (note.id === appState.currentNoteId) switchBtn.setAttribute("aria-current", "true");
+        li.appendChild(switchBtn);
+      }
+
+      const pinBtn = document.createElement("button");
+      pinBtn.type = "button";
+      pinBtn.className = `note-pin-btn${note.pinned ? " is-pinned" : ""}`;
+      pinBtn.title = note.pinned ? "ピンを外す" : "ピン留め";
+      pinBtn.setAttribute("aria-label", pinBtn.title);
+      pinBtn.setAttribute("aria-pressed", String(Boolean(note.pinned)));
+      pinBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">push_pin</span>';
+      li.appendChild(pinBtn);
+      noteListEl.appendChild(li);
+    }
+    updateActions();
+  };
+
+  manageBtn.addEventListener("click", () => {
+    managing = !managing;
+    selected.clear();
+    renderNoteList();
+  });
+
+  noteListEl.addEventListener("change", (event) => {
+    if (event.target.type !== "checkbox") return;
+    const id = event.target.closest(".note-item")?.dataset.id;
+    if (!id) return;
+    if (event.target.checked) selected.add(id);
+    else selected.delete(id);
+    updateActions();
+  });
+
+  noteListEl.addEventListener("click", (event) => {
+    const li = event.target.closest(".note-item");
     if (!li) return;
     const noteId = li.dataset.id;
-    const button = e.target.closest("button");
-
-    if (button?.classList.contains("delete-note-btn")) {
-      if (appState.notes.length <= 1)
-        return alert("最後のノートは削除できません。");
-      if (confirm("このノートを削除しますか？")) {
-        deleteNote(noteId);
+    if (event.target.closest(".note-pin-btn")) {
+      const note = appState.notes.find((item) => item.id === noteId);
+      if (note && setNotePinned(noteId, !note.pinned)) {
         renderNoteList();
-        updateNoteDisplay();
         renderSidebarNoteList();
       }
-    } else if (button?.classList.contains("edit-note-btn")) {
-      openNoteEditModal(noteId, renderNoteList);
-    } else {
+    } else if (event.target.closest(".note-select-btn")) {
       handleNoteSwitch(noteId);
-      closeOverlay(overlay);
+      closeOverlay(overlay, handleEscape);
     }
   });
+
+  for (const [button, direction] of [[moveUpBtn, -1], [moveDownBtn, 1]]) {
+    button.addEventListener("click", () => {
+      if (selected.size !== 1) return;
+      if (moveNote([...selected][0], direction)) {
+        renderNoteList();
+        renderSidebarNoteList();
+      }
+    });
+  }
+
+  editBtn.addEventListener("click", () => {
+    if (selected.size === 1) openNoteEditModal([...selected][0], renderNoteList);
+  });
+
+  deleteBtn.addEventListener("click", () => {
+    const ids = [...selected];
+    if (ids.length === 0 || ids.length >= appState.notes.length) return;
+    if (!confirm(`選択した${ids.length}件のノートを削除しますか？`)) return;
+    const activeDeleted = ids.includes(appState.currentNoteId);
+    ids.forEach((id) => deleteNote(id));
+    selected.clear();
+    if (activeDeleted) {
+      switchNote(getOrderedNotes()[0].id);
+      loadStateToUI();
+      renderCurrency();
+      updateSummary();
+      document.dispatchEvent(new CustomEvent("noteSwitched", { detail: { noteId: appState.currentNoteId } }));
+    }
+    updateNoteDisplay();
+    renderNoteList();
+    renderSidebarNoteList();
+  });
+
+  renderNoteList();
 
   newNoteBtn.addEventListener("click", () => {
     openNoteCreateModal(() => {

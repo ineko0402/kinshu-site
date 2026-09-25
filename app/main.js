@@ -16,7 +16,7 @@ import {
   renderSidebarNoteList,
   openNoteSwitchModal,
   openNoteCreateModal,
-} from "./ui/noteUI.js?v=20260830.4";
+} from "./ui/noteUI.js?v=20260925.5";
 import {
   renderSidebarHistoryList,
   openSavePointModal,
