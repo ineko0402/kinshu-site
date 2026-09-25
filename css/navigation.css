@@ -60,8 +60,10 @@
   font-weight: 500;
 }
 
-.nav-item:hover {
-  color: var(--nav-item-active);
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:hover {
+    color: var(--nav-item-active);
+  }
 }
 
 @media (max-width: 1023px) and (orientation: portrait) {
@@ -72,4 +74,3 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
-

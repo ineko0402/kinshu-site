@@ -6,7 +6,6 @@
 button.modal-button-primary,
 button.modal-button-success,
 button.enter,
-.bottom-nav .nav-item:hover,
 .note-item.active {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(var(--accent-color-raw), 0.15);
@@ -23,11 +22,18 @@ button.enter:active {
   transform: scale(0.98);
 }
 
-/* 共通ホバーアニメーション */
-button:hover,
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px var(--shadow-dark);
+/* タッチ操作では :hover が残るため、マウス操作時だけ表示する */
+@media (hover: hover) and (pointer: fine) {
+  .bottom-nav .nav-item:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(var(--accent-color-raw), 0.15);
+  }
+
+  button:hover,
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-dark);
+  }
 }
 
 /* モーダル表示のアニメーション */

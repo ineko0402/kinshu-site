@@ -1,16 +1,16 @@
 /* 読込順がカスケードの優先順位になるため、変更時は表示を確認する。 */
-@import url('css/variables.css?v=20260925.7');
-@import url('css/base.css?v=20260925.7');
-@import url('css/effects.css?v=20260925.7');
-@import url('css/layout.css?v=20260925.7');
-@import url('css/components.css?v=20260925.7');
-@import url('css/navigation.css?v=20260925.7');
-@import url('css/lists.css?v=20260925.7');
-@import url('css/typography.css?v=20260925.7');
-@import url('css/keypad.css?v=20260925.7');
-@import url('css/modals.css?v=20260925.7');
-@import url('css/withdrawal-fee.css?v=20260925.7');
-@import url('css/pc.css?v=20260925.7');
+@import url('css/variables.css?v=20260925.8');
+@import url('css/base.css?v=20260925.8');
+@import url('css/effects.css?v=20260925.8');
+@import url('css/layout.css?v=20260925.8');
+@import url('css/components.css?v=20260925.8');
+@import url('css/navigation.css?v=20260925.8');
+@import url('css/lists.css?v=20260925.8');
+@import url('css/typography.css?v=20260925.8');
+@import url('css/keypad.css?v=20260925.8');
+@import url('css/modals.css?v=20260925.8');
+@import url('css/withdrawal-fee.css?v=20260925.8');
+@import url('css/pc.css?v=20260925.8');
 
 /* ==========================================================================
    金種入力アプリ：メインスタイル (style.css)
