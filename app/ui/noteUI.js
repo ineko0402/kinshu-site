@@ -365,7 +365,6 @@ export function openNoteSwitchModal() {
   const actions = overlay.querySelector("#noteManageActions");
   const moveUpBtn = overlay.querySelector("#moveNoteUpBtn");
   const moveDownBtn = overlay.querySelector("#moveNoteDownBtn");
-  const editBtn = overlay.querySelector("#editSelectedNoteBtn");
   const deleteBtn = overlay.querySelector("#deleteSelectedNotesBtn");
   const selected = new Set();
   let managing = false;
@@ -380,14 +379,16 @@ export function openNoteSwitchModal() {
     manageBtn.setAttribute("aria-label", label);
     manageBtn.title = label;
     manageBtn.setAttribute("aria-pressed", String(managing));
-    actions.hidden = !managing;
+    actions.hidden = !managing || selected.size === 0;
+    actions.classList.toggle("multi-selected", selected.size > 1);
+    moveUpBtn.hidden = selected.size !== 1;
+    moveDownBtn.hidden = selected.size !== 1;
     const onlyId = selected.size === 1 ? [...selected][0] : null;
     const note = appState.notes.find((item) => item.id === onlyId);
     const peers = note ? getOrderedNotes().filter((item) => Boolean(item.pinned) === Boolean(note.pinned)) : [];
     const index = peers.findIndex((item) => item.id === onlyId);
     moveUpBtn.disabled = index <= 0;
     moveDownBtn.disabled = index < 0 || index === peers.length - 1;
-    editBtn.disabled = !onlyId;
     deleteBtn.disabled = selected.size === 0 || selected.size === appState.notes.length;
   };
 
@@ -396,6 +397,7 @@ export function openNoteSwitchModal() {
     for (const note of getOrderedNotes()) {
       const li = document.createElement("li");
       li.className = "note-item note-switch-item";
+      li.classList.toggle("is-pinned", Boolean(note.pinned));
       li.dataset.id = note.id;
       const name = `${note.name} (${note.currency})`;
 
@@ -420,13 +422,24 @@ export function openNoteSwitchModal() {
         li.appendChild(switchBtn);
       }
 
+      if (managing) {
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.className = "note-edit-btn";
+        editBtn.title = "名前・設定を編集";
+        editBtn.setAttribute("aria-label", `${note.name}の名前・設定を編集`);
+        editBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">edit</span>';
+        li.appendChild(editBtn);
+      }
+
       const pinBtn = document.createElement("button");
       pinBtn.type = "button";
       pinBtn.className = `note-pin-btn${note.pinned ? " is-pinned" : ""}`;
-      pinBtn.title = note.pinned ? "ピンを外す" : "ピン留め";
+      pinBtn.title = note.pinned ? "ピン留め中（押すと解除）" : "ピン留めする";
       pinBtn.setAttribute("aria-label", pinBtn.title);
       pinBtn.setAttribute("aria-pressed", String(Boolean(note.pinned)));
-      pinBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">push_pin</span>';
+      pinBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">push_pin</span>'
+        + (note.pinned ? '<span class="pin-state-label" aria-hidden="true">固定</span>' : '');
       li.appendChild(pinBtn);
       noteListEl.appendChild(li);
     }
@@ -452,7 +465,9 @@ export function openNoteSwitchModal() {
     const li = event.target.closest(".note-item");
     if (!li) return;
     const noteId = li.dataset.id;
-    if (event.target.closest(".note-pin-btn")) {
+    if (event.target.closest(".note-edit-btn") && managing) {
+      openNoteEditModal(noteId, renderNoteList);
+    } else if (event.target.closest(".note-pin-btn")) {
       const note = appState.notes.find((item) => item.id === noteId);
       if (note && setNotePinned(noteId, !note.pinned)) {
         renderNoteList();
@@ -473,10 +488,6 @@ export function openNoteSwitchModal() {
       }
     });
   }
-
-  editBtn.addEventListener("click", () => {
-    if (selected.size === 1) openNoteEditModal([...selected][0], renderNoteList);
-  });
 
   deleteBtn.addEventListener("click", () => {
     const ids = [...selected];
