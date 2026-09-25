@@ -444,6 +444,43 @@ export function openNoteSwitchModal() {
     updateActions();
   };
 
+  const reorderNoteList = (noteId, change, restorePinFocus = false) => {
+    const before = new Map(
+      [...noteListEl.children].map((item) => [item.dataset.id, item.getBoundingClientRect().top]),
+    );
+    if (!change()) return;
+    renderNoteList();
+
+    const moved = [...noteListEl.children].find((item) => item.dataset.id === noteId);
+    if (restorePinFocus) moved?.querySelector('.note-pin-btn')?.focus({ preventScroll: true });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      moved?.scrollIntoView({ block: 'nearest' });
+      return;
+    }
+
+    for (const item of noteListEl.children) {
+      const oldTop = before.get(item.dataset.id);
+      if (oldTop === undefined) continue;
+      const distance = oldTop - item.getBoundingClientRect().top;
+      if (Math.abs(distance) > 1 && typeof item.animate === 'function') {
+        item.animate(
+          [{ transform: `translateY(${distance}px)` }, { transform: 'translateY(0)' }],
+          { duration: 240, easing: 'ease-out' },
+        );
+      }
+    }
+
+    if (moved) {
+      const listRect = noteListEl.getBoundingClientRect();
+      const itemRect = moved.getBoundingClientRect();
+      const outside = itemRect.top < listRect.top || itemRect.bottom > listRect.bottom;
+      if (outside) moved.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => {
+        if (moved.isConnected) moved.classList.add('just-moved');
+      }, outside ? 350 : 240);
+    }
+  };
+
   manageBtn.addEventListener("click", () => {
     managing = !managing;
     selected.clear();
@@ -467,10 +504,11 @@ export function openNoteSwitchModal() {
       openNoteEditModal(noteId, renderNoteList);
     } else if (event.target.closest(".note-pin-btn")) {
       const note = appState.notes.find((item) => item.id === noteId);
-      if (note && setNotePinned(noteId, !note.pinned)) {
-        renderNoteList();
-        renderSidebarNoteList();
-      }
+      if (note) reorderNoteList(noteId, () => {
+        const changed = setNotePinned(noteId, !note.pinned);
+        if (changed) renderSidebarNoteList();
+        return changed;
+      }, true);
     } else if (event.target.closest(".note-select-btn")) {
       handleNoteSwitch(noteId);
       closeOverlay(overlay, handleEscape);
@@ -480,10 +518,12 @@ export function openNoteSwitchModal() {
   for (const [button, direction] of [[moveUpBtn, -1], [moveDownBtn, 1]]) {
     button.addEventListener("click", () => {
       if (selected.size !== 1) return;
-      if (moveNote([...selected][0], direction)) {
-        renderNoteList();
-        renderSidebarNoteList();
-      }
+      const noteId = [...selected][0];
+      reorderNoteList(noteId, () => {
+        const changed = moveNote(noteId, direction);
+        if (changed) renderSidebarNoteList();
+        return changed;
+      });
     });
   }
 
