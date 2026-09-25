@@ -37,10 +37,13 @@
   margin: 0;
 }
 
-.note-switch-heading button {
-  min-width: 64px;
+.settings-box .note-switch-heading button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
   min-height: 44px;
-  padding: 8px;
+  padding: 0;
 }
 
 .note-switch-item {

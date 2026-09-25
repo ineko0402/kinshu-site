@@ -375,7 +375,10 @@ export function openNoteSwitchModal() {
   document.addEventListener("keydown", handleEscape);
 
   const updateActions = () => {
-    manageBtn.textContent = managing ? "完了" : "整理";
+    const label = managing ? "整理を完了" : "ノートを整理";
+    manageBtn.querySelector(".material-symbols-outlined").textContent = managing ? "check" : "checklist";
+    manageBtn.setAttribute("aria-label", label);
+    manageBtn.title = label;
     manageBtn.setAttribute("aria-pressed", String(managing));
     actions.hidden = !managing;
     const onlyId = selected.size === 1 ? [...selected][0] : null;

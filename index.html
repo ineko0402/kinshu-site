@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
     />
     <title>金種入力アプリ</title>
-    <link rel="stylesheet" href="style.css?v=20260925.5" />
+    <link rel="stylesheet" href="style.css?v=20260925.6" />
     <!-- ファビコン -->
     <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico" />
     <link
@@ -340,7 +340,7 @@
     </div>
 
     <script type="module">
-      import "./app/main.js?v=20260925.5";
+      import "./app/main.js?v=20260925.6";
     </script>
 
     <!-- settingsTemplate (グローバル設定 - ダークモードのみ) -->
@@ -428,7 +428,9 @@
         <div id="note-box" class="settings-box top-sheet">
           <div class="note-switch-heading">
             <h3><span class="material-symbols-outlined">swap_horiz</span> ノート切り替え</h3>
-            <button id="manageNotesBtn" type="button" aria-pressed="false">整理</button>
+            <button id="manageNotesBtn" type="button" aria-pressed="false" aria-label="ノートを整理" title="ノートを整理">
+              <span class="material-symbols-outlined" aria-hidden="true">checklist</span>
+            </button>
           </div>
           <ul id="noteList" class="note-list">
             <!-- ノート一覧がここに挿入される -->
