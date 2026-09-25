@@ -1,6 +1,7 @@
 import { appState } from '../core/state.js';
 import { jpyData } from '../core/data.js';
 import { estimateUnspecifiedCount, getHandlingCount } from '../core/withdrawalFee.js?v=20260925.5';
+import { bindBackdropDismiss } from './backdropDismiss.js';
 
 const SOURCES = {
   difference: 'https://www.fukuokabank.co.jp/price/commissions/ryougae/',
@@ -79,9 +80,7 @@ export function openWithdrawalFeeModal() {
     if (event.key === 'Escape') close();
   };
   overlay.querySelector('#closeWithdrawalFeeBtn').addEventListener('click', close);
-  overlay.addEventListener('click', (event) => {
-    if (event.target === overlay) close();
-  });
+  bindBackdropDismiss(overlay, close);
   document.addEventListener('keydown', onKeydown);
   document.body.appendChild(overlay);
   requestAnimationFrame(() => {

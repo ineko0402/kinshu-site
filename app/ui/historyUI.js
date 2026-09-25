@@ -8,6 +8,7 @@ import {
 import { renderCurrency, updateSummary } from "./renderer.js";
 import { loadStateToUI } from "./stateSync.js";
 import { jpyData, cnyData } from "../core/data.js";
+import { bindBackdropDismiss } from "./backdropDismiss.js";
 
 /**
  * モーダル共通のクローズ処理
@@ -179,9 +180,7 @@ export function openSavePointModal() {
   });
 
   closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay(overlay, handleEscape);
-  });
+  bindBackdropDismiss(overlay, () => closeOverlay(overlay, handleEscape));
   requestAnimationFrame(() => {
     overlay.classList.add("show");
     document.body.classList.add("modal-open");
@@ -267,9 +266,7 @@ export function openHistoryModal() {
   });
   document.getElementById("closeHistoryBtn").onclick = () =>
     closeOverlay(overlay, handleEscape);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay(overlay, handleEscape);
-  });
+  bindBackdropDismiss(overlay, () => closeOverlay(overlay, handleEscape));
 }
 
 /**
@@ -326,7 +323,5 @@ export function showHistoryDetail(savedPoint) {
   });
   document.getElementById("closeHistoryDetailBtn").onclick = () =>
     closeOverlay(overlay, handleEscape);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay(overlay, handleEscape);
-  });
+  bindBackdropDismiss(overlay, () => closeOverlay(overlay, handleEscape));
 }
