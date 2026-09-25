@@ -10,6 +10,7 @@ import {
 } from "../core/state.js";
 import { renderCurrency, updateSummary } from "./renderer.js";
 import { saveCountsFromUI, loadStateToUI } from "./stateSync.js";
+import { bindBackdropDismiss } from "./backdropDismiss.js";
 
 // saveNotesData を呼び出すためのヘルパー（循環参照を避けるため）
 let saveNotesDataFn = null;
@@ -280,9 +281,7 @@ export function openNoteEditModal(noteId, onUpdate = null) {
   });
 
   closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay(overlay, handleEscape);
-  });
+  bindBackdropDismiss(overlay, () => closeOverlay(overlay, handleEscape));
 }
 
 /**
@@ -342,9 +341,7 @@ export function openNoteCreateModal(onUpdate = null) {
   });
 
   closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay(overlay, handleEscape);
-  });
+  bindBackdropDismiss(overlay, () => closeOverlay(overlay, handleEscape));
 }
 
 /**
@@ -523,7 +520,5 @@ export function openNoteSwitchModal() {
   });
 
   closeBtn.addEventListener("click", () => closeOverlay(overlay, handleEscape));
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay(overlay, handleEscape);
-  });
+  bindBackdropDismiss(overlay, () => closeOverlay(overlay, handleEscape));
 }

@@ -1,5 +1,6 @@
 // app/ui/settingsUI.js
 import { downloadBackup, importBackupFromFile } from "../storage/backup.js";
+import { bindBackdropDismiss } from "./backdropDismiss.js";
 
 /**
  * 設定モーダルを開く
@@ -66,9 +67,7 @@ export function openSettings() {
   document.addEventListener("keydown", handleEscape);
 
   closeBtn.addEventListener("click", closeOverlay);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeOverlay();
-  });
+  bindBackdropDismiss(overlay, closeOverlay);
 
   document.body.appendChild(overlay);
   requestAnimationFrame(() => {

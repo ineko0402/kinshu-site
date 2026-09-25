@@ -7,7 +7,7 @@ import {
   setSaveNotesDataFn,
 } from "./ui/renderer.js";
 import { loadStateToUI } from "./ui/stateSync.js";
-import { bindKeypadEvents } from "./ui/keypad.js";
+import { bindKeypadEvents } from "./ui/keypad.js?v=20260925.11";
 
 // 分割したUIモジュールをインポート
 import {
@@ -16,15 +16,15 @@ import {
   renderSidebarNoteList,
   openNoteSwitchModal,
   openNoteCreateModal,
-} from "./ui/noteUI.js?v=20260925.7";
+} from "./ui/noteUI.js?v=20260925.8";
 import {
   renderSidebarHistoryList,
   openSavePointModal,
   openHistoryModal,
   showHistoryDetail,
-} from "./ui/historyUI.js";
-import { bindSettingsEvents, openSettings } from "./ui/settingsUI.js";
-import { openWithdrawalFeeModal } from "./ui/withdrawalFeeUI.js?v=20260925.6";
+} from "./ui/historyUI.js?v=20260925.11";
+import { bindSettingsEvents, openSettings } from "./ui/settingsUI.js?v=20260925.11";
+import { openWithdrawalFeeModal } from "./ui/withdrawalFeeUI.js?v=20260925.7";
 
 // DOM構築完了後に初期化
 window.addEventListener("DOMContentLoaded", () => {

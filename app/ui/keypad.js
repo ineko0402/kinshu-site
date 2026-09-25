@@ -6,6 +6,7 @@
 import { appState } from '../core/state.js';
 import { safeEval } from '../core/utils.js';
 import { updateSummary } from './renderer.js';
+import { bindBackdropDismiss } from './backdropDismiss.js';
 
 export function bindKeypadEvents() {
   const overlay = document.getElementById('overlay');
@@ -13,9 +14,7 @@ export function bindKeypadEvents() {
 
   if (!overlay || !panel) return;
 
-  overlay.addEventListener('click', e => {
-    if (!panel.contains(e.target)) hideKeypad();
-  });
+  bindBackdropDismiss(overlay, hideKeypad);
 
   panel.addEventListener('click', e => {
     if (e.target.tagName !== 'BUTTON' || !appState.activeDisplay) return;
