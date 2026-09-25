@@ -7,7 +7,7 @@ import {
   setSaveNotesDataFn,
 } from "./ui/renderer.js";
 import { loadStateToUI } from "./ui/stateSync.js";
-import { bindKeypadEvents } from "./ui/keypad.js?v=20260925.11";
+import { bindKeypadEvents } from "./ui/keypad.js?v=20260925.12";
 
 // 分割したUIモジュールをインポート
 import {
