@@ -113,6 +113,7 @@ export function updateSummary() {
   document.getElementById('billCount').textContent = bills;
   document.getElementById('coinCount').textContent = coins;
   document.getElementById('totalCount').textContent = bills + coins;
+  document.getElementById('countCalculatorBtn').disabled = appState.currentCurrency !== 'JPY';
 
   saveCountsFromUI(saveNotesDataFn);
 }

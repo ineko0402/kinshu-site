@@ -1,0 +1,65 @@
+/* 金種指定支払の試算 */
+.summary-action {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
+}
+
+.summary-action:hover,
+.summary-action:active {
+  transform: none;
+  box-shadow: none;
+}
+
+.summary-action:disabled {
+  cursor: default;
+  text-decoration: none;
+}
+
+.withdrawal-fee-box {
+  line-height: 1.5;
+}
+
+.withdrawal-fee-box [hidden] {
+  display: none;
+}
+
+.withdrawal-fee-row,
+.withdrawal-fee-result {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.withdrawal-fee-result {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: 12px;
+  background: var(--surface-secondary);
+  border-radius: var(--radius-md);
+}
+
+.withdrawal-fee-result strong {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.withdrawal-fee-note {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.withdrawal-fee-box a {
+  display: inline-block;
+  margin-bottom: 18px;
+  text-decoration: underline;
+}
